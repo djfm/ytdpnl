@@ -1,3 +1,8 @@
+import React from 'react';
+import {render} from 'react-dom';
+
+import App from './App';
+
 const appRootId = 'ytdpnl-app-root';
 let lastVideoUrl = '';
 
@@ -35,7 +40,6 @@ const hideNativeRecommendationsAndEnsureExtensionIsInjected = () => {
 
 		const appRoot = document.createElement('div');
 		appRoot.id = appRootId;
-		appRoot.innerHTML = 'Hello world';
 
 		const parent = relatedElt.parentElement;
 
@@ -45,6 +49,8 @@ const hideNativeRecommendationsAndEnsureExtensionIsInjected = () => {
 		}
 
 		parent.insertBefore(appRoot, relatedElt);
+
+		render(<App />, appRoot);
 	}
 };
 
