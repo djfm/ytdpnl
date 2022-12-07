@@ -1,0 +1,11 @@
+{
+  "name": "ytdpnl",
+  "version": "1.0.0",
+  "description": "Better YouTube reccomendations!",
+  "main": "index.js",
+  "repository": "https://github.com/djfm/ytdpnl",
+  "author": "François-Marie de Jouvencel <fm.de.jouvencel@gmail.com>",
+  "license": "The Unlicense",
+  "private": true,
+  "packageManager": "yarn@3.3.0"
+}
