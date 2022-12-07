@@ -1,7 +1,7 @@
 {
   "name": "ytdpnl",
   "version": "1.0.0",
-  "description": "Better YouTube reccomendations!",
+  "description": "Better YouTube recommendations!",
   "main": "index.js",
   "repository": "https://github.com/djfm/ytdpnl",
   "author": "François-Marie de Jouvencel <fm.de.jouvencel@gmail.com>",
@@ -11,6 +11,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.45.1",
     "@typescript-eslint/parser": "^5.45.1",
+    "copy-webpack-plugin": "^11.0.0",
     "eslint": "^8.29.0",
     "eslint-config-xo": "latest",
     "eslint-config-xo-typescript": "latest",
