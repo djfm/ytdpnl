@@ -1,5 +1,5 @@
 import React from 'react';
-import {render} from 'react-dom';
+import {createRoot} from 'react-dom/client';
 
 import App from './App';
 
@@ -50,7 +50,8 @@ const hideNativeRecommendationsAndEnsureExtensionIsInjected = () => {
 
 		parent.insertBefore(appRoot, relatedElt);
 
-		render(<App />, appRoot);
+		const root = createRoot(appRoot);
+		root.render(<App />);
 	}
 };
 

@@ -13,5 +13,16 @@
 			]
 		}
 	],
-	"action": {}
+	"background": {
+		"service_worker": "background.js"
+	},
+	"action": {},
+	"permissions": [
+		"webRequest",
+		"declarativeNetRequest"
+	],
+	"host_permissions": [
+		"*://*.youtube.com/*",
+		"*://*.youtu.be/*"
+	]
 }

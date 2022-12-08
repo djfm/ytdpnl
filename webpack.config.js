@@ -7,9 +7,12 @@ const isProduction = mode === 'production';
 
 module.exports = {
 	mode,
-	entry: './src/extension/content-script.tsx',
+	entry: {
+		'content-script': './src/extension/content-script.tsx',
+		background: './src/extension/background.ts',
+	},
 	output: {
-		filename: 'content-script.js',
+		filename: '[name].js',
 		path: path.resolve(__dirname, 'dist', 'extension', 'chrome'),
 	},
 	resolve: {

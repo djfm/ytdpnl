@@ -27,6 +27,7 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
+    "@types/chrome": "^0.0.203",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
     "react": "^18.2.0",
