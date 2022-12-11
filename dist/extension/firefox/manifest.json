@@ -7,6 +7,5 @@
           "matches": ["https://*.youtube.com/*", "https://*.youtu.be/*"],
           "js": ["content-script.js"]
         }
-      ],
-    "action": {}
+      ]
     }

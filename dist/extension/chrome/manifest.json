@@ -12,6 +12,5 @@
 				"content-script.js"
 			]
 		}
-	],
-	"action": {}
+	]
 }
