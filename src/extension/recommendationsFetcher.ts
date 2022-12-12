@@ -25,7 +25,7 @@ const fetchNonPersonalizedRecommendations = async (videoUrl: string): Promise<Re
 		throw new Error('Could not find initial data script');
 	}
 
-	const jsonText = initialDataScript.textContent?.replace('var ytInitialData = ', '').replace(';', '');
+	const jsonText = initialDataScript.textContent?.replace('var ytInitialData = ', '').replace(/;$/, '').trim();
 
 	if (!jsonText) {
 		throw new Error('Could not parse initial data');
