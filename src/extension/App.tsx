@@ -3,17 +3,25 @@ import React, {useEffect, useState} from 'react';
 import type Recommendation from './models/Recommendation';
 import {isOnVideoPage} from './lib';
 import scrapeRecommendations from './scraper';
+import fetchNonPersonalizedRecommendations from './recommendationsFetcher';
 
 const App: React.FC = () => {
+	const [currentUrl, setCurrentUrl] = useState<string>('');
 	const [defaultRecommendations, setDefaultRecommendations] = useState<Recommendation[]>([]);
+	const [nonPersonalizedRecommendations, setNonPersonalizedRecommendations] = useState<Recommendation[]>([]);
 
 	useEffect(() => {
-		const o = new MutationObserver(() => {
+		const o = new MutationObserver(async () => {
 			if (!isOnVideoPage()) {
 				return;
 			}
 
-			// D const videoUrl = window.location.href;
+			const videoUrl = window.location.href;
+
+			if (videoUrl !== currentUrl) {
+				setCurrentUrl(videoUrl);
+				setNonPersonalizedRecommendations(await fetchNonPersonalizedRecommendations(videoUrl));
+			}
 
 			const related = document.querySelector('#related');
 
@@ -36,12 +44,20 @@ const App: React.FC = () => {
 		return () => {
 			o.disconnect();
 		};
-	}, [defaultRecommendations]);
+	}, [currentUrl, defaultRecommendations, nonPersonalizedRecommendations]);
 
 	return (
-		<ul>{defaultRecommendations.map(rec => (
-			<li key={rec.videoId}>{rec.title}</li>
-		))}</ul>
+		<div>
+			<h1>Personalized recommendations</h1>
+			<ul>{defaultRecommendations.map(rec => (
+				<li key={rec.videoId}>{rec.title}</li>
+			))}</ul>
+
+			<h1>Non-personalized recommendations</h1>
+			<ul>{nonPersonalizedRecommendations.map(rec => (
+				<li key={rec.videoId}>{rec.title}</li>
+			))}</ul>
+		</div>
 	);
 };
 
