@@ -18,9 +18,16 @@ const App: React.FC = () => {
 
 			const videoUrl = window.location.href;
 
-			if (videoUrl !== currentUrl) {
+			const urlChanged = videoUrl !== currentUrl;
+
+			if (urlChanged) {
 				setCurrentUrl(videoUrl);
-				setNonPersonalizedRecommendations(await fetchNonPersonalizedRecommendations(videoUrl));
+				const np = await fetchNonPersonalizedRecommendations(videoUrl);
+				setNonPersonalizedRecommendations(np.slice(0, 10));
+			}
+
+			if (!urlChanged && defaultRecommendations.length >= 10) {
+				return;
 			}
 
 			const related = document.querySelector('#related');
@@ -31,7 +38,7 @@ const App: React.FC = () => {
 
 			const recommendationsContainer = document.querySelector('ytd-watch-next-secondary-results-renderer');
 			const recs = scrapeRecommendations(recommendationsContainer as HTMLElement);
-			setDefaultRecommendations(recs);
+			setDefaultRecommendations(recs.slice(0, 10));
 
 			console.log({defaultRecommendations});
 		});
