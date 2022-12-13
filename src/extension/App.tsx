@@ -28,6 +28,7 @@ const App: React.FC = () => {
 				currentUrl = videoUrl;
 				const np = await fetchNonPersonalizedRecommendations(videoUrl);
 				setNonPersonalizedRecommendations(np.slice(0, limit));
+				console.log('NP RECOMMENDATIONS FETCHED', np);
 			}
 
 			if (!urlChanged && defaultRecommendations.length >= limit) {
@@ -55,7 +56,7 @@ const App: React.FC = () => {
 		return () => {
 			o.disconnect();
 		};
-	}, [currentUrl, defaultRecommendations, nonPersonalizedRecommendations]);
+	});
 
 	return (
 		<div>
