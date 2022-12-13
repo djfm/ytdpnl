@@ -5,9 +5,8 @@ import {isOnVideoPage} from './lib';
 import scrapeRecommendations from './scraper';
 import fetchNonPersonalizedRecommendations from './recommendationsFetcher';
 
-let currentUrl = '';
-
 const App: React.FC = () => {
+	const [currentUrl, setCurrentUrl] = useState<string>('');
 	const [defaultRecommendations, setDefaultRecommendations] = useState<Recommendation[]>([]);
 	const [nonPersonalizedRecommendations, setNonPersonalizedRecommendations] = useState<Recommendation[]>([]);
 
@@ -24,8 +23,7 @@ const App: React.FC = () => {
 			const limit = 15;
 
 			if (urlChanged) {
-				console.log('FETCHING NP RECOMMENDATIONS');
-				currentUrl = videoUrl;
+				setCurrentUrl(videoUrl);
 				const np = await fetchNonPersonalizedRecommendations(videoUrl);
 				setNonPersonalizedRecommendations(np.slice(0, limit));
 			}
@@ -44,7 +42,7 @@ const App: React.FC = () => {
 			const recs = scrapeRecommendations(recommendationsContainer as HTMLElement);
 			setDefaultRecommendations(recs.slice(0, limit));
 
-			console.log('updated default recommendations');
+			console.log({defaultRecommendations});
 		});
 
 		o.observe(document.body, {
