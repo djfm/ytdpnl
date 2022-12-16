@@ -12,5 +12,6 @@
         "noUnusedParameters": true,
 				"jsx": "react",
 				"esModuleInterop": true,
+				"downlevelIteration": true,
     }
 }
