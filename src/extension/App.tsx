@@ -1,9 +1,15 @@
 import React, {useEffect, useState} from 'react';
 
 import type Recommendation from './models/Recommendation';
+
+import {memoizeTemporarily} from './util';
 import {isOnVideoPage} from './lib';
 import scrapeRecommendations from './scraper';
 import fetchNonPersonalizedRecommendations from './recommendationsFetcher';
+
+const fetchNpRecommendations = memoizeTemporarily(1000)(
+	fetchNonPersonalizedRecommendations,
+);
 
 const App: React.FC = () => {
 	const [currentUrl, setCurrentUrl] = useState<string>('');
@@ -24,7 +30,7 @@ const App: React.FC = () => {
 
 			if (urlChanged) {
 				setCurrentUrl(videoUrl);
-				const np = await fetchNonPersonalizedRecommendations(videoUrl);
+				const np = await fetchNpRecommendations(videoUrl);
 				setNonPersonalizedRecommendations(np.slice(0, limit));
 				console.log('NP RECOMMENDATIONS FETCHED', np);
 			}
