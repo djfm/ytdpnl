@@ -61,6 +61,7 @@ const scrapeRecommendations = (container: HTMLElement): Recommendation[] => {
 			views: views.textContent.trim(),
 			publishedSince: publishedSince.textContent.trim(),
 			miniatureUrl: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+			isPersonalized: true,
 		};
 
 		return result;

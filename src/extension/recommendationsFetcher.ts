@@ -157,6 +157,7 @@ const fetchNonPersonalizedRecommendations = async (videoUrl: string): Promise<Re
 			miniatureUrl: `https://i.ytimg.com/vi/${r.videoId}/hqdefault.jpg`,
 			views: shortViewCountText.simpleText,
 			publishedSince: publishedTimeText.simpleText,
+			isPersonalized: false,
 		};
 
 		return rec;

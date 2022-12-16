@@ -20,7 +20,23 @@ const shuffleArray = <T>(array: T[]): T[] => {
 	return shuffledArray;
 };
 
-const removeDuplicates = <T>(array: T[]): T[] => [...new Set(array)] as T[];
+const removeDuplicates = <T, U> (identifier: (x: T) => U) => (array: T[]): T[] => {
+	const ids = new Set<U>();
+	const result: T[] = [];
+
+	for (const item of array) {
+		const id = identifier(item);
+
+		if (!ids.has(id)) {
+			result.push(item);
+			ids.add(id);
+		}
+	}
+
+	return result;
+};
+
+const dedupe = removeDuplicates((r: Recommendation) => r.videoId);
 
 export const createRecommendationsList: RecommendationsListCreator = cfg =>
 	(nonPersonalized, personalized) => {
@@ -41,7 +57,7 @@ export const createRecommendationsList: RecommendationsListCreator = cfg =>
 			}
 		}
 
-		return removeDuplicates(tmpResult.concat(shuffleArray(unused)));
+		return dedupe(tmpResult.concat(shuffleArray(unused)));
 	};
 
 export default createRecommendationsList;
