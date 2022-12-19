@@ -85,11 +85,15 @@ const App: React.FC = () => {
 	});
 
 	useEffect(() => {
-		(async () => {
-			const np = await fetchNpRecommendations(currentUrl);
-			setNonPersonalizedRecommendations(np);
-			console.log('non-personalized recommendations', np);
-		})();
+		if (currentUrl) {
+			(async () => {
+				const np = await fetchNpRecommendations(currentUrl);
+				setNonPersonalizedRecommendations(np);
+				console.log('non-personalized recommendations', np);
+			})();
+
+			console.log('[URL CHANGED]', currentUrl);
+		}
 	}, [currentUrl]);
 
 	useEffect(() => {
