@@ -4,6 +4,7 @@ type Recommendation = {
 	channelName: string;
 	videoId: string;
 	miniatureUrl: string;
+	hoverAnimationUrl: string;
 	views: string;
 	publishedSince: string;
 	isPersonalized: boolean;

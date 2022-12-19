@@ -155,6 +155,7 @@ const fetchNonPersonalizedRecommendations = async (videoUrl: string): Promise<Re
 			url: `{url.origin}/watch?v=${r.videoId}`,
 			channelName: runs[0].text,
 			miniatureUrl: `https://i.ytimg.com/vi/${r.videoId}/hqdefault.jpg`,
+			hoverAnimationUrl: `https://i.ytimg.com/an_webp/${r.videoId}/mqdefault_6s.webp`,
 			views: shortViewCountText.simpleText,
 			publishedSince: publishedTimeText.simpleText,
 			isPersonalized: false,
