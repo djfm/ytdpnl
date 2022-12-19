@@ -4,7 +4,6 @@ import type Recommendation from './models/Recommendation';
 import type {ExperimentConfig} from './createRecommendationsList';
 
 import {memoizeTemporarily} from './util';
-import {isOnVideoPage} from './lib';
 import scrapeRecommendations from './scraper';
 import fetchNonPersonalizedRecommendations from './recommendationsFetcher';
 import createRecommendationsList from './createRecommendationsList';
@@ -17,7 +16,6 @@ const App: React.FC = () => {
 	const [currentUrl, setCurrentUrl] = useState<string>('');
 	const [defaultRecommendations, setDefaultRecommendations] = useState<Recommendation[]>([]);
 	const [nonPersonalizedRecommendations, setNonPersonalizedRecommendations] = useState<Recommendation[]>([]);
-	const [finalRecommendations, setFinalRecommendations] = useState<Recommendation[]>([]);
 
 	const limit = 15;
 
@@ -26,35 +24,22 @@ const App: React.FC = () => {
 		arm: 'treatment',
 	};
 
-	const updateFinalRecommendations = () => {
-		setFinalRecommendations(
-			createRecommendationsList(cfg)(
-				nonPersonalizedRecommendations,
-				defaultRecommendations,
-			),
-		);
-	};
+	const finalRecommendations = createRecommendationsList(cfg)(
+		nonPersonalizedRecommendations,
+		defaultRecommendations,
+	);
+
+	useEffect(() => {
+		setCurrentUrl(window.location.href);
+	}, []);
 
 	useEffect(() => {
 		const o = new MutationObserver(async () => {
-			if (!isOnVideoPage()) {
-				return;
-			}
-
-			const videoUrl = window.location.href;
-
-			const urlChanged = videoUrl !== currentUrl;
-
-			if (urlChanged) {
-				setCurrentUrl(videoUrl);
-				const np = await fetchNpRecommendations(videoUrl);
-				setNonPersonalizedRecommendations(np);
-				updateFinalRecommendations();
-				console.log('NP RECOMMENDATIONS FETCHED', np);
-			}
-
-			if (!urlChanged && defaultRecommendations.length >= limit) {
-				return;
+			const {href} = window.location;
+			if (href !== currentUrl) {
+				setCurrentUrl(href);
+				setDefaultRecommendations([]);
+				setNonPersonalizedRecommendations([]);
 			}
 
 			const related = document.querySelector('#related');
@@ -63,12 +48,17 @@ const App: React.FC = () => {
 				return;
 			}
 
-			const recommendationsContainer = document.querySelector('ytd-watch-next-secondary-results-renderer');
+			if (defaultRecommendations.length >= limit) {
+				return;
+			}
+
+			const recommendationsContainer = document.querySelector(
+				'ytd-watch-next-secondary-results-renderer',
+			);
+
 			const recs = scrapeRecommendations(recommendationsContainer as HTMLElement);
 			setDefaultRecommendations(recs);
-			updateFinalRecommendations();
-
-			console.log({defaultRecommendations});
+			console.log('default recommendations (with cookies)', recs);
 		});
 
 		o.observe(document.body, {
@@ -80,6 +70,14 @@ const App: React.FC = () => {
 			o.disconnect();
 		};
 	});
+
+	useEffect(() => {
+		(async () => {
+			const np = await fetchNpRecommendations(currentUrl);
+			setNonPersonalizedRecommendations(np);
+			console.log('non-personalized recommendations', np);
+		})();
+	}, [currentUrl]);
 
 	return (
 		<div>
