@@ -12,6 +12,20 @@ const fetchNpRecommendations = memoizeTemporarily(1000)(
 	fetchNonPersonalizedRecommendations,
 );
 
+const sameList = (a: Recommendation[]) => (b: Recommendation[]) => {
+	if (a.length !== b.length) {
+		return false;
+	}
+
+	for (let i = 0; i < a.length; i++) {
+		if (a[i].videoId !== b[i].videoId) {
+			return false;
+		}
+	}
+
+	return true;
+};
+
 const App: React.FC = () => {
 	const [currentUrl, setCurrentUrl] = useState<string>('');
 	const [defaultRecommendations, setDefaultRecommendations] = useState<Recommendation[]>([]);
@@ -48,17 +62,16 @@ const App: React.FC = () => {
 				return;
 			}
 
-			if (defaultRecommendations.length >= limit) {
-				return;
-			}
-
 			const recommendationsContainer = document.querySelector(
 				'ytd-watch-next-secondary-results-renderer',
 			);
 
 			const recs = scrapeRecommendations(recommendationsContainer as HTMLElement);
-			setDefaultRecommendations(recs);
-			console.log('default recommendations (with cookies)', recs);
+
+			if (!sameList(recs)(defaultRecommendations)) {
+				setDefaultRecommendations(recs);
+				console.log('default recommendations (with cookies)', recs);
+			}
 		});
 
 		o.observe(document.body, {
@@ -78,6 +91,16 @@ const App: React.FC = () => {
 			console.log('non-personalized recommendations', np);
 		})();
 	}, [currentUrl]);
+
+	useEffect(() => {
+		if (defaultRecommendations.length >= limit) {
+			console.info('[DONE LOADING] final recommendations', finalRecommendations);
+		}
+	}, [
+		currentUrl,
+		defaultRecommendations,
+		nonPersonalizedRecommendations,
+	]);
 
 	return (
 		<div>
