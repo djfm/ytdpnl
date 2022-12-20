@@ -1,8 +1,11 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 
+import {ThemeProvider} from '@mui/material';
+
 import {isOnVideoPage} from './lib';
 import App from './App';
+import theme from './theme';
 
 const observer = new MutationObserver(() => {
 	if (!isOnVideoPage()) {
@@ -30,7 +33,11 @@ const observer = new MutationObserver(() => {
 	const root = document.createElement('div');
 	relatedElt.parentElement.appendChild(root);
 
-	createRoot(root).render(<App />);
+	createRoot(root).render((
+		<ThemeProvider theme={theme}>
+			<App />
+		</ThemeProvider>
+	));
 });
 
 observer.observe(document.body, {

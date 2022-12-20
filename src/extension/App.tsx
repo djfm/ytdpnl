@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
 
-import type Recommendation from './models/Recommendation';
 import type {ExperimentConfig} from './createRecommendationsList';
+
+import type Recommendation from './models/Recommendation';
+import RecommendationC from './components/Recommendation';
 
 import {memoizeTemporarily} from './util';
 import scrapeRecommendations from './scraper';
@@ -114,27 +116,36 @@ const App: React.FC = () => {
 		}
 	}, [finalRecommendations]);
 
+	const debugUi = (
+		<div>
+			<h1>Personalized recommendations</h1>
+			<ul>{defaultRecommendations.map(rec => (
+				<li key={rec.videoId}>{rec.title}</li>
+			))}</ul>
+
+			<h1>Non-personalized recommendations</h1>
+			<ul>{nonPersonalizedRecommendations.map(rec => (
+				<li key={rec.videoId}>{rec.title}</li>
+			))}</ul>
+
+			<h1>Recommendations</h1>
+			<ul>{finalRecommendations.map(rec => (
+				<li key={rec.videoId}>{rec.title}</li>
+			))}</ul>
+		</div>
+	);
+
+	const loadedUi = (
+		<div>
+			{finalRecommendations.map(rec => <RecommendationC key={rec.videoId} {...rec} />)}
+		</div>
+	);
+
 	return (
 		<div>
 			{loading && (<p>Loading...</p>)}
-			{loaded && (
-				<div>
-					<h1>Personalized recommendations</h1>
-					<ul>{defaultRecommendations.map(rec => (
-						<li key={rec.videoId}>{rec.title}</li>
-					))}</ul>
-
-					<h1>Non-personalized recommendations</h1>
-					<ul>{nonPersonalizedRecommendations.map(rec => (
-						<li key={rec.videoId}>{rec.title}</li>
-					))}</ul>
-
-					<h1>Recommendations</h1>
-					<ul>{finalRecommendations.map(rec => (
-						<li key={rec.videoId}>{rec.title}</li>
-					))}</ul>
-				</div>
-			)}
+			{loaded && loadedUi}
+			{loaded && debugUi}
 		</div>
 	);
 };
