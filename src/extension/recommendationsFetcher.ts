@@ -2,6 +2,40 @@ import type Recommendation from './models/Recommendation';
 
 import {has} from '../util';
 
+const getDataContainingList = (results: unknown[], useCredentials: boolean): unknown[] => {
+	if (useCredentials) {
+		console.log({results});
+	}
+
+	if (!useCredentials) {
+		return results;
+	}
+
+	if (!Array.isArray(results)) {
+		throw new Error('results is not an array');
+	}
+
+	const container = results.find(has('itemSectionRenderer'));
+
+	if (!has('itemSectionRenderer')(container)) {
+		throw new Error('Could not find itemSectionRenderer in container');
+	}
+
+	const {itemSectionRenderer} = container;
+
+	if (!has('contents')(itemSectionRenderer)) {
+		throw new Error('Could not find contents in itemSectionRenderer');
+	}
+
+	const {contents} = itemSectionRenderer;
+
+	if (!Array.isArray(contents)) {
+		throw new Error('Could not find contents in itemSectionRenderer or it is not an array');
+	}
+
+	return contents;
+};
+
 export const fetchRecommendations = async (videoUrl: string, useCredentials: boolean): Promise<Recommendation[]> => {
 	const html = await (await fetch(videoUrl, {
 		credentials: useCredentials ? 'include' : 'omit',
@@ -32,6 +66,10 @@ export const fetchRecommendations = async (videoUrl: string, useCredentials: boo
 	}
 
 	const initialData = JSON.parse(jsonText) as Record<string, unknown>;
+
+	if (useCredentials) {
+		console.log({initialData});
+	}
 
 	const {contents} = initialData;
 
@@ -79,8 +117,10 @@ export const fetchRecommendations = async (videoUrl: string, useCredentials: boo
 		throw new Error('Could not find results in secondaryResults');
 	}
 
+	const dataContainingList = getDataContainingList(results, useCredentials);
+
 	// eslint-disable-next-line complexity
-	const recommendations: Array<Recommendation | undefined> = results.map(result => {
+	const recommendations: Array<Recommendation | undefined> = dataContainingList.map(result => {
 		if (!has('compactVideoRenderer')(result)) {
 			return undefined;
 		}
