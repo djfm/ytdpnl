@@ -4,5 +4,7 @@
         "filemanager",
         "Jouvencel",
         "ytdpnl"
-    ]
+    ],
+		"spaces-inside-braces.enable": false,
+		"spaces-inside-braces.enableForBraces": false,
 }
