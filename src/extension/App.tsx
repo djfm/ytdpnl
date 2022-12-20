@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import type {ExperimentConfig} from './createRecommendationsList';
 
 import type Recommendation from './models/Recommendation';
-import RecommendationC from './components/Recommendation';
+import RecommendationC from './components/RecommendationC';
 
 import {memoizeTemporarily} from '../util';
 import scrapeRecommendations from './scraper';
