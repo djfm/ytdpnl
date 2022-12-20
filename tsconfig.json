@@ -1,17 +1,17 @@
 {
-    "compilerOptions": {
-        "strict": true,
-        "noImplicitAny": true,
-        "noImplicitThis": true,
-        "alwaysStrict": true,
-        "strictNullChecks": true,
-        "strictFunctionTypes": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-				"jsx": "react",
-				"esModuleInterop": true,
-				"downlevelIteration": true,
-    }
+	"compilerOptions": {
+		"strict": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"alwaysStrict": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"jsx": "react",
+		"esModuleInterop": true,
+		"downlevelIteration": true,
+	}
 }
