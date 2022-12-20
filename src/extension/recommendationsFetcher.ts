@@ -2,9 +2,9 @@ import type Recommendation from './models/Recommendation';
 
 import {has} from '../util';
 
-const fetchNonPersonalizedRecommendations = async (videoUrl: string): Promise<Recommendation[]> => {
+export const fetchRecommendations = async (videoUrl: string, useCredentials: boolean): Promise<Recommendation[]> => {
 	const html = await (await fetch(videoUrl, {
-		credentials: 'omit',
+		credentials: useCredentials ? 'include' : 'omit',
 	})).text();
 
 	const parser = new DOMParser();
@@ -166,5 +166,11 @@ const fetchNonPersonalizedRecommendations = async (videoUrl: string): Promise<Re
 
 	return recommendations.filter((r): r is Recommendation => Boolean(r));
 };
+
+export const fetchNonPersonalizedRecommendations = async (videoUrl: string): Promise<Recommendation[]> =>
+	fetchRecommendations(videoUrl, false);
+
+export const fetchDefaultRecommendations = async (videoUrl: string): Promise<Recommendation[]> =>
+	fetchRecommendations(videoUrl, true);
 
 export default fetchNonPersonalizedRecommendations;
