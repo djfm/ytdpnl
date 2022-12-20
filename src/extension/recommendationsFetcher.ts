@@ -1,6 +1,6 @@
 import type Recommendation from './models/Recommendation';
 
-import {has} from './util';
+import {has} from '../util';
 
 const fetchNonPersonalizedRecommendations = async (videoUrl: string): Promise<Recommendation[]> => {
 	const html = await (await fetch(videoUrl, {

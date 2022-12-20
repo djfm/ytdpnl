@@ -5,7 +5,7 @@ import type {ExperimentConfig} from './createRecommendationsList';
 import type Recommendation from './models/Recommendation';
 import RecommendationC from './components/Recommendation';
 
-import {memoizeTemporarily} from './util';
+import {memoizeTemporarily} from '../util';
 import scrapeRecommendations from './scraper';
 import fetchNonPersonalizedRecommendations from './recommendationsFetcher';
 import createRecommendationsList from './createRecommendationsList';
