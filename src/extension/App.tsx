@@ -30,8 +30,12 @@ const App: React.FC = () => {
 	const [currentUrl, setCurrentUrl] = useState<string>('');
 	const [defaultRecommendations, setDefaultRecommendations] = useState<Recommendation[]>([]);
 	const [nonPersonalizedRecommendations, setNonPersonalizedRecommendations] = useState<Recommendation[]>([]);
+	const [nonPersonalizedLoading, setNonPersonalizedLoading] = useState<boolean>(true);
+	const [defaultLoading, setDefaultLoading] = useState<boolean>(true);
 
 	const limit = 15;
+	const loading = nonPersonalizedLoading || defaultLoading;
+	const loaded = !loading;
 
 	const cfg: ExperimentConfig = {
 		nonPersonalizedProbability: 0.6,
@@ -51,9 +55,8 @@ const App: React.FC = () => {
 		const o = new MutationObserver(async () => {
 			const {href} = window.location;
 			if (href !== currentUrl) {
+				console.log('[URL CHANGED] setting current url', href);
 				setCurrentUrl(href);
-				setDefaultRecommendations([]);
-				setNonPersonalizedRecommendations([]);
 			}
 
 			const related = document.querySelector('#related');
@@ -69,8 +72,11 @@ const App: React.FC = () => {
 			const recs = scrapeRecommendations(recommendationsContainer as HTMLElement);
 
 			if (!sameList(recs)(defaultRecommendations)) {
-				setDefaultRecommendations(recs);
-				console.log('default recommendations (with cookies)', recs);
+				if (recs.length >= limit) {
+					setDefaultRecommendations(recs);
+					setDefaultLoading(false);
+					console.log('default recommendations (with cookies)', recs);
+				}
 			}
 		});
 
@@ -86,42 +92,49 @@ const App: React.FC = () => {
 
 	useEffect(() => {
 		if (currentUrl) {
+			console.log('[URL CHANGED] CHANGE OF PAGE EVENT', currentUrl);
+			setDefaultLoading(true);
+			setNonPersonalizedLoading(true);
+
+			setDefaultRecommendations([]);
+			setNonPersonalizedRecommendations([]);
+
 			(async () => {
 				const np = await fetchNpRecommendations(currentUrl);
 				setNonPersonalizedRecommendations(np);
+				setNonPersonalizedLoading(false);
 				console.log('non-personalized recommendations', np);
 			})();
-
-			console.log('[URL CHANGED]', currentUrl);
 		}
 	}, [currentUrl]);
 
 	useEffect(() => {
-		if (defaultRecommendations.length >= limit) {
+		if (loaded) {
 			console.info('[DONE LOADING] final recommendations', finalRecommendations);
 		}
-	}, [
-		currentUrl,
-		defaultRecommendations,
-		nonPersonalizedRecommendations,
-	]);
+	}, [finalRecommendations]);
 
 	return (
 		<div>
-			<h1>Personalized recommendations</h1>
-			<ul>{defaultRecommendations.map(rec => (
-				<li key={rec.videoId}>{rec.title}</li>
-			))}</ul>
+			{loading && (<p>Loading...</p>)}
+			{loaded && (
+				<div>
+					<h1>Personalized recommendations</h1>
+					<ul>{defaultRecommendations.map(rec => (
+						<li key={rec.videoId}>{rec.title}</li>
+					))}</ul>
 
-			<h1>Non-personalized recommendations</h1>
-			<ul>{nonPersonalizedRecommendations.map(rec => (
-				<li key={rec.videoId}>{rec.title}</li>
-			))}</ul>
+					<h1>Non-personalized recommendations</h1>
+					<ul>{nonPersonalizedRecommendations.map(rec => (
+						<li key={rec.videoId}>{rec.title}</li>
+					))}</ul>
 
-			<h1>Recommendations</h1>
-			<ul>{finalRecommendations.map(rec => (
-				<li key={rec.videoId}>{rec.title}</li>
-			))}</ul>
+					<h1>Recommendations</h1>
+					<ul>{finalRecommendations.map(rec => (
+						<li key={rec.videoId}>{rec.title}</li>
+					))}</ul>
+				</div>
+			)}
 		</div>
 	);
 };
