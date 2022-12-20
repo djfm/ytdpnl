@@ -52,3 +52,7 @@ export const memoizeTemporarily = (ttlMs: number) => <T, U>(f: (x: T) => U): ((x
 		return res;
 	};
 };
+
+export const wait = async (ms: number): Promise<void> => new Promise(resolve => {
+	setTimeout(resolve, ms);
+});
