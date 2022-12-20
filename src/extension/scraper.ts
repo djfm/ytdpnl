@@ -1,5 +1,7 @@
 import type Recommendation from './models/Recommendation';
 
+import {dedupe} from './createRecommendationsList';
+
 const scrapeRecommendations = (container: HTMLElement): Recommendation[] => {
 	if (!container) {
 		return [];
@@ -68,7 +70,7 @@ const scrapeRecommendations = (container: HTMLElement): Recommendation[] => {
 		return result;
 	});
 
-	return scraped.filter(Boolean) as Recommendation[];
+	return dedupe(scraped.filter(Boolean) as Recommendation[]);
 };
 
 export default scrapeRecommendations;

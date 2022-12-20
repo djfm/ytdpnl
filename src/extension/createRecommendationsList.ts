@@ -10,7 +10,7 @@ export type RecommendationsListCreator = (cfg: ExperimentConfig) =>
 (nonPersonalized: Recommendation[], personalized: Recommendation[]) =>
 Recommendation[];
 
-const dedupe = removeDuplicates((r: Recommendation) => r.videoId);
+export const dedupe = removeDuplicates((r: Recommendation) => r.videoId);
 
 export const createRecommendationsList: RecommendationsListCreator = cfg =>
 	(nonPersonalized, personalized) => {
