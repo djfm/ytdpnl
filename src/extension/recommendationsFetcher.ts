@@ -3,10 +3,6 @@ import type Recommendation from './models/Recommendation';
 import {has} from '../util';
 
 const getDataContainingList = (results: unknown[], useCredentials: boolean): unknown[] => {
-	if (useCredentials) {
-		console.log({results});
-	}
-
 	if (!useCredentials) {
 		return results;
 	}
@@ -66,10 +62,6 @@ export const fetchRecommendations = async (videoUrl: string, useCredentials: boo
 	}
 
 	const initialData = JSON.parse(jsonText) as Record<string, unknown>;
-
-	if (useCredentials) {
-		console.log({initialData});
-	}
 
 	const {contents} = initialData;
 
@@ -198,7 +190,7 @@ export const fetchRecommendations = async (videoUrl: string, useCredentials: boo
 			hoverAnimationUrl: `https://i.ytimg.com/an_webp/${r.videoId}/mqdefault_6s.webp`,
 			views: shortViewCountText.simpleText,
 			publishedSince: publishedTimeText.simpleText,
-			isPersonalized: false,
+			personalization: 'unknown',
 		};
 
 		return rec;

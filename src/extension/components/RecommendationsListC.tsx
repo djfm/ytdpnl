@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {styled} from '@mui/material/styles';
 
 import type Recommendation from '../models/Recommendation';
 import type {ExperimentConfig} from '../createRecommendationsList';
@@ -11,66 +12,53 @@ import {
 
 import RecommendationC from './RecommendationC';
 
-import {memoizeTemporarily} from '../../util';
+import {memoizeTemporarily, setPersonalizedFlags} from '../../util';
 
-/* D
-type RandomSeed = {
-	count: number;
-	position: number;
-	list: number[];
-};
-
-const getRandomNumber = (seed: RandomSeed): [number, RandomSeed] => {
-	if (seed.count >= seed.list.length) {
-		return [Math.random(), seed];
-	}
-
-	const number = seed.list[seed.position];
-
-	return [number, {...seed, position: seed.position + 1}];
-};
-
-const createRandomSeed = (count: number): RandomSeed => {
-	const list = Array.from({length: count}, () => Math.random());
-	return {
-		count,
-		position: 0,
-		list,
-	};
-};
-
-const randomSource = () => {
-	const [number, newSeed] = getRandomNumber(randomSeed);
-	setRandomSeed(newSeed);
-	return number;
-};
-*/
-
-const memo = memoizeTemporarily(1000);
+const memo = memoizeTemporarily(10000);
 
 const fetchDefault = memo(fetchDefaultRecommendations);
 const fetchPersonalized = memo(fetchNonPersonalizedRecommendations);
+
+const NonPersonalized = styled('span')(() => ({
+	color: 'green',
+}));
+
+const Personalized = styled('span')(() => ({
+	color: 'red',
+}));
+
+const Mixed = styled('span')(() => ({
+	color: 'black',
+}));
+
+const debugWrapper = (r: Recommendation) => {
+	const {personalization} = r;
+
+	if (personalization === 'non-personalized') {
+		return NonPersonalized;
+	}
+
+	if (personalization === 'personalized') {
+		return Personalized;
+	}
+
+	return Mixed;
+};
 
 export const RecommendationsListC: React.FC<{url: string; cfg: ExperimentConfig}> = ({url, cfg}) => {
 	const [nonPersonalizedRecommendations, setNonPersonalizedRecommendations] = useState<Recommendation[]>([]);
 	const [defaultRecommendations, setDefaultRecommendations] = useState<Recommendation[]>([]);
 	const [nonPersonalizedLoading, setNonPersonalizedLoading] = useState<boolean>(true);
 	const [defaultLoading, setDefaultLoading] = useState<boolean>(true);
-	// D const [randomSeed, setRandomSeed] = useState<RandomSeed>(createRandomSeed(1000));
-
-	const randomSource = () => Math.random();
+	const [finalRecommendations, setFinalRecommendations] = useState<Recommendation[]>([]);
 
 	const loading = nonPersonalizedLoading || defaultLoading;
 	const loaded = !loading;
 
-	// Warning: this is not deterministic
-	const finalRecommendations = createRecommendationsList(cfg, randomSource)(
-		nonPersonalizedRecommendations,
-		defaultRecommendations,
-	);
-
 	useEffect(() => {
-		// D setRandomSeed(createRandomSeed(1000));
+		if (!url) {
+			return;
+		}
 
 		setNonPersonalizedLoading(true);
 		setDefaultLoading(true);
@@ -90,6 +78,18 @@ export const RecommendationsListC: React.FC<{url: string; cfg: ExperimentConfig}
 		});
 	}, [url]);
 
+	useEffect(() => {
+		if (!loaded || !url) {
+			return;
+		}
+
+		const [np, p] = setPersonalizedFlags(nonPersonalizedRecommendations, defaultRecommendations);
+
+		setFinalRecommendations(createRecommendationsList(cfg)(np, p));
+
+		console.log('LOADED!', url);
+	}, [loaded, nonPersonalizedRecommendations, defaultRecommendations]);
+
 	const debugUi = (
 		<div>
 			<h1>Debug view</h1>
@@ -105,9 +105,15 @@ export const RecommendationsListC: React.FC<{url: string; cfg: ExperimentConfig}
 			))}</ul>
 
 			<h2>Final recommendations</h2>
-			<ul>{finalRecommendations.map(rec => (
-				<li key={rec.videoId}>{rec.title}</li>
-			))}</ul>
+			<p>Arm: {cfg.arm}<br/></p>
+			<p><NonPersonalized>Non-personalized</NonPersonalized></p>
+			<p><Personalized>Personalized</Personalized></p>
+			<p><Mixed>Mixed</Mixed></p>
+			<p><br/></p>
+			<ul>{finalRecommendations.map(rec => {
+				const W = debugWrapper(rec);
+				return (<li key={rec.videoId}><W>{rec.title}</W></li>);
+			})}</ul>
 		</div>
 	);
 

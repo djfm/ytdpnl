@@ -7,7 +7,8 @@ type Recommendation = {
 	hoverAnimationUrl: string;
 	views: string;
 	publishedSince: string;
-	isPersonalized: boolean;
+	// Flag 'unknown' is only used before the recommendations can be distinguished
+	personalization: 'personalized' | 'non-personalized' | 'mixed' | 'unknown';
 };
 
 export default Recommendation;

@@ -1,3 +1,41 @@
+import type Recommendation from './extension/models/Recommendation';
+
+export const setPersonalizedFlags = (nonPersonalized: Recommendation[], personalized: Recommendation[]): [Recommendation[], Recommendation[]] => {
+	const nonPersonalizedSet = new Set<string>();
+	const personalizedSet = new Set<string>();
+
+	const nonPersonalizedOut: Recommendation[] = [];
+	const personalizedOut: Recommendation[] = [];
+
+	for (const rec of nonPersonalized) {
+		nonPersonalizedSet.add(rec.videoId);
+		nonPersonalizedOut.push({...rec});
+	}
+
+	for (const rec of personalized) {
+		personalizedSet.add(rec.videoId);
+		personalizedOut.push({...rec});
+	}
+
+	for (const rec of nonPersonalizedOut) {
+		if (personalizedSet.has(rec.videoId)) {
+			rec.personalization = 'mixed';
+		} else {
+			rec.personalization = 'non-personalized';
+		}
+	}
+
+	for (const rec of personalizedOut) {
+		if (nonPersonalizedSet.has(rec.videoId)) {
+			rec.personalization = 'mixed';
+		} else {
+			rec.personalization =	'personalized';
+		}
+	}
+
+	return [nonPersonalizedOut, personalizedOut];
+};
+
 // Fisher-Yates shuffle (https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
 export const shuffleArray = <T>(array: T[]): T[] => {
 	const shuffledArray = [...array];
