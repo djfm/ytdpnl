@@ -2,12 +2,12 @@
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.ts, *.tsx, *.js]
+[*.{js,jsx,ts,tsx}]
 indent_size = 2
 indent_style = tab
 
 
-[*.yaml, *.yml]
+[*.{json,md,html,css,scss,less,yml,yaml}}]
 indent_size = 2
 indent_style = space
 
