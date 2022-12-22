@@ -94,3 +94,47 @@ export const memoizeTemporarily = (ttlMs: number) => <T, U>(f: (x: T) => U): ((x
 export const wait = async (ms: number): Promise<void> => new Promise(resolve => {
 	setTimeout(resolve, ms);
 });
+
+export const get = (path: string[]) => (x: unknown): unknown => {
+	let out = x;
+
+	for (const key of path) {
+		if (!has(key)(out)) {
+			throw new Error(`Missing property ${key} in ${JSON.stringify(out)}`);
+		}
+
+		out = out[key];
+	}
+
+	return out;
+};
+
+export const getString = (path: string[]) => (x: unknown): string => {
+	const out = get(path)(x);
+
+	if (typeof out !== 'string') {
+		throw new Error(`Expected string at ${path.join('.')}, got ${JSON.stringify(out)}`);
+	}
+
+	return out;
+};
+
+export const getNumber = (path: string[]) => (x: unknown): number => {
+	const out = get(path)(x);
+
+	if (typeof out !== 'number') {
+		throw new Error(`Expected number at ${path.join('.')}, got ${JSON.stringify(out)}`);
+	}
+
+	return out;
+};
+
+export const getInteger = (path: string[]) => (x: unknown): number => {
+	const out = getNumber(path)(x);
+
+	if (!Number.isInteger(out)) {
+		throw new Error(`Expected integer at ${path.join('.')}, got ${JSON.stringify(out)}`);
+	}
+
+	return out;
+};
