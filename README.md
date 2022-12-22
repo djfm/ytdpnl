@@ -5,7 +5,20 @@
 - enable SSL on the virtual hosts using let's encrypt
 - put the correct urls in `config.extension.dist.ts` and remove the `.dist` suffix
 
-# Development server
+# Development commands
 
+Run the tests:
+- one-shot: `yarn test`
+- continuously: `yarn tdd`
+
+## Start docker containers
 - `docker compose up -d`
-- `yarn serve:dev`
+
+## Start the app
+
+Either:
+- start the server: `yarn serve:dev`
+- compile and watch the server admin app: `yarn watch:admin`
+- compile and watch the extension: `yarn watch:ext`
+
+Or: `yarn dev`

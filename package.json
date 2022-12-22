@@ -13,7 +13,9 @@
     "watch:ext": "webpack --config webpack.config.js --watch",
     "test": "jest",
     "tdd": "jest --watch",
-    "serve:dev": "NODE_ENV=development nodemon --watch src/server src/server/index.ts"
+    "serve:dev": "NODE_ENV=development nodemon --watch src/server src/server/index.ts",
+    "watch:admin": "NODE_ENV=development webpack --config webpack.config.app.js --watch",
+    "dev": "./dev"
   },
   "devDependencies": {
     "@jest/globals": "^29.3.1",

@@ -108,9 +108,7 @@ const start = async () => {
 
 	const app = express();
 
-	app.get('/', (_req, res) => {
-		res.send('Hello world!');
-	});
+	app.use(express.static(join(__dirname, 'public')));
 
 	app.listen(port, '0.0.0.0', () => {
 		console.log(`Server in "${env}" mode listening on port ${port}`);
