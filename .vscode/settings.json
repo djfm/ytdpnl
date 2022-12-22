@@ -3,6 +3,7 @@
         "camelcase",
         "filemanager",
         "Jouvencel",
+        "typeorm",
         "ytdpnl"
     ],
 		"spaces-inside-braces.enable": false,

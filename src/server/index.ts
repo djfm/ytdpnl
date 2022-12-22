@@ -2,8 +2,12 @@ import {readFile} from 'fs/promises';
 import {join} from 'path';
 
 import express from 'express';
+
 import {Client} from 'pg';
-import type {ClientConfig} from 'pg';
+import {DataSource} from 'typeorm';
+import {SnakeNamingStrategy} from 'typeorm-naming-strategies';
+import {migrate} from 'postgres-migrations';
+
 import {parse} from 'yaml';
 
 import {getInteger, getString} from '../util';
@@ -45,7 +49,7 @@ const start = async () => {
 	const dbPassword = getString([...dbConfigPath, 'POSTGRES_PASSWORD'])(dockerComposeConfig);
 	const dbDatabase = getString([...dbConfigPath, 'POSTGRES_DB'])(dockerComposeConfig);
 
-	const dbConfig: ClientConfig = {
+	const dbConfig = {
 		host: dbHost,
 		port: Number(dbPort),
 		user: dbUser,
@@ -67,6 +71,35 @@ const start = async () => {
 		);
 		process.exit(1);
 	}
+
+	try {
+		const migrated = await migrate({client: pgClient}, join(__dirname, 'migrations'));
+		console.log('Successfully ran migrations:', migrated);
+	} catch (err) {
+		console.error('Error running migrations:', err);
+		process.exit(1);
+	}
+
+	await pgClient.end();
+
+	const ds = new DataSource({
+		type: 'postgres',
+		...dbConfig,
+		username: dbUser,
+		synchronize: false,
+		// Add model classes here
+		entities: [],
+		namingStrategy: new SnakeNamingStrategy(),
+	});
+
+	try {
+		await ds.initialize();
+	} catch (err) {
+		console.error('Error initializing data source:', err);
+		process.exit(1);
+	}
+
+	console.log('Successfully initialized data source');
 
 	const app = express();
 
