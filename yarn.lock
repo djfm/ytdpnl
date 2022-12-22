@@ -1178,6 +1178,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@one-ini/wasm@npm:0.1.1":
+  version: 0.1.1
+  resolution: "@one-ini/wasm@npm:0.1.1"
+  checksum: 11de17108eae57c797e552e36b259398aede999b4a689d78be6459652edc37f3428472410590a9d328011a8751b771063a5648dd5c4205631c55d1d58e313156
+  languageName: node
+  linkType: hard
+
 "@popperjs/core@npm:^2.11.6":
   version: 2.11.6
   resolution: "@popperjs/core@npm:2.11.6"
@@ -3110,6 +3117,20 @@ __metadata:
   version: 16.0.3
   resolution: "dotenv@npm:16.0.3"
   checksum: afcf03f373d7a6d62c7e9afea6328e62851d627a4e73f2e12d0a8deae1cd375892004f3021883f8aec85932cd2834b091f568ced92b4774625b321db83b827f8
+  languageName: node
+  linkType: hard
+
+"editorconfig@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "editorconfig@npm:1.0.1"
+  dependencies:
+    "@one-ini/wasm": 0.1.1
+    commander: ^9.4.1
+    minimatch: 5.1.0
+    semver: ^7.3.8
+  bin:
+    editorconfig: bin/editorconfig
+  checksum: 9dbd988d4fbd62c4324a2af1ad9d62e009ff73b9c5bf32b6f64127e75f8edfa3d6715f879ab4821c0f3c62541f3e369cd56a77957ee4e66b2252b2f51e9efecc
   languageName: node
   linkType: hard
 
@@ -5390,6 +5411,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:5.1.0":
+  version: 5.1.0
+  resolution: "minimatch@npm:5.1.0"
+  dependencies:
+    brace-expansion: ^2.0.1
+  checksum: 15ce53d31a06361e8b7a629501b5c75491bc2b59712d53e802b1987121d91b433d73fcc5be92974fde66b2b51d8fb28d75a9ae900d249feb792bb1ba2a4f0a90
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^3.0.4, minimatch@npm:^3.0.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
@@ -6540,7 +6570,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.x, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7":
+"semver@npm:7.x, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8":
   version: 7.3.8
   resolution: "semver@npm:7.3.8"
   dependencies:
@@ -7814,6 +7844,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.45.1
     "@typescript-eslint/parser": ^5.45.1
     copy-webpack-plugin: ^11.0.0
+    editorconfig: ^1.0.1
     eslint: ^8.29.0
     eslint-config-xo: latest
     eslint-config-xo-typescript: latest

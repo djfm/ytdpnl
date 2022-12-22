@@ -12,6 +12,12 @@ import {parse} from 'yaml';
 
 import {getInteger, getString} from '../util';
 
+import Admin from './models/admin';
+
+// Add classes used by typeorm as models here
+// so that typeorm can extract the metadata from them.
+const entities = [Admin];
+
 const env = process.env.NODE_ENV;
 
 if (env !== 'production' && env !== 'development') {
@@ -87,8 +93,7 @@ const start = async () => {
 		...dbConfig,
 		username: dbUser,
 		synchronize: false,
-		// Add model classes here
-		entities: [],
+		entities,
 		namingStrategy: new SnakeNamingStrategy(),
 	});
 

@@ -26,6 +26,9 @@ module.exports = {
 		'react',
 	],
 	rules: {
+		'new-cap': ['warning', {
+			capIsNewExceptionPattern: '^@',
+		}],
 	},
 	settings: {
 		react: {
