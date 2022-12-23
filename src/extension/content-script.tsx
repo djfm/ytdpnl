@@ -7,6 +7,8 @@ import {isOnVideoPage} from './lib';
 import App from './App';
 import theme from './theme';
 
+let root: HTMLElement | undefined;
+
 const observer = new MutationObserver(() => {
 	if (!isOnVideoPage()) {
 		return;
@@ -30,16 +32,19 @@ const observer = new MutationObserver(() => {
 
 	relatedElt.style.display = 'none';
 
-	const root = document.createElement('div');
-	relatedElt.parentElement.appendChild(root);
+	if (!root) {
+		root = document.createElement('div');
 
-	createRoot(root).render((
-		<React.StrictMode>
-			<ThemeProvider theme={theme}>
-				<App />
-			</ThemeProvider>
-		</React.StrictMode>
-	));
+		createRoot(root).render((
+			<React.StrictMode>
+				<ThemeProvider theme={theme}>
+					<App />
+				</ThemeProvider>
+			</React.StrictMode>
+		));
+	}
+
+	relatedElt.parentElement.appendChild(root);
 });
 
 observer.observe(document.body, {
