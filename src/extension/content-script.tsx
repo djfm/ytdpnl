@@ -34,9 +34,11 @@ const observer = new MutationObserver(() => {
 	relatedElt.parentElement.appendChild(root);
 
 	createRoot(root).render((
-		<ThemeProvider theme={theme}>
-			<App />
-		</ThemeProvider>
+		<React.StrictMode>
+			<ThemeProvider theme={theme}>
+				<App />
+			</ThemeProvider>
+		</React.StrictMode>
 	));
 });
 
