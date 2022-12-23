@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
+
 import {Entity, Column} from 'typeorm';
 
 import Model from '../lib/model';
@@ -5,13 +7,13 @@ import Model from '../lib/model';
 @Entity()
 export class Admin extends Model {
 	@Column()
-	name: string = '';
+		name: string = '';
 
 	@Column()
-	email: string = '';
+		email: string = '';
 
 	@Column()
-	password: string = '';
+		password: string = '';
 }
 
 export default Admin;

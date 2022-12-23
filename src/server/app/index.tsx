@@ -15,7 +15,7 @@ const router = createRouter([
 	{
 		path: '/',
 		element: <Server />,
-	}
+	},
 ]);
 
 const elt = document.getElementById('app');
