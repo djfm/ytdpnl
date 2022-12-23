@@ -3,6 +3,10 @@ import {join} from 'path';
 
 import express from 'express';
 
+import webpack from 'webpack';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
+
 import {Client} from 'pg';
 import {DataSource} from 'typeorm';
 import {SnakeNamingStrategy} from 'typeorm-naming-strategies';
@@ -13,6 +17,8 @@ import {parse} from 'yaml';
 import {getInteger, getString} from '../util';
 
 import Admin from './models/admin';
+
+import webpackConfig from '../../webpack.config.app';
 
 // Add classes used by typeorm as models here
 // so that typeorm can extract the metadata from them.
@@ -107,6 +113,17 @@ const start = async () => {
 	console.log('Successfully initialized data source');
 
 	const app = express();
+
+	if (env === 'development') {
+		const compiler = webpack(webpackConfig);
+
+		if (!webpackConfig.output) {
+			throw new Error('Invalid webpack config, missing output path');
+		}
+
+		app.use(webpackDevMiddleware(compiler));
+		app.use(webpackHotMiddleware(compiler));
+	}
 
 	app.use(express.static(join(__dirname, 'public')));
 

@@ -17,8 +17,7 @@ Run the tests:
 ## Start the app
 
 Either:
-- start the server: `yarn serve:dev`
-- compile and watch the server admin app: `yarn watch:admin`
+- start the server: `yarn serve:dev` (will watch for changes in the extension, server, and server app - using webpack dev middleware to have react hot refresh)
 - compile and watch the extension: `yarn watch:ext`
 
-Or: `yarn dev`
+Or: `yarn dev` (or `./dev`)
