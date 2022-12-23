@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {styled} from '@mui/material/styles';
+import crypto from 'crypto';
 
 import type Recommendation from '../models/Recommendation';
 import type {ExperimentConfig} from '../createRecommendationsList';
@@ -13,11 +14,19 @@ import {
 import RecommendationC from './RecommendationC';
 
 import {memoizeTemporarily, setPersonalizedFlags} from '../../util';
+import {debug, log} from '../lib';
 
 const memo = memoizeTemporarily(10000);
 
 const fetchDefault = memo(fetchDefaultRecommendations);
 const fetchPersonalized = memo(fetchNonPersonalizedRecommendations);
+
+const hashRecommendationsList = (recommendations: Recommendation[]): string => {
+	const serialized = JSON.stringify(recommendations);
+	const hash = crypto.createHash('sha256');
+	hash.update(serialized);
+	return hash.digest('hex');
+};
 
 const NonPersonalized = styled('span')(() => ({
 	color: 'green',
@@ -66,6 +75,7 @@ export const RecommendationsListC: React.FC<{url: string; cfg: ExperimentConfig}
 		fetchPersonalized(url).then(recommendations => {
 			setNonPersonalizedRecommendations(recommendations);
 			setNonPersonalizedLoading(false);
+			log('setting non-personalized recommendations', {defaultRecommendations: hashRecommendationsList(recommendations)});
 		}).catch(err => {
 			console.error('Error fetching non personalized recommendations', err);
 		});
@@ -73,6 +83,7 @@ export const RecommendationsListC: React.FC<{url: string; cfg: ExperimentConfig}
 		fetchDefault(url).then(recommendations => {
 			setDefaultRecommendations(recommendations);
 			setDefaultLoading(false);
+			log('setting default recommendations', {defaultRecommendations: hashRecommendationsList(recommendations)});
 		}).catch(err => {
 			console.error('Error fetching default recommendations', err);
 		});
@@ -82,6 +93,12 @@ export const RecommendationsListC: React.FC<{url: string; cfg: ExperimentConfig}
 		if (!loaded || !url) {
 			return;
 		}
+
+		log({
+			loaded,
+			nonPersonalizedRecommendations: hashRecommendationsList(nonPersonalizedRecommendations),
+			defaultRecommendations: hashRecommendationsList(defaultRecommendations),
+		});
 
 		const [np, p] = setPersonalizedFlags(nonPersonalizedRecommendations, defaultRecommendations);
 
@@ -127,7 +144,7 @@ export const RecommendationsListC: React.FC<{url: string; cfg: ExperimentConfig}
 		<div>
 			{loading && (<p>Loading...</p>)}
 			{loaded && loadedUi}
-			{loaded && debugUi}
+			{loaded && debug && debugUi}
 		</div>
 	);
 };
