@@ -24,6 +24,11 @@ import SmtpConfig from './lib/smtpConfig';
 
 import webpackConfig from '../../webpack.config.app';
 
+import type RouteContext from './lib/routeContext';
+
+import {postRegister} from './routes';
+import createRegisterRoute from './api/register';
+
 // Add classes used by typeorm as models here
 // so that typeorm can extract the metadata from them.
 const entities = [Admin];
@@ -134,6 +139,12 @@ const start = async () => {
 
 	console.log('Successfully initialized data source');
 
+	const routeContext: RouteContext = {
+		dataSource: ds,
+		mailer,
+		mailerFrom: smtpConfig.auth.user,
+	};
+
 	const app = express();
 
 	if (env === 'development') {
@@ -158,6 +169,8 @@ const start = async () => {
 
 		next();
 	});
+
+	app.post(postRegister, createRegisterRoute(routeContext));
 
 	app.listen(port, '0.0.0.0', () => {
 		console.log(`Server in "${env}" mode listening on port ${port}`);

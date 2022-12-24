@@ -2,7 +2,7 @@ import React from 'react';
 
 import {Navigate, useLocation} from 'react-router-dom';
 
-import {useAdmin} from '../AdminContext';
+import {useAdmin} from '../adminContext';
 
 export const RequireAuthC: React.FC<{
 	children?: React.ReactNode;

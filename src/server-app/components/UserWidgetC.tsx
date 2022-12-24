@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {useAdmin} from '../AdminContext';
+import {useAdmin} from '../adminContext';
 
 export const UserWidgetC: React.FC = () => {
 	const admin = useAdmin();
