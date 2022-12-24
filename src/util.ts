@@ -131,6 +131,14 @@ export const getNumber = (path: string[]) => (x: unknown): number => {
 	return out;
 };
 
+export const getMessage = (error: unknown, defaultMessage: string): string => {
+	if (has('message')(error) && typeof error.message === 'string') {
+		return error.message;
+	}
+
+	return defaultMessage;
+};
+
 export const getInteger = (path: string[]) => (x: unknown): number => {
 	const out = getNumber(path)(x);
 

@@ -1,1 +1,1 @@
-export const postRegister = '/register';
+export const postRegister = '/api/register';

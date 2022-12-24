@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
+import cors from 'cors';
 
 import {Client} from 'pg';
 import {DataSource} from 'typeorm';
@@ -161,6 +162,7 @@ const start = async () => {
 
 	app.use(bodyParser.json());
 	app.use(express.static(join(__dirname, 'public')));
+	app.use(cors());
 
 	app.use((req, res, next) => {
 		console.log('Request:', req.method, req.url);

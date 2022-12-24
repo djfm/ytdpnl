@@ -1,4 +1,7 @@
-import type Admin from '../server/models/admin';
+import {Admin} from '../server/models/admin';
+
+import {postRegister} from '../server/routes';
+import {getMessage, validateExisting} from '../util';
 
 type Success<T> = {
 	kind: 'Success';
@@ -26,13 +29,49 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 			return undefined;
 		},
 
-		async register() {
-			const result: Maybe<Admin> = {
-				kind: 'Failure',
-				message: 'Not implemented',
-			};
+		async register(admin: Admin) {
+			try {
+				const result = await fetch(`${serverUrl}${postRegister}`, {
+					method: 'POST',
+					body: JSON.stringify(admin),
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
 
-			return result;
+				if (!result.ok) {
+					return {
+						kind: 'Failure',
+						message: 'API error',
+					};
+				}
+
+				const json = await result.json() as unknown;
+				const res = new Admin();
+
+				Object.assign(res, json);
+				const errors = await validateExisting(res);
+
+				if (errors.length > 0) {
+					const err: Maybe<Admin> = {
+						kind: 'Failure',
+						message: 'Invalid entity received from server',
+					};
+
+					return err;
+				}
+
+				return {
+					kind: 'Success',
+					value: res,
+				};
+			} catch (error) {
+				console.error(error);
+				return {
+					kind: 'Failure',
+					message: getMessage(error, 'Unknown error'),
+				};
+			}
 		},
 	};
 };
