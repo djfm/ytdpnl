@@ -13,10 +13,14 @@ import {SnakeNamingStrategy} from 'typeorm-naming-strategies';
 import {migrate} from 'postgres-migrations';
 
 import {parse} from 'yaml';
+import {validate} from 'class-validator';
 
-import {getInteger, getString} from '../util';
+import nodemailer from 'nodemailer';
+
+import {getInteger, getString, has} from '../util';
 
 import Admin from './models/admin';
+import SmtpConfig from './lib/smtpConfig';
 
 import webpackConfig from '../../webpack.config.app';
 
@@ -40,6 +44,24 @@ const start = async () => {
 	if (!config || typeof config !== 'object') {
 		throw new Error('Invalid config.yml');
 	}
+
+	if (!has('smtp')(config)) {
+		throw new Error('Missing smtp config in config.yml');
+	}
+
+	const smtpConfig = new SmtpConfig();
+	Object.assign(smtpConfig, config.smtp);
+
+	const smtpConfigErrors = await validate(smtpConfig);
+
+	if (smtpConfigErrors.length > 0) {
+		console.error('Invalid smtp config in config.yml', smtpConfigErrors);
+		process.exit(1);
+	}
+
+	const mailer = nodemailer.createTransport(smtpConfig);
+
+	console.log('Mailer created:', mailer.transporter.name);
 
 	if (!dockerComposeConfig || typeof dockerComposeConfig !== 'object') {
 		throw new Error('Invalid docker-compose.yaml');

@@ -1520,6 +1520,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/nodemailer@npm:^6.4.7":
+  version: 6.4.7
+  resolution: "@types/nodemailer@npm:6.4.7"
+  dependencies:
+    "@types/node": "*"
+  checksum: dc2a33a89135e04a5bea4921e8645e8453b90e3c3b05f0646f05071c5951ab697ea49ea1e503a690f04cb0a6abfc54967325c5a4036356793cfbb64ba64fb141
+  languageName: node
+  linkType: hard
+
 "@types/parse-json@npm:^4.0.0":
   version: 4.0.0
   resolution: "@types/parse-json@npm:4.0.0"
@@ -6116,6 +6125,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nodemailer@npm:^6.8.0":
+  version: 6.8.0
+  resolution: "nodemailer@npm:6.8.0"
+  checksum: e1827df714d207a00f1bf8012e767826862467b72440fc9c37cf238a14d01a4c591b7657f4d1805bfb2764883c07aa9f2e31ee96a5fec51ccf1e6ad6dd01bd1d
+  languageName: node
+  linkType: hard
+
 "nodemon@npm:^2.0.20":
   version: 2.0.20
   resolution: "nodemon@npm:2.0.20"
@@ -8482,6 +8498,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
     "@types/express": ^4.17.15
     "@types/jest": ^29.2.4
+    "@types/nodemailer": ^6.4.7
     "@types/pg": ^8.6.5
     "@types/react": ^18.0.26
     "@types/react-dom": ^18.0.9
@@ -8504,6 +8521,7 @@ __metadata:
     express: ^4.18.2
     filemanager-webpack-plugin: ^8.0.0
     jest: ^29.3.1
+    nodemailer: ^6.8.0
     nodemon: ^2.0.20
     pg: ^8.8.0
     postgres-migrations: ^5.3.0
