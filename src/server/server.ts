@@ -2,6 +2,7 @@ import {readFile} from 'fs/promises';
 import {join} from 'path';
 
 import express from 'express';
+import bodyParser from 'body-parser';
 
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -158,6 +159,7 @@ const start = async () => {
 		app.use(webpackHotMiddleware(compiler));
 	}
 
+	app.use(bodyParser.json());
 	app.use(express.static(join(__dirname, 'public')));
 
 	app.use((req, res, next) => {
