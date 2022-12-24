@@ -127,6 +127,16 @@ const start = async () => {
 
 	app.use(express.static(join(__dirname, 'public')));
 
+	app.use((req, res, next) => {
+		console.log('Request:', req.method, req.url);
+		if (req.headers.accept?.startsWith('text/html')) {
+			res.sendFile(join(__dirname, 'public', 'index.html'));
+			return;
+		}
+
+		next();
+	});
+
 	app.listen(port, '0.0.0.0', () => {
 		console.log(`Server in "${env}" mode listening on port ${port}`);
 	});
