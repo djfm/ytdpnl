@@ -6,6 +6,7 @@ import {ThemeProvider} from '@mui/material';
 import {BrowserRouter} from 'react-router-dom';
 
 import theme from './theme';
+import AdminApiProvider, {defaultAdminApi} from './adminApiProvider';
 import Server from './Server';
 
 const elt = document.getElementById('app');
@@ -18,7 +19,9 @@ createRoot(elt).render(
 	<React.StrictMode>
 		<ThemeProvider theme={theme}>
 			<BrowserRouter>
-				<Server />
+				<AdminApiProvider value={defaultAdminApi}>
+					<Server />
+				</AdminApiProvider>
 			</BrowserRouter>
 		</ThemeProvider>
 	</React.StrictMode>,

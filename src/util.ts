@@ -1,3 +1,5 @@
+import {validate as validateInstance, type ValidationError} from 'class-validator';
+
 import type Recommendation from './extension/models/Recommendation';
 
 export const setPersonalizedFlags = (nonPersonalized: Recommendation[], personalized: Recommendation[]): [Recommendation[], Recommendation[]] => {
@@ -138,3 +140,40 @@ export const getInteger = (path: string[]) => (x: unknown): number => {
 
 	return out;
 };
+
+const flattenErrors = (errors: ValidationError[]): string[] => {
+	const result: string[] = [];
+
+	for (const error of errors) {
+		if (error.children && error.children.length > 0) {
+			result.push(...flattenErrors(error.children));
+		}
+
+		if (error.constraints) {
+			result.push(...Object.values(error.constraints));
+		}
+	}
+
+	return result;
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+const doValidate = async <T extends Object>(object: T, validateId: boolean): Promise<string[]> => {
+	const errors = await validateInstance(object);
+
+	if (validateId) {
+		return flattenErrors(errors);
+	}
+
+	const filteredErrors = errors.filter(error => error.property !== 'id');
+
+	return flattenErrors(filteredErrors);
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export const validateNew = async <T extends Object>(object: T): Promise<string[]> =>
+	doValidate(object, false);
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export const validateExisting = async <T extends Object>(object: T): Promise<string[]> =>
+	doValidate(object, true);

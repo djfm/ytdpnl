@@ -11,27 +11,13 @@ import {
 
 import {Link} from 'react-router-dom';
 
-import {validate, type ValidationError} from 'class-validator';
-
 import Admin from '../../server/models/admin';
 
 import {bind} from './helpers';
 
-const flattenErrors = (errors: ValidationError[]): string[] => {
-	const result: string[] = [];
+import {useAdminApi} from '../adminApiProvider';
 
-	for (const error of errors) {
-		if (error.children && error.children.length > 0) {
-			result.push(...flattenErrors(error.children));
-		}
-
-		if (error.constraints) {
-			result.push(...Object.values(error.constraints));
-		}
-	}
-
-	return result;
-};
+import {validateNew} from '../../util';
 
 const ErrorsWidget: React.FC<{errors: string[]}> = ({errors}) => {
 	if (errors.length === 0) {
@@ -69,6 +55,8 @@ export const RegisterC: React.FC<{
 	const [name, setName] = useState<string>('');
 	const [errors, setErrors] = useState<string[]>([]);
 
+	const api = useAdminApi();
+
 	const tryToRegister = () => {
 		(async () => {
 			const admin = new Admin();
@@ -78,7 +66,7 @@ export const RegisterC: React.FC<{
 				password,
 			});
 
-			const validationErrors = flattenErrors(await validate(admin));
+			const validationErrors = await validateNew(admin);
 
 			if (password !== confirm) {
 				validationErrors.push('Passwords should match');
@@ -91,7 +79,13 @@ export const RegisterC: React.FC<{
 
 			setErrors([]);
 
-			setAdmin(admin);
+			const result = await api.register(admin);
+
+			if (result.kind === 'Success') {
+				setAdmin(admin);
+			} else {
+				setErrors([result.message]);
+			}
 		})();
 	};
 
