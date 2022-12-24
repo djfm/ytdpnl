@@ -1,7 +1,5 @@
 import React from 'react';
 
-import {Link} from 'react-router-dom';
-
 import {
 	Box,
 	Button,
@@ -10,9 +8,11 @@ import {
 	Input,
 } from '@mui/material';
 
+import {Link} from 'react-router-dom';
+
 import Admin from '../../models/admin';
 
-export const LoginC: React.FC<{
+export const RegisterC: React.FC<{
 	setAdmin: (admin: Admin) => void;
 }> = ({setAdmin}) => {
 	const tryToLogin = () => {
@@ -29,7 +29,12 @@ export const LoginC: React.FC<{
 			mt: 6,
 		}}>
 			<form>
-				<h1>Admin login</h1>
+				<h1>Admin registration</h1>
+
+				<FormControl sx={{mb: 2, display: 'block'}}>
+					<InputLabel htmlFor='name'>Name</InputLabel>
+					<Input id='name' type='text' />
+				</FormControl>
 
 				<FormControl sx={{mb: 2, display: 'block'}}>
 					<InputLabel htmlFor='email'>Email</InputLabel>
@@ -41,12 +46,17 @@ export const LoginC: React.FC<{
 					<Input id='password' type='password' />
 				</FormControl>
 
+				<FormControl sx={{mb: 2, display: 'block'}}>
+					<InputLabel htmlFor='confirm'>Password confirmation</InputLabel>
+					<Input id='confirm' type='password' />
+				</FormControl>
+
 				<Button variant='contained' sx={{mt: 2}} onClick={tryToLogin}>
-					Login
+					Register
 				</Button>
 
 				<Box sx={{mt: 2}}>
-					<Link to='/register'>Register instead</Link>
+					<Link to='/'>Login instead</Link>
 				</Box>
 			</form>
 		</Box>
@@ -55,4 +65,4 @@ export const LoginC: React.FC<{
 	return ui;
 };
 
-export default LoginC;
+export default RegisterC;

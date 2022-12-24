@@ -1,23 +1,22 @@
 import React, {useState} from 'react';
+import {Route, Routes} from 'react-router-dom';
 
 import type Admin from '../models/admin';
-import {AdminProvider} from './AdminContext';
 
+import Protect from './components/RequireAuthC';
 import LoginC from './components/LoginC';
+import RegisterC from './components/RegisterC';
 import HomeC from './components/HomeC';
 
 export const Server = () => {
-	const [admin, setAdmin] = useState<Admin | undefined>();
-
-	if (!admin) {
-		return <LoginC setAdmin={setAdmin} />;
-	}
+	const [, setAdmin] = useState<Admin | undefined>();
 
 	return (
-		<AdminProvider value={admin}>
-			<div>Hello server my old friend!</div>
-			<HomeC />
-		</AdminProvider>
+		<Routes>
+			<Route path='/' element={<Protect><HomeC /></Protect>} />
+			<Route path='/login' element={<LoginC setAdmin={setAdmin} />} />
+			<Route path='/register' element={<RegisterC setAdmin={setAdmin} />} />
+		</Routes>
 	);
 };
 
