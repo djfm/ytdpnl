@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import {
 	Box,
@@ -6,13 +6,51 @@ import {
 	FormControl,
 	InputLabel,
 	Input,
+	Typography,
 } from '@mui/material';
 
 import {Link} from 'react-router-dom';
 
+import {validate, type ValidationError} from 'class-validator';
+
 import Admin from '../../server/models/admin';
 
 import {bind} from './helpers';
+
+const flattenErrors = (errors: ValidationError[]): string[] => {
+	const result: string[] = [];
+
+	for (const error of errors) {
+		if (error.children && error.children.length > 0) {
+			result.push(...flattenErrors(error.children));
+		}
+
+		if (error.constraints) {
+			result.push(...Object.values(error.constraints));
+		}
+	}
+
+	return result;
+};
+
+const ErrorsWidget: React.FC<{errors: string[]}> = ({errors}) => {
+	if (errors.length === 0) {
+		return null;
+	}
+
+	return (
+		<Box sx={{mt: 2, color: 'red'}}>
+			<Typography>Oops!</Typography>
+			<ul>
+				{errors.map((error, i) => (
+					<li key={i}>
+						<Typography>{error}</Typography>
+					</li>
+				))}
+			</ul>
+		</Box>
+	);
+};
 
 export const RegisterC: React.FC<{
 	setAdmin: (admin: Admin) => void;
@@ -27,10 +65,34 @@ export const RegisterC: React.FC<{
 	password,
 	setPassword,
 }) => {
-	const tryToLogin = () => {
-		const admin = new Admin();
-		admin.email = 'test@example.com';
-		setAdmin(admin);
+	const [confirm, setConfirm] = useState<string>('');
+	const [name, setName] = useState<string>('');
+	const [errors, setErrors] = useState<string[]>([]);
+
+	const tryToRegister = () => {
+		(async () => {
+			const admin = new Admin();
+			Object.assign(admin, {
+				name,
+				email,
+				password,
+			});
+
+			const validationErrors = flattenErrors(await validate(admin));
+
+			if (password !== confirm) {
+				validationErrors.push('Passwords should match');
+			}
+
+			if (validationErrors.length > 0) {
+				setErrors(validationErrors);
+				return;
+			}
+
+			setErrors([]);
+
+			setAdmin(admin);
+		})();
 	};
 
 	const ui = (
@@ -40,12 +102,18 @@ export const RegisterC: React.FC<{
 			alignItems: 'top',
 			mt: 6,
 		}}>
-			<form>
+			<form onSubmit={e => {
+				console.log('submit');
+				tryToRegister();
+				e.preventDefault();
+			}}>
 				<h1>Admin registration</h1>
+
+				<ErrorsWidget errors={errors}/>
 
 				<FormControl sx={{mb: 2, display: 'block'}}>
 					<InputLabel htmlFor='name'>Name</InputLabel>
-					<Input id='name' type='text' />
+					<Input id='name' type='text' {...bind(name, setName)}/>
 				</FormControl>
 
 				<FormControl sx={{mb: 2, display: 'block'}}>
@@ -60,10 +128,10 @@ export const RegisterC: React.FC<{
 
 				<FormControl sx={{mb: 2, display: 'block'}}>
 					<InputLabel htmlFor='confirm'>Password confirmation</InputLabel>
-					<Input id='confirm' type='password' />
+					<Input id='confirm' type='password' {...bind(confirm, setConfirm)}/>
 				</FormControl>
 
-				<Button variant='contained' sx={{mt: 2}} onClick={tryToLogin}>
+				<Button type='submit' variant='contained' sx={{mt: 2}}>
 					Register
 				</Button>
 
