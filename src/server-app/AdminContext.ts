@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 
-import type Admin from '../models/admin';
+import type Admin from '../server/models/admin';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const AdminContext = React.createContext<Admin | undefined>(undefined);

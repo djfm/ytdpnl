@@ -1,4 +1,4 @@
-import type Admin from './models/admin';
+import type Admin from '../server/models/admin';
 
 export type AdminApi = {
 	login: (username: string, password: string) => Promise<Admin | undefined>;

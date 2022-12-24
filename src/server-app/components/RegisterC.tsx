@@ -10,11 +10,23 @@ import {
 
 import {Link} from 'react-router-dom';
 
-import Admin from '../../models/admin';
+import Admin from '../../server/models/admin';
+
+import {bind} from './helpers';
 
 export const RegisterC: React.FC<{
 	setAdmin: (admin: Admin) => void;
-}> = ({setAdmin}) => {
+	email: string;
+	password: string;
+	setEmail: (email: string) => void;
+	setPassword: (password: string) => void;
+}> = ({
+	setAdmin,
+	email,
+	setEmail,
+	password,
+	setPassword,
+}) => {
 	const tryToLogin = () => {
 		const admin = new Admin();
 		admin.email = 'test@example.com';
@@ -38,12 +50,12 @@ export const RegisterC: React.FC<{
 
 				<FormControl sx={{mb: 2, display: 'block'}}>
 					<InputLabel htmlFor='email'>Email</InputLabel>
-					<Input id='email' type='email' />
+					<Input id='email' type='email' {...bind(email, setEmail)}/>
 				</FormControl>
 
 				<FormControl sx={{mb: 2, display: 'block'}}>
 					<InputLabel htmlFor='password'>Password</InputLabel>
-					<Input id='password' type='password' />
+					<Input id='password' type='password' {...bind(password, setPassword)}/>
 				</FormControl>
 
 				<FormControl sx={{mb: 2, display: 'block'}}>

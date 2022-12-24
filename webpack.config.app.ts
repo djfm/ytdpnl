@@ -10,7 +10,7 @@ const isDevelopment = mode === 'development';
 
 const conf: webpack.Configuration = {
 	mode,
-	entry: ['webpack-hot-middleware/client', './src/server/app/index.tsx'],
+	entry: ['webpack-hot-middleware/client', './src/server-app/index.tsx'],
 	output: {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'src', 'server', 'public'),
