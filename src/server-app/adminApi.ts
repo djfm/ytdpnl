@@ -1,19 +1,7 @@
 import {Admin} from '../server/models/admin';
 
 import {postRegister} from '../server/routes';
-import {getMessage, validateExisting} from '../util';
-
-type Success<T> = {
-	kind: 'Success';
-	value: T;
-};
-
-type Failure = {
-	kind: 'Failure';
-	message: string;
-};
-
-type Maybe<T> = Success<T> | Failure;
+import {getMessage, restoreInnerType, type Maybe, isMaybe} from '../util';
 
 export type AdminApi = {
 	login: (username: string, password: string) => Promise<Admin | undefined>;
@@ -39,32 +27,13 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 					},
 				});
 
-				if (!result.ok) {
-					return {
-						kind: 'Failure',
-						message: 'API error',
-					};
-				}
-
 				const json = await result.json() as unknown;
-				const res = new Admin();
 
-				Object.assign(res, json);
-				const errors = await validateExisting(res);
-
-				if (errors.length > 0) {
-					const err: Maybe<Admin> = {
-						kind: 'Failure',
-						message: 'Invalid entity received from server',
-					};
-
-					return err;
+				if (!isMaybe<Admin>(json)) {
+					throw new Error('Invalid response from server');
 				}
 
-				return {
-					kind: 'Success',
-					value: res,
-				};
+				return restoreInnerType(json, Admin);
 			} catch (error) {
 				console.error(error);
 				return {

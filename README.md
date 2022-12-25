@@ -5,6 +5,7 @@
 - setup the virtual hosts defined in `docs`, customizing the domain names (and ports if the defaults are not used)
 - enable SSL on the virtual hosts using let's encrypt
 - put the correct urls in `config.extension.dist.ts` and remove the `.dist` suffix
+- define the users that will be able to create an admin account in `adminsWhitelist.ts`
 
 # Development commands
 

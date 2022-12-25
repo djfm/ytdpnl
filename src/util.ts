@@ -2,6 +2,18 @@ import {validate as validateInstance, type ValidationError} from 'class-validato
 
 import type Recommendation from './extension/models/Recommendation';
 
+export type Success<T> = {
+	kind: 'Success';
+	value: T;
+};
+
+export type Failure = {
+	kind: 'Failure';
+	message: string;
+};
+
+export type Maybe<T> = Success<T> | Failure;
+
 export const setPersonalizedFlags = (nonPersonalized: Recommendation[], personalized: Recommendation[]): [Recommendation[], Recommendation[]] => {
 	const nonPersonalizedSet = new Set<string>();
 	const personalizedSet = new Set<string>();
@@ -185,3 +197,40 @@ export const validateNew = async <T extends Object>(object: T): Promise<string[]
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const validateExisting = async <T extends Object>(object: T): Promise<string[]> =>
 	doValidate(object, true);
+
+export const isMaybe = <T>(maybe: unknown): maybe is Maybe<T> => {
+	if (typeof maybe !== 'object' || maybe === null) {
+		return false;
+	}
+
+	const {kind} = maybe as Maybe<T>;
+
+	if (kind === 'Success') {
+		const {value} = maybe as Success<T>;
+
+		return value && typeof value === 'object';
+	}
+
+	if (kind === 'Failure') {
+		const {message} = maybe as Failure;
+		return typeof message === 'string';
+	}
+
+	return false;
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export const restoreInnerType = <T extends Object>(maybe: Maybe<T>, ctor: (new () => T)): Maybe<T> => {
+	if (maybe.kind === 'Failure') {
+		return maybe;
+	}
+
+	const {value} = maybe;
+	const instance = new ctor();
+	Object.assign(instance, value);
+
+	return {
+		...maybe,
+		value: instance,
+	};
+};
