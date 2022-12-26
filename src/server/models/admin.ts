@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 
 import {Entity, Column} from 'typeorm';
-import {IsNotEmpty, MinLength, IsString} from 'class-validator';
+import {IsNotEmpty, MinLength, IsString, Length} from 'class-validator';
 
 import Model from '../lib/model';
 
@@ -22,6 +22,14 @@ export class Admin extends Model {
 	@Column()
 	@IsString()
 		password: string = '';
+
+	@Column()
+	@IsString()
+	@Length(128, 128)
+		verificationToken: string = '';
+
+	@Column()
+		emailVerified: boolean = false;
 }
 
 export default Admin;

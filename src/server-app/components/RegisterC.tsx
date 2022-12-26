@@ -17,7 +17,9 @@ import {bind} from './helpers';
 
 import {useAdminApi} from '../adminApiProvider';
 
-import {validateNew} from '../../util';
+import {validateExcept} from '../../util';
+
+const validate = validateExcept('id', 'verificationToken');
 
 const ErrorsWidget: React.FC<{errors: string[]}> = ({errors}) => {
 	if (errors.length === 0) {
@@ -25,7 +27,7 @@ const ErrorsWidget: React.FC<{errors: string[]}> = ({errors}) => {
 	}
 
 	return (
-		<Box sx={{mt: 2, color: 'red'}}>
+		<Box sx={{mt: 2, mb: 2, color: 'red'}}>
 			<Typography>Oops!</Typography>
 			<ul>
 				{errors.map((error, i) => (
@@ -38,14 +40,26 @@ const ErrorsWidget: React.FC<{errors: string[]}> = ({errors}) => {
 	);
 };
 
+const SuccessWidget: React.FC<{message: string}> = ({
+	message,
+}) => {
+	if (!message) {
+		return null;
+	}
+
+	return (
+		<Box sx={{mt: 2, mb: 2, color: 'green', maxWidth: 800, whitespace: 'break-words'}}>
+			<Typography>{message}</Typography>
+		</Box>
+	);
+};
+
 export const RegisterC: React.FC<{
-	setAdmin: (admin: Admin) => void;
 	email: string;
 	password: string;
 	setEmail: (email: string) => void;
 	setPassword: (password: string) => void;
 }> = ({
-	setAdmin,
 	email,
 	setEmail,
 	password,
@@ -54,6 +68,8 @@ export const RegisterC: React.FC<{
 	const [confirm, setConfirm] = useState<string>('');
 	const [name, setName] = useState<string>('');
 	const [errors, setErrors] = useState<string[]>([]);
+	const [success, setSuccess] = useState<string>('');
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
 	const api = useAdminApi();
 
@@ -66,7 +82,7 @@ export const RegisterC: React.FC<{
 				password,
 			});
 
-			const validationErrors = await validateNew(admin);
+			const validationErrors = await validate(admin);
 
 			if (password !== confirm) {
 				validationErrors.push('Passwords should match');
@@ -79,10 +95,12 @@ export const RegisterC: React.FC<{
 
 			setErrors([]);
 
+			setIsSubmitting(true);
 			const result = await api.register(admin);
+			setIsSubmitting(false);
 
 			if (result.kind === 'Success') {
-				setAdmin(admin);
+				setSuccess(result.value);
 			} else {
 				setErrors([result.message]);
 			}
@@ -104,6 +122,7 @@ export const RegisterC: React.FC<{
 				<h1>Admin registration</h1>
 
 				<ErrorsWidget errors={errors}/>
+				<SuccessWidget message={success}/>
 
 				<FormControl sx={{mb: 2, display: 'block'}}>
 					<InputLabel htmlFor='name'>Name</InputLabel>
@@ -125,7 +144,7 @@ export const RegisterC: React.FC<{
 					<Input id='confirm' type='password' {...bind(confirm, setConfirm)}/>
 				</FormControl>
 
-				<Button type='submit' variant='contained' sx={{mt: 2}}>
+				<Button type='submit' variant='contained' sx={{mt: 2}} disabled={isSubmitting}>
 					Register
 				</Button>
 

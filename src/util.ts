@@ -178,25 +178,17 @@ const flattenErrors = (errors: ValidationError[]): string[] => {
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-const doValidate = async <T extends Object>(object: T, validateId: boolean): Promise<string[]> => {
+export const validateExcept = (...fields: string[]) => async <T extends Object>(object: T): Promise<string[]> => {
 	const errors = await validateInstance(object);
 
-	if (validateId) {
-		return flattenErrors(errors);
-	}
-
-	const filteredErrors = errors.filter(error => error.property !== 'id');
+	const filteredErrors = errors.filter(error => !fields.includes(error.property));
 
 	return flattenErrors(filteredErrors);
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const validateNew = async <T extends Object>(object: T): Promise<string[]> =>
-	doValidate(object, false);
+export const validateNew = validateExcept('id');
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const validateExisting = async <T extends Object>(object: T): Promise<string[]> =>
-	doValidate(object, true);
+export const validateExisting = validateExcept();
 
 export const isMaybe = <T>(maybe: unknown): maybe is Maybe<T> => {
 	if (typeof maybe !== 'object' || maybe === null) {
@@ -208,7 +200,7 @@ export const isMaybe = <T>(maybe: unknown): maybe is Maybe<T> => {
 	if (kind === 'Success') {
 		const {value} = maybe as Success<T>;
 
-		return value && typeof value === 'object';
+		return value !== undefined;
 	}
 
 	if (kind === 'Failure') {
@@ -220,7 +212,7 @@ export const isMaybe = <T>(maybe: unknown): maybe is Maybe<T> => {
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export const restoreInnerType = <T extends Object>(maybe: Maybe<T>, ctor: (new () => T)): Maybe<T> => {
+export const restoreInnerInstance = <T extends Object>(maybe: Maybe<T>, ctor: (new () => T)): Maybe<T> => {
 	if (maybe.kind === 'Failure') {
 		return maybe;
 	}

@@ -1,11 +1,11 @@
-import {Admin} from '../server/models/admin';
+import {type Admin} from '../server/models/admin';
 
 import {postRegister} from '../server/routes';
-import {getMessage, restoreInnerType, type Maybe, isMaybe} from '../util';
+import {getMessage, type Maybe, isMaybe} from '../util';
 
 export type AdminApi = {
 	login: (username: string, password: string) => Promise<Admin | undefined>;
-	register: (admin: Admin) => Promise<Maybe<Admin>>;
+	register: (admin: Admin) => Promise<Maybe<string>>;
 };
 
 export const createAdminApi = (serverUrl: string): AdminApi => {
@@ -29,11 +29,11 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 
 				const json = await result.json() as unknown;
 
-				if (!isMaybe<Admin>(json)) {
+				if (!isMaybe<string>(json)) {
 					throw new Error('Invalid response from server');
 				}
 
-				return restoreInnerType(json, Admin);
+				return json;
 			} catch (error) {
 				console.error(error);
 				return {
