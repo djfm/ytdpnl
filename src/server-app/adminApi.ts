@@ -2,8 +2,8 @@ import {type Admin} from '../server/models/admin';
 import {type Token} from '../server/models/token';
 import {type LoginResponse} from '../server/api/login';
 
-import {postRegister, postLogin} from '../server/routes';
-import {getMessage, type Maybe, isMaybe} from '../util';
+import {postRegister, postLogin, getAuthTest} from '../server/routes';
+import {type Maybe, isMaybe} from '../util';
 
 export type AdminApi = {
 	isLoggedIn: () => boolean;
@@ -11,6 +11,7 @@ export type AdminApi = {
 	login: (username: string, password: string) => Promise<Maybe<LoginResponse>>;
 	register: (admin: Admin) => Promise<Maybe<string>>;
 	getAdmin: () => Admin | undefined;
+	getAuthTest: () => Promise<Maybe<string>>;
 };
 
 export const createAdminApi = (serverUrl: string): AdminApi => {
@@ -18,6 +19,36 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 
 	let token: Token | undefined;
 	let admin: Admin | undefined;
+
+	const verb = (method: 'GET' | 'POST') => async <T>(path: string, data: unknown) => {
+		const body = method === 'POST' ? JSON.stringify(data) : undefined;
+
+		const result = await fetch(`${serverUrl}${path}`, {
+			method,
+			body,
+			headers: {
+				'Content-Type': 'application/json',
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				Authorization: `${token?.token ?? ''}}`,
+			},
+		});
+
+		const json = await result.json() as unknown;
+
+		if (isMaybe<T>(json)) {
+			return json;
+		}
+
+		const res: Maybe<T> = {
+			kind: 'Failure',
+			message: 'Invalid response from server',
+		};
+
+		return res;
+	};
+
+	const get = verb('GET');
+	const post = verb('POST');
 
 	return {
 		getAdmin() {
@@ -34,52 +65,15 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 		},
 
 		async login(email: string, password: string) {
-			console.log('login', email, password);
-
-			const result = await fetch(`${serverUrl}${postLogin}`, {
-				method: 'POST',
-				body: JSON.stringify({email, password}),
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-
-			const json = await result.json() as unknown;
-
-			if (isMaybe<LoginResponse>(json)) {
-				return json;
-			}
-
-			return {
-				kind: 'Failure',
-				message: 'Invalid response from server',
-			};
+			return post<LoginResponse>(postLogin, {email, password});
 		},
 
 		async register(admin: Admin) {
-			try {
-				const result = await fetch(`${serverUrl}${postRegister}`, {
-					method: 'POST',
-					body: JSON.stringify(admin),
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				});
+			return post<string>(postRegister, admin);
+		},
 
-				const json = await result.json() as unknown;
-
-				if (!isMaybe<string>(json)) {
-					throw new Error('Invalid response from server');
-				}
-
-				return json;
-			} catch (error) {
-				console.error(error);
-				return {
-					kind: 'Failure',
-					message: getMessage(error, 'Unknown error'),
-				};
-			}
+		async getAuthTest() {
+			return get<string>(getAuthTest, {});
 		},
 	};
 };
