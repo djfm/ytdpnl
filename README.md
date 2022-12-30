@@ -6,6 +6,7 @@
 - enable SSL on the virtual hosts using let's encrypt
 - put the correct urls in `config.extension.dist.ts` and remove the `.dist` suffix
 - define the users that will be able to create an admin account in `adminsWhitelist.ts`
+- generate a private key: `ssh-keygen -t rsa -b 4096 -m PEM -f private.key` (do not set a passphrase)
 
 # Development commands
 

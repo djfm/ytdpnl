@@ -1,9 +1,10 @@
 import React from 'react';
 
-import {useAdmin} from '../adminContext';
+import {useAdminApi} from '../adminApiProvider';
 
 export const UserWidgetC: React.FC = () => {
-	const admin = useAdmin();
+	const api = useAdminApi();
+	const admin = api.getAdmin();
 
 	if (admin) {
 		return <div>Hello {admin.email}</div>;

@@ -1,12 +1,10 @@
-import crypto from 'crypto';
-import bcrypt from 'bcrypt';
-
 import {type RouteCreator} from '../lib/routeContext';
 
 import Admin from '../models/admin';
 import {validateExcept, type Maybe, getMessage, has} from '../../util';
 
 import {getVerifyEmailToken} from '../routes';
+import {randomToken, hashPassword} from '../lib/crypto';
 
 import whitelist from '../../../adminsWhitelist';
 
@@ -19,19 +17,6 @@ if (!has(`${env}-server-url`)(config)) {
 }
 
 const serverUrl = config[`${env}-server-url`];
-
-const randomToken = () => crypto.randomBytes(128).toString('hex');
-
-export const hashPassword = async (password: string): Promise<string> => new Promise((resolve, reject) => {
-	bcrypt.hash(password, 10, (err, hash) => {
-		if (err) {
-			reject(err);
-			return;
-		}
-
-		resolve(hash);
-	});
-});
 
 export const createRegisterRoute: RouteCreator = ({dataSource, mailer, mailerFrom, log}) => async (req, res) => {
 	const admin = new Admin();

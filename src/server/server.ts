@@ -22,24 +22,29 @@ import nodemailer from 'nodemailer';
 import {getInteger, getString, has} from '../util';
 
 import Admin from './models/admin';
+import Token from './models/token';
+
 import SmtpConfig from './lib/smtpConfig';
 
 import webpackConfig from '../../webpack.config.app';
 
 import type RouteContext from './lib/routeContext';
 import {createDefaultLogger} from './lib/logger';
+import {createTokenTools} from './lib/crypto';
 
 import {
 	postRegister,
 	getVerifyEmailToken,
+	postLogin,
 } from './routes';
 
 import createRegisterRoute from './api/register';
 import createVerifyEmailRoute from './api/verifyEmail';
+import createLoginRoute from './api/login';
 
 // Add classes used by typeorm as models here
 // so that typeorm can extract the metadata from them.
-const entities = [Admin];
+const entities = [Admin, Token];
 
 const env = process.env.NODE_ENV;
 
@@ -149,11 +154,15 @@ const start = async () => {
 
 	const log = createDefaultLogger();
 
+	const privateKey = await readFile(join(__dirname, '..', '..', 'private.key'), 'utf-8');
+	const tokenTools = createTokenTools(privateKey);
+
 	const routeContext: RouteContext = {
 		dataSource: ds,
 		mailer,
 		mailerFrom: smtpConfig.auth.user,
 		log,
+		tokenTools,
 	};
 
 	const app = express();
@@ -180,6 +189,7 @@ const start = async () => {
 
 	app.post(postRegister, createRegisterRoute(routeContext));
 	app.get(getVerifyEmailToken, createVerifyEmailRoute(routeContext));
+	app.post(postLogin, createLoginRoute(routeContext));
 
 	app.use((req, res, next) => {
 		if (req.method === 'GET' && req.headers.accept?.startsWith('text/html')) {

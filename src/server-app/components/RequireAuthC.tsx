@@ -2,15 +2,16 @@ import React from 'react';
 
 import {Navigate, useLocation} from 'react-router-dom';
 
-import {useAdmin} from '../adminContext';
+import {useAdminApi} from '../adminApiProvider';
 
 export const RequireAuthC: React.FC<{
 	children?: React.ReactNode;
 }> = ({children}) => {
-	const admin = useAdmin();
+	const api = useAdminApi();
 	const location = useLocation();
 
-	if (!admin) {
+	if (!api.isLoggedIn()) {
+		console.log('not logged in, redirecting to /login');
 		return <Navigate to='/login' state={{from: location}} replace />;
 	}
 

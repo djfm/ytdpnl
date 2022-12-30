@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 
 import {
 	Box,
@@ -10,29 +10,43 @@ import {
 	Input,
 } from '@mui/material';
 
-import Admin from '../../server/models/admin';
+import {useAdminApi} from '../adminApiProvider';
 
 import RedirectMessageC from './RedirectMessageC';
+import MessageC from './MessageC';
 
 import {bind} from './helpers';
 
 export const LoginC: React.FC<{
-	setAdmin: (admin: Admin) => void;
 	email: string;
 	password: string;
 	setEmail: (email: string) => void;
 	setPassword: (password: string) => void;
 }> = ({
-	setAdmin,
 	email,
 	setEmail,
 	password,
 	setPassword,
 }) => {
+	const [error, setError] = useState<string | undefined>();
+	const api = useAdminApi();
+	const navigate = useNavigate();
+
 	const tryToLogin = () => {
-		const admin = new Admin();
-		admin.email = 'test@example.com';
-		setAdmin(admin);
+		(async () => {
+			const response = await api.login(email, password);
+
+			console.log('response', response);
+
+			if (response.kind === 'Success') {
+				api.setAuth(response.value.token, response.value.admin);
+				setError(undefined);
+				console.log('navigating to /');
+				navigate('/');
+			} else {
+				setError(response.message);
+			}
+		})();
 	};
 
 	const ui = (
@@ -42,10 +56,14 @@ export const LoginC: React.FC<{
 			alignItems: 'top',
 			mt: 6,
 		}}>
-			<form>
+			<form onSubmit={e => {
+				tryToLogin();
+				e.preventDefault();
+			}}>
 				<h1>Admin login</h1>
 
-				<RedirectMessageC />
+				<RedirectMessageC ignore={error !== undefined}/>
+				<MessageC message={error} type='error'/>
 
 				<FormControl sx={{mb: 2, display: 'block'}}>
 					<InputLabel htmlFor='email'>Email</InputLabel>
@@ -57,7 +75,7 @@ export const LoginC: React.FC<{
 					<Input id='password' type='password' {...bind(password, setPassword)}/>
 				</FormControl>
 
-				<Button variant='contained' sx={{mt: 2}} onClick={tryToLogin}>
+				<Button type='submit' variant='contained' sx={{mt: 2}}>
 					Login
 				</Button>
 
