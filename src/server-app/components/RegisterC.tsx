@@ -6,12 +6,14 @@ import {
 	FormControl,
 	InputLabel,
 	Input,
-	Typography,
 } from '@mui/material';
 
 import {Link} from 'react-router-dom';
 
 import Admin from '../../server/models/admin';
+
+import MessageC from './MessageC';
+import ErrorsC from './ErrorsC';
 
 import {bind} from './helpers';
 
@@ -20,39 +22,6 @@ import {useAdminApi} from '../adminApiProvider';
 import {validateExcept} from '../../util';
 
 const validate = validateExcept('id', 'verificationToken');
-
-const ErrorsWidget: React.FC<{errors: string[]}> = ({errors}) => {
-	if (errors.length === 0) {
-		return null;
-	}
-
-	return (
-		<Box sx={{mt: 2, mb: 2, color: 'red'}}>
-			<Typography>Oops!</Typography>
-			<ul>
-				{errors.map((error, i) => (
-					<li key={i}>
-						<Typography>{error}</Typography>
-					</li>
-				))}
-			</ul>
-		</Box>
-	);
-};
-
-const SuccessWidget: React.FC<{message: string}> = ({
-	message,
-}) => {
-	if (!message) {
-		return null;
-	}
-
-	return (
-		<Box sx={{mt: 2, mb: 2, color: 'green', maxWidth: 800, whitespace: 'break-words'}}>
-			<Typography>{message}</Typography>
-		</Box>
-	);
-};
 
 export const RegisterC: React.FC<{
 	email: string;
@@ -121,8 +90,8 @@ export const RegisterC: React.FC<{
 			}}>
 				<h1>Admin registration</h1>
 
-				<ErrorsWidget errors={errors}/>
-				<SuccessWidget message={success}/>
+				<ErrorsC errors={errors}/>
+				<MessageC message={success} type='success'/>
 
 				<FormControl sx={{mb: 2, display: 'block'}}>
 					<InputLabel htmlFor='name'>Name</InputLabel>

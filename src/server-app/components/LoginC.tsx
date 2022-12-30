@@ -12,6 +12,8 @@ import {
 
 import Admin from '../../server/models/admin';
 
+import RedirectMessageC from './RedirectMessageC';
+
 import {bind} from './helpers';
 
 export const LoginC: React.FC<{
@@ -42,6 +44,8 @@ export const LoginC: React.FC<{
 		}}>
 			<form>
 				<h1>Admin login</h1>
+
+				<RedirectMessageC />
 
 				<FormControl sx={{mb: 2, display: 'block'}}>
 					<InputLabel htmlFor='email'>Email</InputLabel>
