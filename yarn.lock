@@ -1702,6 +1702,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/urlencode@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@types/urlencode@npm:1.1.2"
+  checksum: 1ac8ba5f6d2af234bf25d48f22ba18e54ed6fb1fa7a75dc1feb625fc566d39f1b03c3c050fc3a48ed41317f34c4a4e07f6724de955534b00978517e106f05a95
+  languageName: node
+  linkType: hard
+
 "@types/validator@npm:^13.7.10":
   version: 13.7.10
   resolution: "@types/validator@npm:13.7.10"
@@ -4710,7 +4717,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"iconv-lite@npm:0.4.24":
+"iconv-lite@npm:0.4.24, iconv-lite@npm:~0.4.11":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
   dependencies:
@@ -8259,6 +8266,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"urlencode@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "urlencode@npm:1.1.0"
+  dependencies:
+    iconv-lite: ~0.4.11
+  checksum: 1219de93106d72477bec78fd7670def5c73a0352ab2f0d3f96340dc453ba72d7f82fd94986fd388fa75db1a46b3117d1574346916895a56b145d61a1334a84e2
+  languageName: node
+  linkType: hard
+
 "util-deprecate@npm:^1.0.1, util-deprecate@npm:~1.0.1":
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
@@ -8667,6 +8683,7 @@ __metadata:
     "@types/react-dom": ^18.0.9
     "@types/react-router": ^5.1.19
     "@types/react-router-dom": ^5.3.3
+    "@types/urlencode": ^1.1.2
     "@types/webpack": ^5.28.0
     "@types/webpack-dev-middleware": ^5.3.0
     "@types/webpack-hot-middleware": ^2.25.6
@@ -8703,6 +8720,7 @@ __metadata:
     typeorm: ^0.3.11
     typeorm-naming-strategies: ^4.1.0
     typescript: ^4.9.3
+    urlencode: ^1.1.0
     webpack: ^5.75.0
     webpack-cli: ^5.0.1
     webpack-dev-middleware: ^6.0.1

@@ -27,9 +27,15 @@ import SmtpConfig from './lib/smtpConfig';
 import webpackConfig from '../../webpack.config.app';
 
 import type RouteContext from './lib/routeContext';
+import {createDefaultLogger} from './lib/logger';
 
-import {postRegister} from './routes';
+import {
+	postRegister,
+	getVerifyEmailToken,
+} from './routes';
+
 import createRegisterRoute from './api/register';
+import createVerifyEmailRoute from './api/verifyEmail';
 
 // Add classes used by typeorm as models here
 // so that typeorm can extract the metadata from them.
@@ -141,10 +147,13 @@ const start = async () => {
 
 	console.log('Successfully initialized data source');
 
+	const log = createDefaultLogger();
+
 	const routeContext: RouteContext = {
 		dataSource: ds,
 		mailer,
 		mailerFrom: smtpConfig.auth.user,
+		log,
 	};
 
 	const app = express();
@@ -164,17 +173,22 @@ const start = async () => {
 	app.use(express.static(join(__dirname, 'public')));
 	app.use(cors());
 
+	app.use((req, _res, next) => {
+		log('Request:', req.method, req.url);
+		next();
+	});
+
+	app.post(postRegister, createRegisterRoute(routeContext));
+	app.get(getVerifyEmailToken, createVerifyEmailRoute(routeContext));
+
 	app.use((req, res, next) => {
-		console.log('Request:', req.method, req.url);
-		if (req.headers.accept?.startsWith('text/html')) {
+		if (req.method === 'GET' && req.headers.accept?.startsWith('text/html')) {
 			res.sendFile(join(__dirname, 'public', 'index.html'));
 			return;
 		}
 
 		next();
 	});
-
-	app.post(postRegister, createRegisterRoute(routeContext));
 
 	app.listen(port, '0.0.0.0', () => {
 		console.log(`Server in "${env}" mode listening on port ${port}`);

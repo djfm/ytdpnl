@@ -26,6 +26,12 @@ services:
     volumes:
       - development-ytdpnl:/var/lib/postgresql/data
 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "9180:8080"
+
 volumes:
 
   production-ytdpnl:

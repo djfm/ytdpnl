@@ -1,2 +1,2 @@
 export const postRegister = '/api/register';
-export const getVerifyEmailToken = '/verify-email';
+export const getVerifyEmailToken = '/api/verify-email';

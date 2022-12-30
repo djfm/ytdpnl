@@ -5,7 +5,9 @@ import {type RouteCreator} from '../lib/routeContext';
 
 import Admin from '../models/admin';
 import {validateExcept, type Maybe, getMessage, has} from '../../util';
+
 import {getVerifyEmailToken} from '../routes';
+
 import whitelist from '../../../adminsWhitelist';
 
 import config from '../../../config.extension';
@@ -31,7 +33,7 @@ export const hashPassword = async (password: string): Promise<string> => new Pro
 	});
 });
 
-export const createRegisterRoute: RouteCreator = ({dataSource, mailer, mailerFrom}) => async (req, res) => {
+export const createRegisterRoute: RouteCreator = ({dataSource, mailer, mailerFrom, log}) => async (req, res) => {
 	const admin = new Admin();
 	Object.assign(admin, req.body);
 	// TODO: extract this to a function
@@ -39,7 +41,7 @@ export const createRegisterRoute: RouteCreator = ({dataSource, mailer, mailerFro
 	admin.createdAt = new Date();
 	admin.updatedAt = new Date();
 	admin.password = await hashPassword(admin.password);
-	console.log('Received admin for registration:', admin);
+	log('Received admin for registration (password is hashed):', admin);
 
 	const errors = await validateExcept('id', 'verificationToken')(admin);
 
@@ -88,7 +90,7 @@ export const createRegisterRoute: RouteCreator = ({dataSource, mailer, mailerFro
 		return;
 	}
 
-	const link = `${serverUrl}${getVerifyEmailToken}?${token}`;
+	const link = `${serverUrl}${getVerifyEmailToken}?token=${token}`;
 
 	try {
 		const mailInfo = await mailer.sendMail({
@@ -99,7 +101,7 @@ export const createRegisterRoute: RouteCreator = ({dataSource, mailer, mailerFro
 			html: `Please click <a href="${link}">here</a> to verify your email address.`,
 		}) as unknown;
 
-		console.log('Message sent:', mailInfo);
+		log('E-mail sent:', mailInfo);
 
 		res.status(200).json({
 			kind: 'Success',
