@@ -14,11 +14,21 @@ export type AdminApi = {
 	getAuthTest: () => Promise<Maybe<Admin>>;
 };
 
+const loadItem = <T>(key: string): T | undefined => {
+	const item = sessionStorage.getItem(key);
+
+	if (!item) {
+		return undefined;
+	}
+
+	return JSON.parse(item) as T;
+};
+
 export const createAdminApi = (serverUrl: string): AdminApi => {
 	console.log('adminApi', serverUrl);
 
-	let token: Token | undefined;
-	let admin: Admin | undefined;
+	let token = loadItem<Token>('token');
+	let admin = loadItem<Admin>('admin');
 
 	const verb = (method: 'GET' | 'POST') => async <T>(path: string, data: unknown) => {
 		const body = method === 'POST' ? JSON.stringify(data) : undefined;
@@ -62,6 +72,8 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 		setAuth(t: Token, a: Admin) {
 			token = t;
 			admin = a;
+			sessionStorage.setItem('token', JSON.stringify(t));
+			sessionStorage.setItem('admin', JSON.stringify(a));
 		},
 
 		async login(email: string, password: string) {
