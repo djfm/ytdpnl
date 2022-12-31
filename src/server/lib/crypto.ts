@@ -37,7 +37,7 @@ export const createTokenTools = (secretKey: string): TokenTools => ({
 	sign: (expiresIn, adminId) => jwt.sign({adminId}, secretKey, {expiresIn, algorithm: 'RS256'}),
 	verify(token) {
 		try {
-			const {adminId} = jwt.verify(token, secretKey) as {adminId: string};
+			const {adminId} = jwt.verify(token, secretKey, {algorithms: ['RS256']}) as {adminId: string};
 			return {kind: 'Success', value: {adminId}};
 		} catch (err) {
 			return {

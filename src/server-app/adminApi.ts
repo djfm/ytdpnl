@@ -11,7 +11,7 @@ export type AdminApi = {
 	login: (username: string, password: string) => Promise<Maybe<LoginResponse>>;
 	register: (admin: Admin) => Promise<Maybe<string>>;
 	getAdmin: () => Admin | undefined;
-	getAuthTest: () => Promise<Maybe<string>>;
+	getAuthTest: () => Promise<Maybe<Admin>>;
 };
 
 export const createAdminApi = (serverUrl: string): AdminApi => {
@@ -29,7 +29,7 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 			headers: {
 				'Content-Type': 'application/json',
 				// eslint-disable-next-line @typescript-eslint/naming-convention
-				Authorization: `${token?.token ?? ''}}`,
+				Authorization: `${token?.token ?? ''}`,
 			},
 		});
 
@@ -73,7 +73,7 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 		},
 
 		async getAuthTest() {
-			return get<string>(getAuthTest, {});
+			return get<Admin>(getAuthTest, {});
 		},
 	};
 };

@@ -2,34 +2,32 @@ import React, {useState, useEffect} from 'react';
 
 import {useAdminApi} from '../adminApiProvider';
 
+import type Admin from '../../server/models/admin';
+
 import MessageC from './MessageC';
 
 export const UserWidgetC: React.FC = () => {
 	const api = useAdminApi();
-	const admin = api.getAdmin();
 
-	const [message, setMessage] = useState<string | undefined>();
+	const [admin, setAdmin] = useState<Admin>();
+	const [error, setError] = useState<string | undefined>();
 
 	useEffect(() => {
 		(async () => {
 			const res = await api.getAuthTest();
 
 			if (res.kind === 'Success') {
-				setMessage(res.value);
+				setAdmin(res.value);
 			} else {
-				setMessage(res.message);
+				setError(res.message);
 			}
 		})();
-	});
+	}, []);
 
-	if (admin) {
-		return <div>
-			Hello {admin.email}
-			<MessageC message={message} type='info' />
-		</div>;
-	}
-
-	return <div>Hello guest</div>;
+	return <div>
+		Hello {admin?.email ?? 'guest'}!
+		<MessageC message={error} type='error' />
+	</div>;
 };
 
 export default UserWidgetC;

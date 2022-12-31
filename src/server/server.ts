@@ -31,6 +31,7 @@ import webpackConfig from '../../webpack.config.app';
 import type RouteContext from './lib/routeContext';
 import {createDefaultLogger} from './lib/logger';
 import {createTokenTools} from './lib/crypto';
+import createAuthMiddleWare from './lib/authMiddleware';
 
 import {
 	postRegister,
@@ -169,47 +170,11 @@ const start = async () => {
 
 	const tokenRepo = ds.getRepository(Token);
 
-	const authMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-		const token = req.headers.authorization!;
-		log('Checking token:', token);
-
-		if (!token) {
-			log('Missing authorization header');
-			res.status(401).json({kind: 'Failure', message: 'Missing authorization header'});
-			return;
-		}
-
-		log('Verifying token');
-
-		const check = tokenTools.verify(token);
-
-		if (check.kind === 'Failure') {
-			log('Invalid token');
-			res.status(401).json({kind: 'Failure', message: 'Invalid token'});
-			return;
-		}
-
-		log('Checking token in the database');
-
-		(async () => {
-			const tokenEntity = await tokenRepo.findOneBy({token});
-
-			if (!tokenEntity) {
-				log('Token not in the database');
-				res.status(401).json({kind: 'Failure', message: 'Token not in the database'});
-				return;
-			}
-
-			if (tokenEntity.wasInvalidated) {
-				log('Token was invalidated');
-				res.status(401).json({kind: 'Failure', message: 'Token was invalidated'});
-				return;
-			}
-
-			log('Token is valid');
-			next();
-		})();
-	};
+	const authMiddleware = createAuthMiddleWare({
+		tokenRepo,
+		tokenTools,
+		log,
+	});
 
 	const app = express();
 
@@ -237,7 +202,7 @@ const start = async () => {
 	app.get(getVerifyEmailToken, createVerifyEmailRoute(routeContext));
 	app.post(postLogin, createLoginRoute(routeContext));
 
-	app.get(getAuthTest, createAuthTestRoute(routeContext), authMiddleware);
+	app.get(getAuthTest, authMiddleware, createAuthTestRoute(routeContext));
 
 	app.use((req, res, next) => {
 		if (req.method === 'GET' && req.headers.accept?.startsWith('text/html')) {
