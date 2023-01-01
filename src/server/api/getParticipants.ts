@@ -14,22 +14,28 @@ export const createGetParticipantsRoute: RouteCreator = ({log, dataSource}) => a
 
 	const participantRepo = dataSource.getRepository(Participant);
 
-	const participants = await participantRepo
-		.find({
-			skip: pageNumber * pageSizeNumber,
-			take: pageSizeNumber,
-		});
+	try {
+		const participants = await participantRepo
+			.find({
+				skip: pageNumber * pageSizeNumber,
+				take: pageSizeNumber,
+			});
 
-	const count = await participantRepo.count();
+		const count = await participantRepo.count();
 
-	const data: Page<Participant> = {
-		results: participants,
-		page: pageNumber,
-		pageSize: pageSizeNumber,
-		pageCount: Math.ceil(count / pageSizeNumber),
-	};
+		const data: Page<Participant> = {
+			results: participants,
+			page: pageNumber,
+			pageSize: pageSizeNumber,
+			pageCount: Math.ceil(count / pageSizeNumber),
+		};
 
-	res.status(200).json({kind: 'Success', value: data});
+		res.status(200).json({kind: 'Success', value: data});
+	} catch (error) {
+		log('Error getting participants', error);
+
+		res.status(500).json({kind: 'Error', value: 'Error getting participants'});
+	}
 };
 
 export default createGetParticipantsRoute;
