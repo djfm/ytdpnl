@@ -12,10 +12,9 @@ export const Server = () => {
 
 	return (
 		<Routes>
-			<Route path='/' element={<Protect><LayoutC /></Protect>} />
+			<Route path='*' element={<Protect><LayoutC /></Protect>} />
 			<Route path='/login' element={<LoginC {...{email, setEmail, password, setPassword}} />} />
 			<Route path='/register' element={<RegisterC {...{email, setEmail, password, setPassword}} />} />
-			<Route path='*' element={<Protect><LayoutC /></Protect>} />
 		</Routes>
 	);
 };

@@ -134,7 +134,7 @@ export const LayoutC: React.FC = () => {
 					{drawer}
 				</Drawer>
 			</Box>
-			<Box component='main' sx={{p: 3, mt: 6}}>
+			<Box component='main' sx={{p: 3, mt: 6, width: '100%'}}>
 				<Routes>
 					{navItems.map(item => (
 						<Route element={<item.component />} key={item.link} path={item.link} />

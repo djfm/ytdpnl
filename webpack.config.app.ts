@@ -29,6 +29,10 @@ const conf: webpack.Configuration = {
 				use: 'ts-loader',
 				exclude: /node_modules/,
 			},
+			{
+				test: /\.csv$/,
+				type: 'asset/source',
+			},
 		],
 	},
 	devtool: 'source-map',

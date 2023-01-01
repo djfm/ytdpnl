@@ -9,4 +9,18 @@ theme.typography.h1 = {
 	},
 };
 
+theme.typography.h2 = {
+	fontSize: '1.2rem',
+	[theme.breakpoints.up('sm')]: {
+		fontSize: '1.5rem',
+	},
+};
+
+theme.typography.h3 = {
+	fontSize: '1.1rem',
+	[theme.breakpoints.up('sm')]: {
+		fontSize: '1.2rem',
+	},
+};
+
 export default theme;
