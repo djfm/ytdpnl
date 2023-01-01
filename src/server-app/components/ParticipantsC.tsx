@@ -141,7 +141,10 @@ const ParticipantRowC: React.FC<{participant: Participant}> = ({
 
 const ListC: React.FC = () => {
 	const [participants, setParticipants] = useState<Page<Participant> | undefined>();
-	const [page, setPage] = useState(1);
+	const [pageInput, setPageInput] = useState('1');
+	const pTmp = Math.min(Math.max(parseInt(pageInput, 10), 0), participants?.pageCount ?? 1);
+	const pageInputOk = Number.isInteger(pTmp);
+	const page = pageInputOk ? pTmp : 1;
 	const [error, setError] = useState<string | undefined>();
 
 	const api = useAdminApi();
@@ -160,9 +163,7 @@ const ListC: React.FC = () => {
 	}, [page]);
 
 	const handlePageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const p = Math.min(Math.max(parseInt(e.target.value, 10), 0), participants?.pageCount ?? 1);
-		const pNum = Number.isInteger(p) ? p : 1;
-		setPage(pNum);
+		setPageInput(e.target.value);
 	};
 
 	const list = participants === undefined ? <Typography>Loading...</Typography>
@@ -188,7 +189,7 @@ const ListC: React.FC = () => {
 					<Grid item xs={8}>
 						Page <input
 							type='number'
-							value={page}
+							value={pageInputOk ? page : pageInput}
 							min={1}
 							max={participants.pageCount}
 							step={1}
