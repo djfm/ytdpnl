@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
+import {Typography} from '@mui/material';
+
 import {useAdminApi} from '../adminApiProvider';
 
 import type Admin from '../../server/models/admin';
@@ -25,7 +27,7 @@ export const UserWidgetC: React.FC = () => {
 	}, []);
 
 	return <div>
-		Hello {admin?.email ?? 'guest'}!
+		<Typography>Hello {admin?.email ?? 'guest'}!</Typography>
 		<MessageC message={error} type='error' />
 	</div>;
 };
