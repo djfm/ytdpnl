@@ -27,6 +27,7 @@ import {
 import HomeC from './HomeC';
 import ParticipantsC from './ParticipantsC';
 import NotFoundC from './NotFoundC';
+import UserWidgetC from './UserWidgetC';
 
 type NavItem = {
 	label: string;
@@ -114,6 +115,15 @@ export const LayoutC: React.FC = () => {
 								{item.label}
 							</Button>
 						))}
+						<Box
+							sx={{
+								display: 'inline-block',
+								ml: 2,
+								color: 'primary.contrastText2',
+							}}
+						>
+							<UserWidgetC />
+						</Box>
 					</Box>
 				</Toolbar>
 			</AppBar>

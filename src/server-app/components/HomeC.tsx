@@ -7,7 +7,7 @@ import UserWidgetC from './UserWidgetC';
 export const HomeC: React.FC = () => {
 	const ui = (
 		<div>
-			<Typography variant='h1'>Home</Typography>
+			<Typography variant='h1' sx={{mb: 4}}>Home</Typography>
 			<UserWidgetC />
 		</div>
 	);

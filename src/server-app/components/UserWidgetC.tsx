@@ -26,10 +26,15 @@ export const UserWidgetC: React.FC = () => {
 		})();
 	}, []);
 
-	return <div>
-		<Typography>Hello {admin?.email ?? 'guest'}!</Typography>
-		<MessageC message={error} type='error' />
-	</div>;
+	if (error) {
+		return <MessageC message={error} type='error' />;
+	}
+
+	if (!admin) {
+		return null;
+	}
+
+	return <Typography>{admin.email}</Typography>;
 };
 
 export default UserWidgetC;
