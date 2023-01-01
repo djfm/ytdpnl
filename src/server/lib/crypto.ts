@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 import type {Maybe} from '../../util';
 
-export const randomToken = () => crypto.randomBytes(128).toString('hex');
+export const randomToken = (size = 128) => crypto.randomBytes(size).toString('hex');
 
 export const hashPassword = async (password: string): Promise<string> => new Promise((resolve, reject) => {
 	bcrypt.hash(password, 10, (err, hash) => {
