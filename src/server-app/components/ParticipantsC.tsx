@@ -124,13 +124,13 @@ const ParticipantRowC: React.FC<{participant: Participant}> = ({
 }) => {
 	const ui = (
 		<Grid container item xs={12}>
-			<Grid item xs={4}>
+			<Grid item sm={4} xs={12}>
 				<Typography>{participant.email}</Typography>
 			</Grid>
-			<Grid item xs={4}>
+			<Grid item sm={4} xs={12}>
 				<Typography sx={{wordBreak: 'break-word'}}>{participant.code}</Typography>
 			</Grid>
-			<Grid item xs={4}>
+			<Grid item sm={4} xs={12}>
 				<Typography>{participant.arm}</Typography>
 			</Grid>
 		</Grid>
@@ -171,13 +171,13 @@ const ListC: React.FC = () => {
 		) : (
 			<Grid container spacing={2}>
 				<Grid container item xs={12}>
-					<Grid item xs={4}>
+					<Grid item sm={4} xs={12}>
 						<Typography><strong>Email</strong></Typography>
 					</Grid>
-					<Grid item xs={4}>
+					<Grid item sm={4} xs={12}>
 						<Typography><strong>Code</strong></Typography>
 					</Grid>
-					<Grid item xs={4}>
+					<Grid item sm={4} xs={12}>
 						<Typography><strong>Experiment arm</strong></Typography>
 					</Grid>
 				</Grid>
@@ -185,7 +185,7 @@ const ListC: React.FC = () => {
 					<ParticipantRowC key={participant.id} participant={participant}/>
 				))}
 				<Grid container item xs={12}>
-					<Grid item xs={4}>
+					<Grid item xs={8}>
 						Page <input
 							type='number'
 							value={page}
