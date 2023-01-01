@@ -20,6 +20,7 @@ import {useAdminApi} from '../adminApiProvider';
 import csvSample from '../../server/public/participants.sample.csv';
 
 import type Participant from '../../server/models/participant';
+import type {Page} from '../../server/lib/pagination';
 
 const UploadFormC: React.FC = () => {
 	const exampleString = csvSample as string;
@@ -139,7 +140,7 @@ const ParticipantRowC: React.FC<{participant: Participant}> = ({
 };
 
 const ListC: React.FC = () => {
-	const [participants, setParticipants] = useState<Participant[]>([]);
+	const [participants, setParticipants] = useState<Page<Participant> | undefined>();
 	const [page] = useState(0);
 	const [error, setError] = useState<string | undefined>();
 
@@ -151,33 +152,39 @@ const ListC: React.FC = () => {
 
 			if (res.kind === 'Success') {
 				setError(undefined);
-				setParticipants(res.value.results);
+				setParticipants(res.value);
 			} else {
 				setError(res.message);
 			}
 		})();
 	}, [page]);
 
-	const list = participants.length === 0 ? (
-		<Typography>No participants yet.</Typography>
-	) : (
-		<Grid container spacing={2}>
-			<Grid container item xs={12}>
-				<Grid item xs={4}>
-					<Typography><strong>Email</strong></Typography>
+	const list = participants === undefined ? <Typography>Loading...</Typography>
+		: participants.results.length === 0 ? (
+			<Typography>No participants yet.</Typography>
+		) : (
+			<Grid container spacing={2}>
+				<Grid container item xs={12}>
+					<Grid item xs={4}>
+						<Typography><strong>Email</strong></Typography>
+					</Grid>
+					<Grid item xs={4}>
+						<Typography><strong>Code</strong></Typography>
+					</Grid>
+					<Grid item xs={4}>
+						<Typography><strong>Experiment arm</strong></Typography>
+					</Grid>
 				</Grid>
-				<Grid item xs={4}>
-					<Typography><strong>Code</strong></Typography>
-				</Grid>
-				<Grid item xs={4}>
-					<Typography><strong>Experiment arm</strong></Typography>
+				{participants.results.map(participant => (
+					<ParticipantRowC key={participant.id} participant={participant}/>
+				))}
+				<Grid container item xs={12}>
+					<Grid item xs={4}>
+						<Typography>Page {participants.page + 1} / {participants.pageCount}</Typography>
+					</Grid>
 				</Grid>
 			</Grid>
-			{participants.map(participant => (
-				<ParticipantRowC key={participant.id} participant={participant}/>
-			))}
-		</Grid>
-	);
+		);
 
 	return (
 		<Box component='section' sx={{mb: 4}}>
