@@ -2,7 +2,12 @@ import {type Admin} from '../server/models/admin';
 import {type Token} from '../server/models/token';
 import {type LoginResponse} from '../server/api/login';
 
-import {postRegister, postLogin, getAuthTest} from '../server/routes';
+import {
+	postRegister,
+	postLogin,
+	getAuthTest,
+	postUploadParticipants,
+} from '../server/routes';
 import {type Maybe, isMaybe} from '../util';
 
 export type AdminApi = {
@@ -12,6 +17,7 @@ export type AdminApi = {
 	register: (admin: Admin) => Promise<Maybe<string>>;
 	getAdmin: () => Admin | undefined;
 	getAuthTest: () => Promise<Maybe<Admin>>;
+	uploadParticipants: (file: File) => Promise<Maybe<string>>;
 };
 
 const loadItem = <T>(key: string): T | undefined => {
@@ -43,10 +49,20 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 			},
 		});
 
-		const json = await result.json() as unknown;
+		try {
+			const json = await result.json() as unknown;
 
-		if (isMaybe<T>(json)) {
-			return json;
+			if (isMaybe<T>(json)) {
+				return json;
+			}
+		} catch (e) {
+			console.error(e);
+			const err: Maybe<T> = {
+				kind: 'Failure',
+				message: 'Invalid response from server',
+			};
+
+			return err;
 		}
 
 		const res: Maybe<T> = {
@@ -86,6 +102,39 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 
 		async getAuthTest() {
 			return get<Admin>(getAuthTest, {});
+		},
+
+		async uploadParticipants(file: File) {
+			const formData = new FormData();
+			formData.set('participants', file);
+
+			const result = await fetch(`${serverUrl}${postUploadParticipants}`, {
+				method: 'POST',
+				body: formData,
+				headers: {
+					// eslint-disable-next-line @typescript-eslint/naming-convention
+					Authorization: `${token?.token ?? ''}`,
+				},
+			});
+
+			try {
+				const json = await result.json() as unknown;
+
+				if (isMaybe<string>(json)) {
+					return json;
+				}
+			} catch (e) {
+				console.error(e);
+				return {
+					kind: 'Failure',
+					message: 'Invalid response from server',
+				};
+			}
+
+			return {
+				kind: 'Failure',
+				message: 'Invalid response from server',
+			};
 		},
 	};
 };
