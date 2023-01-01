@@ -23,6 +23,7 @@ import {getInteger, getString, has} from '../util';
 
 import Admin from './models/admin';
 import Token from './models/token';
+import Participant from './models/participant';
 
 import SmtpConfig from './lib/smtpConfig';
 
@@ -47,7 +48,11 @@ import createAuthTestRoute from './api/authTest';
 
 // Add classes used by typeorm as models here
 // so that typeorm can extract the metadata from them.
-const entities = [Admin, Token];
+const entities = [
+	Admin,
+	Token,
+	Participant,
+];
 
 const env = process.env.NODE_ENV;
 
