@@ -1,24 +1,27 @@
-import React, {useState, useRef} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 
 import {
 	Box,
 	Button,
 	FormControl,
 	FormHelperText,
+	Grid,
 	Typography,
 } from '@mui/material';
 
 import FileIcon from '@mui/icons-material/FileUpload';
 
 import DLinkC from './DownloadLinkC';
-import {StatusMessageC} from './MessageC';
+import MessageC, {StatusMessageC} from './MessageC';
 
 import {useAdminApi} from '../adminApiProvider';
 
 // @ts-expect-error this is a text file, not a module
 import csvSample from '../../server/public/participants.sample.csv';
 
-export const UploadForm: React.FC = () => {
+import type Participant from '../../server/models/participant';
+
+const UploadFormC: React.FC = () => {
 	const exampleString = csvSample as string;
 
 	const [info, setInfo] = useState<string | undefined>(undefined);
@@ -67,7 +70,7 @@ export const UploadForm: React.FC = () => {
 	);
 
 	const ui = (
-		<section>
+		<Box component='section' sx={{mb: 4}}>
 			<Typography variant='h2' sx={{mb: 2}}>Add Participants</Typography>
 			<Typography variant='body1' component='div' sx={{mb: 2}}>
 				You can add participants to the experiment by uploading a CSV file,
@@ -109,16 +112,88 @@ export const UploadForm: React.FC = () => {
 				</FormControl>
 				<StatusMessageC {...{info, error, success}}/>
 			</form>
-		</section>
+		</Box>
 	);
 
 	return ui;
 };
 
+const ParticipantRowC: React.FC<{participant: Participant}> = ({
+	participant,
+}) => {
+	const ui = (
+		<Grid container item xs={12}>
+			<Grid item xs={4}>
+				<Typography>{participant.email}</Typography>
+			</Grid>
+			<Grid item xs={4}>
+				<Typography sx={{wordBreak: 'break-word'}}>{participant.code}</Typography>
+			</Grid>
+			<Grid item xs={4}>
+				<Typography>{participant.arm}</Typography>
+			</Grid>
+		</Grid>
+	);
+
+	return ui;
+};
+
+const ListC: React.FC = () => {
+	const [participants, setParticipants] = useState<Participant[]>([]);
+	const [page] = useState(0);
+	const [error, setError] = useState<string | undefined>();
+
+	const api = useAdminApi();
+
+	useEffect(() => {
+		(async () => {
+			const res = await api.getParticipants(page);
+
+			if (res.kind === 'Success') {
+				setError(undefined);
+				setParticipants(res.value.results);
+			} else {
+				setError(res.message);
+			}
+		})();
+	}, [page]);
+
+	const list = participants.length === 0 ? (
+		<Typography>No participants yet.</Typography>
+	) : (
+		<Grid container spacing={2}>
+			<Grid container item xs={12}>
+				<Grid item xs={4}>
+					<Typography><strong>Email</strong></Typography>
+				</Grid>
+				<Grid item xs={4}>
+					<Typography><strong>Code</strong></Typography>
+				</Grid>
+				<Grid item xs={4}>
+					<Typography><strong>Experiment arm</strong></Typography>
+				</Grid>
+			</Grid>
+			{participants.map(participant => (
+				<ParticipantRowC key={participant.id} participant={participant}/>
+			))}
+		</Grid>
+	);
+
+	return (
+		<Box component='section' sx={{mb: 4}}>
+			<Typography variant='h2' sx={{mb: 2}}>Participants list</Typography>
+			<MessageC message={error} type='error'/>
+
+			{list}
+		</Box>
+	);
+};
+
 export const ParticipantsC: React.FC = () => (
 	<div>
 		<Typography variant='h1' sx={{mb: 4}}>Participants</Typography>
-		<UploadForm />
+		<ListC />
+		<UploadFormC />
 	</div>
 );
 

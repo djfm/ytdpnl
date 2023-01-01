@@ -1,5 +1,8 @@
+import type {Page} from '../server/lib/pagination';
+
 import {type Admin} from '../server/models/admin';
 import {type Token} from '../server/models/token';
+import {type Participant} from '../server/models/participant';
 import {type LoginResponse} from '../server/api/login';
 
 import {
@@ -7,6 +10,7 @@ import {
 	postLogin,
 	getAuthTest,
 	postUploadParticipants,
+	getParticipants,
 } from '../server/routes';
 import {type Maybe, isMaybe, getMessage} from '../util';
 
@@ -18,6 +22,7 @@ export type AdminApi = {
 	getAdmin: () => Admin | undefined;
 	getAuthTest: () => Promise<Maybe<Admin>>;
 	uploadParticipants: (file: File) => Promise<Maybe<string>>;
+	getParticipants: (page: number, pageSize?: number) => Promise<Maybe<Page<Participant>>>;
 };
 
 const loadItem = <T>(key: string): T | undefined => {
@@ -135,6 +140,10 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 				kind: 'Failure',
 				message: 'Invalid response from server',
 			};
+		},
+
+		async getParticipants(page = 0, pageSize = 15) {
+			return get<Page<Participant>>(`${getParticipants}/${page}?pageSize=${pageSize}`, {});
 		},
 	};
 };
