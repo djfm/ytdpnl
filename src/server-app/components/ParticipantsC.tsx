@@ -141,14 +141,14 @@ const ParticipantRowC: React.FC<{participant: Participant}> = ({
 
 const ListC: React.FC = () => {
 	const [participants, setParticipants] = useState<Page<Participant> | undefined>();
-	const [page] = useState(0);
+	const [page, setPage] = useState(1);
 	const [error, setError] = useState<string | undefined>();
 
 	const api = useAdminApi();
 
 	useEffect(() => {
 		(async () => {
-			const res = await api.getParticipants(page);
+			const res = await api.getParticipants(page - 1);
 
 			if (res.kind === 'Success') {
 				setError(undefined);
@@ -158,6 +158,12 @@ const ListC: React.FC = () => {
 			}
 		})();
 	}, [page]);
+
+	const handlePageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const p = Math.min(Math.max(parseInt(e.target.value, 10), 0), participants?.pageCount ?? 1);
+		const pNum = Number.isInteger(p) ? p : 1;
+		setPage(pNum);
+	};
 
 	const list = participants === undefined ? <Typography>Loading...</Typography>
 		: participants.results.length === 0 ? (
@@ -180,7 +186,14 @@ const ListC: React.FC = () => {
 				))}
 				<Grid container item xs={12}>
 					<Grid item xs={4}>
-						<Typography>Page {participants.page + 1} / {participants.pageCount}</Typography>
+						Page <input
+							type='number'
+							value={page}
+							min={1}
+							max={participants.pageCount}
+							step={1}
+							onChange={handlePageChange}
+						/> / {participants.pageCount}
 					</Grid>
 				</Grid>
 			</Grid>
