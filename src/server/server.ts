@@ -8,6 +8,7 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import cors from 'cors';
+import multer from 'multer';
 
 import {Client} from 'pg';
 import {DataSource} from 'typeorm';
@@ -39,12 +40,14 @@ import {
 	getVerifyEmailToken,
 	postLogin,
 	getAuthTest,
+	postUploadParticipants,
 } from './routes';
 
 import createRegisterRoute from './api/register';
 import createVerifyEmailRoute from './api/verifyEmail';
 import createLoginRoute from './api/login';
 import createAuthTestRoute from './api/authTest';
+import createUploadParticipantsRoute from './api/uploadParticipants';
 
 // Add classes used by typeorm as models here
 // so that typeorm can extract the metadata from them.
@@ -59,6 +62,8 @@ const env = process.env.NODE_ENV;
 if (env !== 'production' && env !== 'development') {
 	throw new Error('NODE_ENV must be set to "production" or "development"');
 }
+
+const upload = multer();
 
 const start = async () => {
 	const configJson = await readFile(join(__dirname, '..', '..', 'config.yaml'), 'utf-8');
@@ -208,6 +213,7 @@ const start = async () => {
 	app.post(postLogin, createLoginRoute(routeContext));
 
 	app.get(getAuthTest, authMiddleware, createAuthTestRoute(routeContext));
+	app.post(postUploadParticipants, authMiddleware, upload.single('participants'), createUploadParticipantsRoute(routeContext));
 
 	app.use((req, res, next) => {
 		if (req.method === 'GET' && req.headers.accept?.startsWith('text/html')) {
