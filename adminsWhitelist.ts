@@ -4,6 +4,7 @@
 // able to log in.
 const adminsWhitelist = new Set<string>([
 	'fm.de.jouvencel@gmail.com',
+	'giulia@tracking.exposed',
 ]);
 
 export default adminsWhitelist;
