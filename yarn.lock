@@ -1411,6 +1411,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/csv-parse@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "@types/csv-parse@npm:1.2.2"
+  dependencies:
+    csv-parse: "*"
+  checksum: 7ff192eadcc1b301903b8ba5077b9cb114367e2cc779d6a130444d709cb1786c4882560a5558c0f977d50cef79ad467169b9534491b8409595ec10ffa6a562c5
+  languageName: node
+  linkType: hard
+
 "@types/eslint-scope@npm:^3.7.3":
   version: 3.7.4
   resolution: "@types/eslint-scope@npm:3.7.4"
@@ -3399,6 +3408,13 @@ __metadata:
   version: 3.1.1
   resolution: "csstype@npm:3.1.1"
   checksum: 1f7b4f5fdd955b7444b18ebdddf3f5c699159f13e9cf8ac9027ae4a60ae226aef9bbb14a6e12ca7dba3358b007cee6354b116e720262867c398de6c955ea451d
+  languageName: node
+  linkType: hard
+
+"csv-parse@npm:*, csv-parse@npm:^5.3.3":
+  version: 5.3.3
+  resolution: "csv-parse@npm:5.3.3"
+  checksum: 9f16e2003ef47c901aab31d202e1c9edb70c00faa7777e17a50087314c9da6561233bc60542c15d71f7973c7a0e947c35515ea2689929881c9430a8af374089e
   languageName: node
   linkType: hard
 
@@ -8824,6 +8840,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
     "@types/bcrypt": ^5.0.0
     "@types/cors": ^2.8.13
+    "@types/csv-parse": ^1.2.2
     "@types/express": ^4.17.15
     "@types/jest": ^29.2.4
     "@types/jsonwebtoken": ^9.0.0
@@ -8847,6 +8864,7 @@ __metadata:
     copy-webpack-plugin: ^11.0.0
     cors: ^2.8.5
     crypto-browserify: ^3.12.0
+    csv-parse: ^5.3.3
     editorconfig: ^1.0.1
     eslint: ^8.29.0
     eslint-config-xo: latest

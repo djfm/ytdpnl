@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 
 import {
 	Box,
@@ -24,6 +24,7 @@ export const UploadForm: React.FC = () => {
 	const [info, setInfo] = useState<string | undefined>(undefined);
 	const [error, setError] = useState<string | undefined>(undefined);
 	const [success, setSuccess] = useState<string | undefined>(undefined);
+	const form = useRef<HTMLFormElement>(null);
 
 	const api = useAdminApi();
 
@@ -45,6 +46,10 @@ export const UploadForm: React.FC = () => {
 				setSuccess(res.value);
 			} else {
 				setError(res.message);
+			}
+
+			if (form.current) {
+				form.current.reset();
 			}
 		})();
 	};
@@ -80,7 +85,7 @@ export const UploadForm: React.FC = () => {
 				</p>
 			</Typography>
 			{example}
-			<form>
+			<form ref={form}>
 				<FormControl sx={{mb: 2}}>
 					<Button
 						component='label'

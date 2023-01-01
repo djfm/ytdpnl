@@ -8,7 +8,7 @@ import {
 	getAuthTest,
 	postUploadParticipants,
 } from '../server/routes';
-import {type Maybe, isMaybe} from '../util';
+import {type Maybe, isMaybe, getMessage} from '../util';
 
 export type AdminApi = {
 	isLoggedIn: () => boolean;
@@ -127,7 +127,7 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 				console.error(e);
 				return {
 					kind: 'Failure',
-					message: 'Invalid response from server',
+					message: `Invalid response from server: ${getMessage(e, 'unknown error')}`,
 				};
 			}
 
