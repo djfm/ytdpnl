@@ -188,6 +188,8 @@ const start = async () => {
 
 	const app = express();
 
+	const staticRouter = express.Router();
+
 	if (env === 'development') {
 		const compiler = webpack(webpackConfig);
 
@@ -195,12 +197,15 @@ const start = async () => {
 			throw new Error('Invalid webpack config, missing output path');
 		}
 
-		app.use(webpackDevMiddleware(compiler));
-		app.use(webpackHotMiddleware(compiler));
+		staticRouter.use(webpackDevMiddleware(compiler));
+		staticRouter.use(webpackHotMiddleware(compiler));
 	}
 
+	staticRouter.use(express.static(join(__dirname, 'public')));
+
+	app.use(staticRouter);
+
 	app.use(bodyParser.json());
-	app.use(express.static(join(__dirname, 'public')));
 	app.use(cors());
 
 	app.use((req, _res, next) => {
