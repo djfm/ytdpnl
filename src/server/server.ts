@@ -36,6 +36,7 @@ import type RouteContext from './lib/routeContext';
 import {createDefaultLogger} from './lib/logger';
 import {createTokenTools} from './lib/crypto';
 import createAuthMiddleWare from './lib/authMiddleware';
+import createParticipantMiddleware from './lib/participantMiddleware';
 
 import {
 	postRegister,
@@ -48,6 +49,7 @@ import {
 	postExperimentConfig,
 	getExperimentConfigHistory,
 	postCheckParticipantCode,
+	postCreateSession,
 } from './routes';
 
 import createRegisterRoute from './api/register';
@@ -60,6 +62,7 @@ import createGetExperimentConfigRoute from './api/getExperimentConfig';
 import createPostExperimentConfigRoute from './api/postExperimentConfig';
 import createGetExperimentConfigHistoryRoute from './api/getExperimentConfigHistory';
 import createPostCheckParticipantCodeRoute from './api/checkParticipantCode';
+import createCreateSessionRoute from './api/createSession';
 
 // Add classes used by typeorm as models here
 // so that typeorm can extract the metadata from them.
@@ -200,6 +203,8 @@ const start = async () => {
 		log,
 	});
 
+	const participantMw = createParticipantMiddleware(log);
+
 	const app = express();
 
 	const staticRouter = express.Router();
@@ -239,6 +244,7 @@ const start = async () => {
 	app.get(getExperimentConfigHistory, authMiddleware, createGetExperimentConfigHistoryRoute(routeContext));
 
 	app.post(postCheckParticipantCode, createPostCheckParticipantCodeRoute(routeContext));
+	app.post(postCreateSession, participantMw, createCreateSessionRoute(routeContext));
 
 	app.use((req, res, next) => {
 		if (req.method === 'GET' && req.headers.accept?.startsWith('text/html')) {

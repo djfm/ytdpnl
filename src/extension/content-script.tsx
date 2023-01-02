@@ -11,6 +11,8 @@ import {defaultApi as api, apiProvider as ApiProvider} from './apiProvider';
 
 let root: HTMLElement | undefined;
 
+api.newSession().catch(console.error);
+
 const observer = new MutationObserver(() => {
 	if (!isOnVideoPage()) {
 		return;

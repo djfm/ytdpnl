@@ -18,10 +18,10 @@ import {log} from './lib';
 import {useApi} from './apiProvider';
 
 const App: React.FC = () => {
-	const localCode = localStorage.getItem('participantCode') ?? undefined;
+	const localCode = localStorage.getItem('participantCode') ?? '';
 	const [currentUrl, setCurrentUrl] = useState<string>('');
-	const [participantCode, setParticipantCode] = useState<string | undefined>(localCode);
-	const [participantCodeValid, setParticipantCodeValid] = useState<boolean>(localCode !== undefined);
+	const [participantCode, setParticipantCode] = useState<string>(localCode);
+	const [participantCodeValid, setParticipantCodeValid] = useState<boolean>(localCode !== '');
 	const [error, setError] = useState<string | undefined>();
 
 	const cfg: ExperimentConfig = {
@@ -70,7 +70,8 @@ const App: React.FC = () => {
 		}
 
 		setParticipantCodeValid(true);
-		localStorage.setItem('participantCode', participantCode);
+		api.setAuth(participantCode);
+		api.newSession().catch(console.error);
 	};
 
 	if (!participantCodeValid) {

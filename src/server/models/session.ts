@@ -7,6 +7,7 @@ import Model from '../lib/model';
 
 @Entity()
 export class Session extends Model {
+	@Column()
 	@Generated()
 		uuid: string = '';
 

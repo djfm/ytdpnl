@@ -228,8 +228,8 @@ export const restoreInnerInstance = <T extends Object>(maybe: Maybe<T>, ctor: (n
 	};
 };
 
-export const makeApiVerbCreator = (serverUrl: string, headers: Record<string, string>) =>
-	(method: 'GET' | 'POST') => async <T>(path: string, data: unknown) => {
+export const makeApiVerbCreator = (serverUrl: string) =>
+	(method: 'GET' | 'POST') => async <T>(path: string, data: unknown, headers: Record<string, string>) => {
 		const body = method === 'POST' ? JSON.stringify(data) : undefined;
 
 		const result = await fetch(`${serverUrl}${path}`, {

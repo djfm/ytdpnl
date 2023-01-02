@@ -47,7 +47,7 @@ const loadItem = <T>(key: string): T | undefined => {
 	return JSON.parse(item) as T;
 };
 
-type Verb = <T>(url: string, data: unknown) => Promise<Maybe<T>>;
+type Verb = <T>(url: string, data: unknown, headers: Record<string, string>) => Promise<Maybe<T>>;
 type VerbDecorator = (verb: Verb) => Verb;
 
 export const createAdminApi = (serverUrl: string): AdminApi => {
@@ -56,14 +56,10 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 	let token = loadItem<Token>('token');
 	let admin = loadItem<Admin>('admin');
 
-	const verb = makeApiVerbCreator(serverUrl, {
-		'Content-Type': 'application/json',
-		// eslint-disable-next-line @typescript-eslint/naming-convention
-		Authorization: `${token?.token ?? ''}`,
-	});
+	const verb = makeApiVerbCreator(serverUrl);
 
-	const decorate: VerbDecorator = verb => async <T>(url: string, data: unknown): Promise<Maybe<T>> => {
-		const result = await verb<T>(url, data);
+	const decorate: VerbDecorator = verb => async <T>(url: string, data: unknown, h: Record<string, string>): Promise<Maybe<T>> => {
+		const result = await verb<T>(url, data, h);
 
 		if (isMaybe(result)) {
 			if (result.kind === 'Failure') {
@@ -82,6 +78,12 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 	const get = decorate(verb('GET'));
 	const post = decorate(verb('POST'));
 
+	const headers = () => ({
+		'Content-Type': 'application/json',
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		Authorization: `${token?.token ?? ''}`,
+	});
+
 	return {
 		getAdmin() {
 			return admin;
@@ -99,15 +101,15 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 		},
 
 		async login(email: string, password: string) {
-			return post<LoginResponse>(postLogin, {email, password});
+			return post<LoginResponse>(postLogin, {email, password}, headers());
 		},
 
 		async register(admin: Admin) {
-			return post<string>(postRegister, admin);
+			return post<string>(postRegister, admin, headers());
 		},
 
 		async getAuthTest() {
-			return get<Admin>(getAuthTest, {});
+			return get<Admin>(getAuthTest, {}, headers());
 		},
 
 		async uploadParticipants(file: File) {
@@ -144,19 +146,19 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 		},
 
 		async getParticipants(page = 0, pageSize = 15) {
-			return get<Page<Participant>>(`${getParticipants}/${page}?pageSize=${pageSize}`, {});
+			return get<Page<Participant>>(`${getParticipants}/${page}?pageSize=${pageSize}`, {}, headers());
 		},
 
 		async getExperimentConfig() {
-			return get<ExperimentConfig>(getExperimentConfig, {});
+			return get<ExperimentConfig>(getExperimentConfig, {}, headers());
 		},
 
 		async postExperimentConfig(config: ExperimentConfig) {
-			return post<ExperimentConfig>(getExperimentConfig, config);
+			return post<ExperimentConfig>(getExperimentConfig, config, headers());
 		},
 
 		async getExperimentConfigHistory() {
-			return get<ExperimentConfig[]>(getExperimentConfigHistory, {});
+			return get<ExperimentConfig[]>(getExperimentConfigHistory, {}, headers());
 		},
 	};
 };
