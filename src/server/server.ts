@@ -25,6 +25,7 @@ import {getInteger, getString, has} from '../util';
 import Admin from './models/admin';
 import Token from './models/token';
 import Participant from './models/participant';
+import ExperimentConfig from './models/experimentConfig';
 
 import SmtpConfig from './lib/smtpConfig';
 
@@ -42,6 +43,7 @@ import {
 	getAuthTest,
 	postUploadParticipants,
 	getParticipants,
+	getExperimentConfig,
 } from './routes';
 
 import createRegisterRoute from './api/register';
@@ -50,6 +52,7 @@ import createLoginRoute from './api/login';
 import createAuthTestRoute from './api/authTest';
 import createUploadParticipantsRoute from './api/uploadParticipants';
 import createGetParticipantsRoute from './api/getParticipants';
+import createGetExperimentConfigRoute from './api/getExperimentConfig';
 
 // Add classes used by typeorm as models here
 // so that typeorm can extract the metadata from them.
@@ -57,6 +60,7 @@ const entities = [
 	Admin,
 	Token,
 	Participant,
+	ExperimentConfig,
 ];
 
 const env = process.env.NODE_ENV;
@@ -222,6 +226,7 @@ const start = async () => {
 	app.get(getAuthTest, authMiddleware, createAuthTestRoute(routeContext));
 	app.post(postUploadParticipants, authMiddleware, upload.single('participants'), createUploadParticipantsRoute(routeContext));
 	app.get(`${getParticipants}/:page?`, authMiddleware, createGetParticipantsRoute(routeContext));
+	app.get(getExperimentConfig, authMiddleware, createGetExperimentConfigRoute(routeContext));
 
 	app.use((req, res, next) => {
 		if (req.method === 'GET' && req.headers.accept?.startsWith('text/html')) {
