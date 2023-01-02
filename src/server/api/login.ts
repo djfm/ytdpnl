@@ -49,7 +49,7 @@ export const createLoginRoute: RouteCreator = ({log, dataSource, tokenTools}) =>
 	}
 
 	const token = new Token();
-	token.token = tokenTools.sign('1d', admin.id);
+	token.token = tokenTools.sign('1h', admin.id);
 	token.adminId = admin.id;
 
 	const tokenRepo = dataSource.getRepository(Token);
