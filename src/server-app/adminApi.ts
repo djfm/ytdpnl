@@ -47,6 +47,9 @@ const loadItem = <T>(key: string): T | undefined => {
 	return JSON.parse(item) as T;
 };
 
+type Verb = <T>(url: string, data: unknown) => Promise<Maybe<T>>;
+type VerbDecorator = (verb: Verb) => Verb;
+
 export const createAdminApi = (serverUrl: string): AdminApi => {
 	console.log('adminApi', serverUrl);
 
@@ -59,8 +62,25 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 		Authorization: `${token?.token ?? ''}`,
 	});
 
-	const get = verb('GET');
-	const post = verb('POST');
+	const decorate: VerbDecorator = verb => async <T>(url: string, data: unknown): Promise<Maybe<T>> => {
+		const result = await verb<T>(url, data);
+
+		if (isMaybe(result)) {
+			if (result.kind === 'Failure') {
+				if (result.code === 'NOT_AUTHENTICATED') {
+					token = undefined;
+					admin = undefined;
+					sessionStorage.removeItem('token');
+					sessionStorage.removeItem('admin');
+				}
+			}
+		}
+
+		return result;
+	};
+
+	const get = decorate(verb('GET'));
+	const post = decorate(verb('POST'));
 
 	return {
 		getAdmin() {

@@ -10,6 +10,7 @@ export type Success<T> = {
 export type Failure = {
 	kind: 'Failure';
 	message: string;
+	code?: string;
 };
 
 export type Maybe<T> = Success<T> | Failure;

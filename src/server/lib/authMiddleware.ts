@@ -28,7 +28,7 @@ export const createAuthMiddleWare = ({log, tokenTools, tokenRepo}: AuthMiddlewar
 
 		if (check.kind === 'Failure') {
 			log('Invalid token');
-			res.status(401).json({kind: 'Failure', message: 'Invalid token'});
+			res.status(401).json({kind: 'Failure', message: 'Invalid token', code: 'NOT_AUTHENTICATED'});
 			return;
 		}
 
@@ -39,13 +39,13 @@ export const createAuthMiddleWare = ({log, tokenTools, tokenRepo}: AuthMiddlewar
 
 			if (!tokenEntity) {
 				log('Token not in the database');
-				res.status(401).json({kind: 'Failure', message: 'Token not in the database'});
+				res.status(401).json({kind: 'Failure', message: 'Token not in the database', code: 'NOT_AUTHENTICATED'});
 				return;
 			}
 
 			if (tokenEntity.wasInvalidated) {
 				log('Token was invalidated');
-				res.status(401).json({kind: 'Failure', message: 'Token was invalidated'});
+				res.status(401).json({kind: 'Failure', message: 'Token was invalidated', code: 'NOT_AUTHENTICATED'});
 				return;
 			}
 
