@@ -4,6 +4,7 @@ import {type Admin} from '../server/models/admin';
 import {type Token} from '../server/models/token';
 import {type Participant} from '../server/models/participant';
 import {type LoginResponse} from '../server/api/login';
+import {type ExperimentConfig} from '../server/models/experimentConfig';
 
 import {
 	postRegister,
@@ -11,6 +12,7 @@ import {
 	getAuthTest,
 	postUploadParticipants,
 	getParticipants,
+	getExperimentConfig,
 } from '../server/routes';
 import {type Maybe, isMaybe, getMessage} from '../util';
 
@@ -23,6 +25,8 @@ export type AdminApi = {
 	getAuthTest: () => Promise<Maybe<Admin>>;
 	uploadParticipants: (file: File) => Promise<Maybe<string>>;
 	getParticipants: (page: number, pageSize?: number) => Promise<Maybe<Page<Participant>>>;
+	getExperimentConfig: () => Promise<Maybe<ExperimentConfig>>;
+	postExperimentConfig: (config: ExperimentConfig) => Promise<Maybe<ExperimentConfig>>;
 };
 
 const loadItem = <T>(key: string): T | undefined => {
@@ -144,6 +148,14 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 
 		async getParticipants(page = 0, pageSize = 15) {
 			return get<Page<Participant>>(`${getParticipants}/${page}?pageSize=${pageSize}`, {});
+		},
+
+		async getExperimentConfig() {
+			return get<ExperimentConfig>(getExperimentConfig, {});
+		},
+
+		async postExperimentConfig(config: ExperimentConfig) {
+			return post<ExperimentConfig>(getExperimentConfig, config);
 		},
 	};
 };

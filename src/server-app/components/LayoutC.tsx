@@ -25,7 +25,8 @@ import {
 } from 'react-router-dom';
 
 import HomeC from './HomeC';
-import UploadForm from './ParticipantsC';
+import ParticipantsC from './ParticipantsC';
+import ExperimentConfigC from './ExperimentConfigC';
 import NotFoundC from './NotFoundC';
 import UserWidgetC from './UserWidgetC';
 
@@ -44,7 +45,12 @@ const navItems: NavItem[] = [
 	{
 		label: 'Participants',
 		link: '/participants',
-		component: UploadForm,
+		component: ParticipantsC,
+	},
+	{
+		label: 'Experiment Config',
+		link: '/experiment-config',
+		component: ExperimentConfigC,
 	},
 ];
 

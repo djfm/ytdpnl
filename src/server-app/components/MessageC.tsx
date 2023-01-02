@@ -1,11 +1,12 @@
 import React from 'react';
 
-import {Box, Typography} from '@mui/material';
+import {Box, Typography, type SxProps, type Theme} from '@mui/material';
 
 export const MessageC: React.FC<{
 	message?: string;
 	type: 'error' | 'success' | 'info';
-}> = ({message, type}) => {
+	sx?: SxProps<Theme>;
+}> = ({message, type, sx}) => {
 	if (!message) {
 		return null;
 	}
@@ -20,6 +21,8 @@ export const MessageC: React.FC<{
 				p: 2,
 				borderColor: color,
 				display: 'inline-block',
+				borderRadius: 4,
+				...sx,
 			}} border={1}>
 				<Typography color={color}>{message}</Typography>
 			</Box>
@@ -31,17 +34,18 @@ export const StatusMessageC: React.FC<{
 	info?: string;
 	success?: string;
 	error?: string;
-}> = ({info, success, error}) => {
+	sx?: SxProps<Theme>;
+}> = ({info, success, error, sx}) => {
 	if (error) {
-		return <MessageC message={error} type='error' />;
+		return <MessageC message={error} type='error' sx={sx}/>;
 	}
 
 	if (success) {
-		return <MessageC message={success} type='success' />;
+		return <MessageC message={success} type='success' sx={sx}/>;
 	}
 
 	if (info) {
-		return <MessageC message={info} type='info' />;
+		return <MessageC message={info} type='info' sx={sx}/>;
 	}
 
 	return null;

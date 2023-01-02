@@ -7,12 +7,13 @@ import Model from '../lib/model';
 
 @Entity()
 export class ExperimentConfig extends Model {
-	@Column()
+	@Column({type: 'double precision'})
 	@IsNumber()
 	@Min(0)
 	@Max(1)
 		nonPersonalizedProbability: number = 0.5;
 
+	@Column()
 	@IsString()
 		comment: string = '';
 
