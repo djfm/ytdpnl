@@ -21,8 +21,17 @@ export const ExperimentConfigC = () => {
 	const [success, setSuccess] = useState<string | undefined>();
 	const [error, setError] = useState<string | undefined>();
 	const [config, setConfig] = useState<ExperimentConfig>(new ExperimentConfig());
+	const [configHistory, setConfigHistory] = useState<ExperimentConfig[]>([]);
 	const api = useAdminApi();
 	const [probaField, setProbaField] = useState<string>('');
+
+	const loadHistory = async () => {
+		const configHistory = await api.getExperimentConfigHistory();
+
+		if (configHistory.kind === 'Success') {
+			setConfigHistory(configHistory.value);
+		}
+	};
 
 	useEffect(() => {
 		(async () => {
@@ -38,6 +47,8 @@ export const ExperimentConfigC = () => {
 				setInfo(config.message);
 			}
 		})();
+
+		loadHistory().catch(console.error);
 	}, []);
 
 	const handleProbabilityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,21 +86,16 @@ export const ExperimentConfigC = () => {
 			}
 		})();
 
-		console.log('Saving config', config);
+		loadHistory().catch(console.error);
 	};
 
 	const ui = (
 		<Box>
-			<Typography variant='h1' sx={{mb: 4}}>
-				Experiment Config
-			</Typography>
-
-			<Typography sx={{my: 4}}>Versions of the configuration are all kept in the database.</Typography>
-
-			<StatusMessageC {...{info, success, error}} sx={{mb: 4}}/>
-
-			<Grid container spacing={2}>
-				<Grid item xs={12} sm={6}>
+			<Grid container spacing={8}>
+				<Grid item xs={12} sm={6} component='section'>
+					<Typography variant='h1' sx={{mb: 4}}>
+						Experiment Config
+					</Typography>
 					<form onSubmit={handleSubmit}>
 						<Box sx={{
 							display: 'flex',
@@ -130,7 +136,25 @@ export const ExperimentConfigC = () => {
 						</Box>
 					</form>
 				</Grid>
+				<Grid item xs={12} sm={6} component='section'>
+					<Typography variant='h1' sx={{mb: 4}}>Configurations History</Typography>
+
+					{configHistory.length === 0 && <Typography>No configurations found in history</Typography>}
+
+					{configHistory.map(c => (
+						<Box key={c.id} sx={{mb: 2}}>
+							<Typography><strong>#{c.id}</strong> created on {new Date(c.createdAt).toLocaleDateString()}</Typography>
+							<dl>
+								<dt><Typography>Non-personalized probability</Typography></dt>
+								<dd><Typography>{c.nonPersonalizedProbability}</Typography></dd>
+								<dt><Typography>Comment</Typography></dt>
+								<dd><Typography>{c.comment}</Typography></dd>
+							</dl>
+						</Box>
+					))}
+				</Grid>
 			</Grid>
+			<StatusMessageC {...{info, success, error}} sx={{my: 4}}/>
 		</Box>
 	);
 

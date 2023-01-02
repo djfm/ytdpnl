@@ -13,6 +13,7 @@ import {
 	postUploadParticipants,
 	getParticipants,
 	getExperimentConfig,
+	getExperimentConfigHistory,
 } from '../server/routes';
 import {type Maybe, isMaybe, getMessage} from '../util';
 
@@ -27,6 +28,7 @@ export type AdminApi = {
 	getParticipants: (page: number, pageSize?: number) => Promise<Maybe<Page<Participant>>>;
 	getExperimentConfig: () => Promise<Maybe<ExperimentConfig>>;
 	postExperimentConfig: (config: ExperimentConfig) => Promise<Maybe<ExperimentConfig>>;
+	getExperimentConfigHistory: () => Promise<Maybe<ExperimentConfig[]>>;
 };
 
 const loadItem = <T>(key: string): T | undefined => {
@@ -156,6 +158,10 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 
 		async postExperimentConfig(config: ExperimentConfig) {
 			return post<ExperimentConfig>(getExperimentConfig, config);
+		},
+
+		async getExperimentConfigHistory() {
+			return get<ExperimentConfig[]>(getExperimentConfigHistory, {});
 		},
 	};
 };

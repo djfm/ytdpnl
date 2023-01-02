@@ -45,6 +45,7 @@ import {
 	getParticipants,
 	getExperimentConfig,
 	postExperimentConfig,
+	getExperimentConfigHistory,
 } from './routes';
 
 import createRegisterRoute from './api/register';
@@ -55,6 +56,7 @@ import createUploadParticipantsRoute from './api/uploadParticipants';
 import createGetParticipantsRoute from './api/getParticipants';
 import createGetExperimentConfigRoute from './api/getExperimentConfig';
 import createPostExperimentConfigRoute from './api/postExperimentConfig';
+import createGetExperimentConfigHistoryRoute from './api/getExperimentConfigHistory';
 
 // Add classes used by typeorm as models here
 // so that typeorm can extract the metadata from them.
@@ -230,6 +232,7 @@ const start = async () => {
 	app.get(`${getParticipants}/:page?`, authMiddleware, createGetParticipantsRoute(routeContext));
 	app.get(getExperimentConfig, authMiddleware, createGetExperimentConfigRoute(routeContext));
 	app.post(postExperimentConfig, authMiddleware, createPostExperimentConfigRoute(routeContext));
+	app.get(getExperimentConfigHistory, authMiddleware, createGetExperimentConfigHistoryRoute(routeContext));
 
 	app.use((req, res, next) => {
 		if (req.method === 'GET' && req.headers.accept?.startsWith('text/html')) {

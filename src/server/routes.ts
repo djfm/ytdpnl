@@ -6,3 +6,4 @@ export const postUploadParticipants = '/api/upload-participants';
 export const getParticipants = '/api/participants';
 export const getExperimentConfig = '/api/experiment-config';
 export const postExperimentConfig = '/api/experiment-config';
+export const getExperimentConfigHistory = '/api/experiment-config-history';
