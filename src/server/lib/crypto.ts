@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
-import type {Maybe} from '../../util';
+import {type Maybe, has} from '../../util';
 
 export const randomToken = (size = 128) => crypto.randomBytes(size).toString('hex');
 
@@ -30,14 +30,40 @@ export const checkPassword = async (password: string, hash: string): Promise<boo
 
 export type TokenTools = {
 	sign: (expiresIn: string, adminId: number) => string;
-	verify: (token: string) => Maybe<{adminId: string}>;
+	verify: (token: string) => Maybe<{adminId: number}>;
 };
 
 export const createTokenTools = (secretKey: string): TokenTools => ({
 	sign: (expiresIn, adminId) => jwt.sign({adminId}, secretKey, {expiresIn, algorithm: 'RS256'}),
 	verify(token) {
 		try {
-			const {adminId} = jwt.verify(token, secretKey, {algorithms: ['RS256']}) as {adminId: string};
+			const json = jwt.verify(token, secretKey, {algorithms: ['RS256']}) as Record<string, unknown>;
+
+			if (!has('iat')(json) || !has('exp')(json) || typeof json.iat !== 'number' || typeof json.exp !== 'number') {
+				return {
+					kind: 'Failure',
+					message: 'Invalid token contents',
+				};
+			}
+
+			if (!has('adminId')(json) || typeof json.adminId !== 'number') {
+				return {
+					kind: 'Failure',
+					message: 'Missing adminId in token',
+				};
+			}
+
+			const iat = new Date(json.iat * 1000);
+			const exp = new Date(json.exp * 1000);
+
+			if (iat > exp) {
+				return {
+					kind: 'Failure',
+					message: 'Token expired',
+				};
+			}
+
+			const {adminId} = json;
 			return {kind: 'Success', value: {adminId}};
 		} catch (err) {
 			return {
