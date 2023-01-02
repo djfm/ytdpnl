@@ -1,9 +1,12 @@
 import {type Maybe, makeApiVerbCreator} from '../util';
 import {type Session} from '../server/models/session';
 
+import {type ExperimentConfig} from './createRecommendationsList';
+
 import {
 	postCreateSession,
 	postCheckParticipantCode,
+	getParticipantConfig,
 } from '../server/routes';
 
 export type Api = {
@@ -12,6 +15,7 @@ export type Api = {
 	setAuth: (participantCode: string) => void;
 	newSession: () => Promise<boolean>;
 	getSession: () => Session | undefined;
+	getConfig: () => Promise<Maybe<ExperimentConfig>>;
 };
 
 export const createApi = (serverUrl: string): Api => {
@@ -26,6 +30,7 @@ export const createApi = (serverUrl: string): Api => {
 	const verb = makeApiVerbCreator(serverUrl);
 
 	const post = verb('POST');
+	const get = verb('GET');
 
 	return {
 		async createSession() {
@@ -68,6 +73,10 @@ export const createApi = (serverUrl: string): Api => {
 
 		getSession() {
 			return session;
+		},
+
+		async getConfig() {
+			return get<ExperimentConfig>(getParticipantConfig, {}, headers());
 		},
 	};
 };

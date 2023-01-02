@@ -10,3 +10,4 @@ export const getExperimentConfigHistory = '/api/experiment-config-history';
 
 export const postCreateSession = '/api/session';
 export const postCheckParticipantCode = '/api/check-participant-code';
+export const getParticipantConfig = '/api/config';

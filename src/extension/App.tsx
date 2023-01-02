@@ -23,11 +23,7 @@ const App: React.FC = () => {
 	const [participantCode, setParticipantCode] = useState<string>(localCode);
 	const [participantCodeValid, setParticipantCodeValid] = useState<boolean>(localCode !== '');
 	const [error, setError] = useState<string | undefined>();
-
-	const cfg: ExperimentConfig = {
-		nonPersonalizedProbability: 0.6,
-		arm: 'treatment',
-	};
+	const [cfg, setCfg] = useState<ExperimentConfig | undefined>();
 
 	const api = useApi();
 
@@ -53,6 +49,20 @@ const App: React.FC = () => {
 			observer.disconnect();
 		};
 	});
+
+	useEffect(() => {
+		if (participantCode === '') {
+			return;
+		}
+
+		api.getConfig().then(c => {
+			if (c.kind === 'Success') {
+				setCfg(c.value);
+			} else {
+				console.error('Could not get config:', c.message);
+			}
+		}).catch(console.error);
+	}, [currentUrl]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -102,6 +112,12 @@ const App: React.FC = () => {
 					<MessageC message={error} type='error' />
 				</Box>
 			</form>
+		);
+	}
+
+	if (!cfg) {
+		return (
+			<Typography>Loading config...</Typography>
 		);
 	}
 

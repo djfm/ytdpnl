@@ -50,6 +50,7 @@ import {
 	getExperimentConfigHistory,
 	postCheckParticipantCode,
 	postCreateSession,
+	getParticipantConfig,
 } from './routes';
 
 import createRegisterRoute from './api/register';
@@ -63,6 +64,7 @@ import createPostExperimentConfigRoute from './api/postExperimentConfig';
 import createGetExperimentConfigHistoryRoute from './api/getExperimentConfigHistory';
 import createPostCheckParticipantCodeRoute from './api/checkParticipantCode';
 import createCreateSessionRoute from './api/createSession';
+import createGetParticipantConfigRoute from './api/participantConfig';
 
 // Add classes used by typeorm as models here
 // so that typeorm can extract the metadata from them.
@@ -245,6 +247,7 @@ const start = async () => {
 
 	app.post(postCheckParticipantCode, createPostCheckParticipantCodeRoute(routeContext));
 	app.post(postCreateSession, participantMw, createCreateSessionRoute(routeContext));
+	app.get(getParticipantConfig, participantMw, createGetParticipantConfigRoute(routeContext));
 
 	app.use((req, res, next) => {
 		if (req.method === 'GET' && req.headers.accept?.startsWith('text/html')) {
