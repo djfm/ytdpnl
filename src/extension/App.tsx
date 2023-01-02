@@ -10,20 +10,26 @@ import {
 
 import type {ExperimentConfig} from './createRecommendationsList';
 
-import type Participant from '../server/models/participant';
+import MessageC from '../server-app/components/MessageC';
 
 import RecommendationsListC from './components/RecommendationsListC';
 import {log} from './lib';
 
+import {useApi} from './apiProvider';
+
 const App: React.FC = () => {
+	const localCode = localStorage.getItem('participantCode') ?? undefined;
 	const [currentUrl, setCurrentUrl] = useState<string>('');
-	const [participantCode, setParticipantCode] = useState<string | undefined>();
-	const [participant, _setParticipant] = useState<Participant | undefined>();
+	const [participantCode, setParticipantCode] = useState<string | undefined>(localCode);
+	const [participantCodeValid, setParticipantCodeValid] = useState<boolean>(localCode !== undefined);
+	const [error, setError] = useState<string | undefined>();
 
 	const cfg: ExperimentConfig = {
 		nonPersonalizedProbability: 0.6,
 		arm: 'treatment',
 	};
+
+	const api = useApi();
 
 	useEffect(() => {
 		if (window.location.href !== currentUrl) {
@@ -48,9 +54,28 @@ const App: React.FC = () => {
 		};
 	});
 
-	if (participant === undefined) {
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setError(undefined);
+
+		if (participantCode === undefined) {
+			return;
+		}
+
+		const valid = await api.checkParticipantCode(participantCode);
+
+		if (!valid) {
+			setError('Invalid participant code');
+			return;
+		}
+
+		setParticipantCodeValid(true);
+		localStorage.setItem('participantCode', participantCode);
+	};
+
+	if (!participantCodeValid) {
 		return (
-			<form>
+			<form onSubmit={handleSubmit}>
 				<Box sx={{
 					display: 'flex',
 					flexDirection: 'column',
@@ -73,6 +98,7 @@ const App: React.FC = () => {
 					<Button type='submit' variant='contained'>
 						Submit
 					</Button>
+					<MessageC message={error} type='error' />
 				</Box>
 			</form>
 		);

@@ -7,6 +7,8 @@ import {isOnVideoPage} from './lib';
 import App from './App';
 import theme from './theme';
 
+import {defaultApi as api, apiProvider as ApiProvider} from './apiProvider';
+
 let root: HTMLElement | undefined;
 
 const observer = new MutationObserver(() => {
@@ -38,7 +40,9 @@ const observer = new MutationObserver(() => {
 		createRoot(root).render((
 			<React.StrictMode>
 				<ThemeProvider theme={theme}>
-					<App />
+					<ApiProvider value={api}>
+						<App />
+					</ApiProvider>
 				</ThemeProvider>
 			</React.StrictMode>
 		));
