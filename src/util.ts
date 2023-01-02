@@ -226,3 +226,37 @@ export const restoreInnerInstance = <T extends Object>(maybe: Maybe<T>, ctor: (n
 		value: instance,
 	};
 };
+
+export const makeApiVerbCreator = (serverUrl: string, headers: Record<string, string>) =>
+	(method: 'GET' | 'POST') => async <T>(path: string, data: unknown) => {
+		const body = method === 'POST' ? JSON.stringify(data) : undefined;
+
+		const result = await fetch(`${serverUrl}${path}`, {
+			method,
+			body,
+			headers,
+		});
+
+		try {
+			const json = await result.json() as unknown;
+
+			if (isMaybe<T>(json)) {
+				return json;
+			}
+		} catch (e) {
+			console.error(e);
+			const err: Maybe<T> = {
+				kind: 'Failure',
+				message: 'Invalid response from server',
+			};
+
+			return err;
+		}
+
+		const res: Maybe<T> = {
+			kind: 'Failure',
+			message: 'Invalid response from server',
+		};
+
+		return res;
+	};

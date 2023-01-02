@@ -26,6 +26,7 @@ import Admin from './models/admin';
 import Token from './models/token';
 import Participant from './models/participant';
 import ExperimentConfig from './models/experimentConfig';
+import Session from './models/session';
 
 import SmtpConfig from './lib/smtpConfig';
 
@@ -65,6 +66,7 @@ const entities = [
 	Token,
 	Participant,
 	ExperimentConfig,
+	Session,
 ];
 
 const env = process.env.NODE_ENV;

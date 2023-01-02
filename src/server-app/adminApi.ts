@@ -15,7 +15,13 @@ import {
 	getExperimentConfig,
 	getExperimentConfigHistory,
 } from '../server/routes';
-import {type Maybe, isMaybe, getMessage} from '../util';
+
+import {
+	type Maybe,
+	isMaybe,
+	getMessage,
+	makeApiVerbCreator,
+} from '../util';
 
 export type AdminApi = {
 	isLoggedIn: () => boolean;
@@ -47,42 +53,11 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 	let token = loadItem<Token>('token');
 	let admin = loadItem<Admin>('admin');
 
-	const verb = (method: 'GET' | 'POST') => async <T>(path: string, data: unknown) => {
-		const body = method === 'POST' ? JSON.stringify(data) : undefined;
-
-		const result = await fetch(`${serverUrl}${path}`, {
-			method,
-			body,
-			headers: {
-				'Content-Type': 'application/json',
-				// eslint-disable-next-line @typescript-eslint/naming-convention
-				Authorization: `${token?.token ?? ''}`,
-			},
-		});
-
-		try {
-			const json = await result.json() as unknown;
-
-			if (isMaybe<T>(json)) {
-				return json;
-			}
-		} catch (e) {
-			console.error(e);
-			const err: Maybe<T> = {
-				kind: 'Failure',
-				message: 'Invalid response from server',
-			};
-
-			return err;
-		}
-
-		const res: Maybe<T> = {
-			kind: 'Failure',
-			message: 'Invalid response from server',
-		};
-
-		return res;
-	};
+	const verb = makeApiVerbCreator(serverUrl, {
+		'Content-Type': 'application/json',
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		Authorization: `${token?.token ?? ''}`,
+	});
 
 	const get = verb('GET');
 	const post = verb('POST');
