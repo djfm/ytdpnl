@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 
-import {Entity, Column} from 'typeorm';
+import {Entity, Column, OneToMany} from 'typeorm';
 import {IsNotEmpty, MinLength, IsString, Length} from 'class-validator';
 
 import Model from '../lib/model';
+import ExperimentConfig from './experimentConfig';
 
 @Entity()
 export class Admin extends Model {
@@ -30,6 +31,9 @@ export class Admin extends Model {
 
 	@Column()
 		emailVerified: boolean = false;
+
+	@OneToMany(() => ExperimentConfig, experimentConfig => experimentConfig.admin)
+		experimentConfigs?: ExperimentConfig[];
 }
 
 export default Admin;

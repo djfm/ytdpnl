@@ -15,6 +15,7 @@ export const createGetExperimentConfigHistoryRoute: RouteCreator = ({log, dataSo
 			order: {
 				createdAt: 'DESC',
 			},
+			relations: ['admin'],
 		});
 
 		res.status(200).json({

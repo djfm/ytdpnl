@@ -3,12 +3,18 @@ import {type RouteCreator} from '../lib/routeContext';
 import ExperimentConfig from '../models/experimentConfig';
 import {validateNew} from '../../util';
 
-export const createPostExperimentConfigRoute: RouteCreator = ({log, dataSource}) => async (_req, res) => {
+export const createPostExperimentConfigRoute: RouteCreator = ({log, dataSource}) => async (req, res) => {
 	log('Received create experiment config request');
 
+	if (req.adminId === undefined) {
+		res.status(401).json({kind: 'Failure', message: 'You must be logged in to create a configuration'});
+		return;
+	}
+
 	const config = new ExperimentConfig();
-	const {id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...data} = _req.body as ExperimentConfig;
+	const {id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...data} = req.body as ExperimentConfig;
 	Object.assign(config, data);
+	config.adminId = req.adminId;
 
 	log('config received:', config);
 

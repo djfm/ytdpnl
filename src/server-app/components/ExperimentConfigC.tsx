@@ -91,6 +91,7 @@ export const ExperimentConfigC = () => {
 
 	const ui = (
 		<Box>
+			<StatusMessageC {...{info, success, error}} sx={{my: 4}}/>
 			<Grid container spacing={8}>
 				<Grid item xs={12} sm={6} component='section'>
 					<Typography variant='h1' sx={{mb: 4}}>
@@ -142,19 +143,30 @@ export const ExperimentConfigC = () => {
 					{configHistory.length === 0 && <Typography>No configurations found in history</Typography>}
 
 					{configHistory.map(c => (
-						<Box key={c.id} sx={{mb: 2}}>
-							<Typography><strong>#{c.id}</strong> created on {new Date(c.createdAt).toLocaleDateString()}</Typography>
+						<Box
+							key={c.id}
+							sx={{
+								mb: 2,
+								p: 2,
+								border: 1,
+								borderColor: 'grey.400',
+								borderRadius: 2,
+							}}
+						>
+							<Typography>
+								<strong>#{c.id}</strong> created on {new Date(c.createdAt).toLocaleDateString()}
+								&nbsp;by: {c.admin?.email ?? 'unknown'}
+							</Typography>
 							<dl>
-								<dt><Typography>Non-personalized probability</Typography></dt>
+								<dt><Typography><strong>Non-personalized probability</strong></Typography></dt>
 								<dd><Typography>{c.nonPersonalizedProbability}</Typography></dd>
-								<dt><Typography>Comment</Typography></dt>
+								<dt><Typography><strong>Comment</strong></Typography></dt>
 								<dd><Typography>{c.comment}</Typography></dd>
 							</dl>
 						</Box>
 					))}
 				</Grid>
 			</Grid>
-			<StatusMessageC {...{info, success, error}} sx={{my: 4}}/>
 		</Box>
 	);
 
