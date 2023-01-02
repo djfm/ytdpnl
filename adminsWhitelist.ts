@@ -4,6 +4,10 @@
 // able to log in.
 const adminsWhitelist = new Set<string>([
 	'fm.de.jouvencel@gmail.com',
+	'fm.de.jouvencel+1@gmail.com',
+	'fm.de.jouvencel+2@gmail.com',
+	'fm.de.jouvencel+3@gmail.com',
+	'fm.de.jouvencel+4@gmail.com',
 	'giulia@tracking.exposed',
 ]);
 
