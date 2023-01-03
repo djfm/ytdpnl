@@ -16,6 +16,7 @@ export type Api = {
 	setAuth: (participantCode: string) => void;
 	newSession: () => Promise<boolean>;
 	getSession: () => Session | undefined;
+	ensureSession: () => Promise<void>;
 	getConfig: () => Promise<Maybe<ParticipantConfig>>;
 	postEvent: (event: Event) => Promise<boolean>;
 };
@@ -25,6 +26,7 @@ const cache = memoizeTemporarily(1000);
 export const createApi = (serverUrl: string): Api => {
 	let participantCode = localStorage.getItem('participantCode') ?? '';
 	let session: Session | undefined;
+	let sessionPromise: Promise<Maybe<Session>> | undefined;
 
 	const headers = () => ({
 		'Content-Type': 'application/json',
@@ -41,7 +43,18 @@ export const createApi = (serverUrl: string): Api => {
 
 	return {
 		async createSession() {
-			return post<Session>(postCreateSession, {}, headers());
+			if (sessionPromise) {
+				return sessionPromise;
+			}
+
+			const p = post<Session>(postCreateSession, {}, headers());
+			sessionPromise = p;
+
+			p.then(() => {
+				sessionPromise = undefined;
+			}).catch(console.error);
+
+			return p;
 		},
 
 		async checkParticipantCode(code: string) {
@@ -86,11 +99,21 @@ export const createApi = (serverUrl: string): Api => {
 			return getConfigCached(undefined);
 		},
 
-		async postEvent(event: Event) {
-			if (session === undefined) {
-				console.log('Creating session before posting event');
-				await this.newSession();
+		async ensureSession() {
+			if (session) {
+				return;
 			}
+
+			if (sessionPromise) {
+				await sessionPromise;
+				return;
+			}
+
+			await this.newSession();
+		},
+
+		async postEvent(event: Event) {
+			await this.ensureSession();
 
 			event.sessionUuid = session?.uuid ?? '';
 
