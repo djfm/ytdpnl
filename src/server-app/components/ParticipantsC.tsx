@@ -182,21 +182,24 @@ const ListC: React.FC = () => {
 						<Typography><strong>Experiment arm</strong></Typography>
 					</Grid>
 				</Grid>
-				{participants.results.map(participant => (
-					<ParticipantRowC key={participant.id} participant={participant}/>
-				))}
 				<Grid container item xs={12}>
-					<Grid item xs={8}>
-						Page <input
+					<Typography sx={{display: 'flex', alignItems: 'center'}}>
+						<span>Page&nbsp;</span>
+						<input
 							type='number'
 							value={pageInputOk ? page : pageInput}
 							min={1}
 							max={participants.pageCount}
 							step={1}
 							onChange={handlePageChange}
-						/> / {participants.pageCount}
-					</Grid>
+						/>
+						<span>&nbsp;/&nbsp;</span>
+						<span>{participants.pageCount}</span>
+					</Typography>
 				</Grid>
+				{participants.results.map(participant => (
+					<ParticipantRowC key={participant.id} participant={participant}/>
+				))}
 			</Grid>
 		);
 

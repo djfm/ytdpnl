@@ -12,7 +12,7 @@ import type Event from '../../server/models/event';
 import CardC from './CardC';
 
 const EventC: React.FC<{event: Event}> = ({event}) => (
-	<Grid container item xs={3}>
+	<Grid container item xs={12} sm={6} md={3}>
 		<CardC>
 			<strong>Event #{event.id}: {event.type}</strong>
 			<dl>

@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 
 import {StatusMessageC} from './MessageC';
+import CardC from './CardC';
 
 import ExperimentConfig from '../../server/models/experimentConfig';
 
@@ -142,29 +143,24 @@ export const ExperimentConfigC = () => {
 
 					{configHistory.length === 0 && <Typography>No configurations found in history</Typography>}
 
-					{configHistory.map(c => (
-						<Box
-							key={c.id}
-							sx={{
-								mb: 2,
-								p: 2,
-								border: 1,
-								borderColor: 'grey.400',
-								borderRadius: 2,
-							}}
-						>
-							<Typography>
-								<strong>#{c.id}</strong> created on {new Date(c.createdAt).toLocaleDateString()}
-								&nbsp;by: {c.admin?.email ?? 'unknown'}
-							</Typography>
-							<dl>
-								<dt><Typography><strong>Non-personalized probability</strong></Typography></dt>
-								<dd><Typography>{c.nonPersonalizedProbability}</Typography></dd>
-								<dt><Typography><strong>Comment</strong></Typography></dt>
-								<dd><Typography>{c.comment}</Typography></dd>
-							</dl>
-						</Box>
-					))}
+					<Grid container spacing={2}>
+						{configHistory.map(c => (
+							<Grid key={c.id} item xs={12}>
+								<CardC>
+									<Typography>
+										<strong>#{c.id}</strong> created on {new Date(c.createdAt).toLocaleDateString()}
+										&nbsp;by: {c.admin?.email ?? 'unknown'}
+									</Typography>
+									<dl>
+										<dt><Typography><strong>Non-personalized probability</strong></Typography></dt>
+										<dd><Typography>{c.nonPersonalizedProbability}</Typography></dd>
+										<dt><Typography><strong>Comment</strong></Typography></dt>
+										<dd><Typography>{c.comment}</Typography></dd>
+									</dl>
+								</CardC>
+							</Grid>
+						))}
+					</Grid>
 				</Grid>
 			</Grid>
 		</Box>
