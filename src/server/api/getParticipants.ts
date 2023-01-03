@@ -1,6 +1,6 @@
 import {type RouteCreator} from '../lib/routeContext';
 
-import type {Page} from '../lib/pagination';
+import {type Page, extractPaginationRequest} from '../lib/pagination';
 
 import Participant from '../models/participant';
 
@@ -8,27 +8,24 @@ export const createGetParticipantsRoute: RouteCreator = ({createLogger, dataSour
 	const log = createLogger(req.requestId);
 	log('Received participants request');
 
-	const {page} = req.params;
-	const pageNumber = (page === undefined || !Number.isInteger(Number(page))) ? 0 : Number(page);
-	const {pageSize} = req.query;
-	const pageSizeNumber = (pageSize === undefined || !Number.isInteger(Number(pageSize))) ? 15 : Math.min(Number(pageSize), 30);
+	const {page, pageSize} = extractPaginationRequest(req);
 
 	const participantRepo = dataSource.getRepository(Participant);
 
 	try {
 		const participants = await participantRepo
 			.find({
-				skip: pageNumber * pageSizeNumber,
-				take: pageSizeNumber,
+				skip: page * pageSize,
+				take: pageSize,
 			});
 
 		const count = await participantRepo.count();
 
 		const data: Page<Participant> = {
 			results: participants,
-			page: pageNumber,
-			pageSize: pageSizeNumber,
-			pageCount: Math.ceil(count / pageSizeNumber),
+			page,
+			pageSize,
+			pageCount: Math.ceil(count / pageSize),
 		};
 
 		res.status(200).json({kind: 'Success', value: data});
