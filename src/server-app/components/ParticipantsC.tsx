@@ -17,7 +17,7 @@ import MessageC, {StatusMessageC} from './MessageC';
 import {useAdminApi} from '../adminApiProvider';
 
 // @ts-expect-error this is a text file, not a module
-import csvSample from '../../server/public/participants.sample.csv';
+import csvSample from '../../../public/participants.sample.csv';
 
 import type Participant from '../../server/models/participant';
 import type {Page} from '../../server/lib/pagination';

@@ -232,7 +232,7 @@ const start = async () => {
 		staticRouter.use(webpackHotMiddleware(compiler));
 	}
 
-	staticRouter.use(express.static(join(__dirname, 'public')));
+	staticRouter.use(express.static(join(__dirname, '..', '..', 'public')));
 
 	app.use(staticRouter);
 
@@ -267,7 +267,7 @@ const start = async () => {
 
 	app.use((req, res, next) => {
 		if (req.method === 'GET' && req.headers.accept?.startsWith('text/html')) {
-			res.sendFile(join(__dirname, 'public', 'index.html'));
+			res.sendFile(join(__dirname, '..', '..', 'public', 'index.html'));
 			return;
 		}
 
