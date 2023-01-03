@@ -1,4 +1,4 @@
-import {type Maybe, makeApiVerbCreator} from '../util';
+import {type Maybe, makeApiVerbCreator, memoizeTemporarily} from '../util';
 import type Session from '../server/models/session';
 import type Event from '../server/models/event';
 import {type ParticipantConfig} from '../server/api/participantConfig';
@@ -20,6 +20,8 @@ export type Api = {
 	postEvent: (event: Event) => Promise<boolean>;
 };
 
+const cache = memoizeTemporarily(1000);
+
 export const createApi = (serverUrl: string): Api => {
 	let participantCode = localStorage.getItem('participantCode') ?? '';
 	let session: Session | undefined;
@@ -34,6 +36,8 @@ export const createApi = (serverUrl: string): Api => {
 
 	const post = verb('POST');
 	const get = verb('GET');
+
+	const getConfigCached = cache(async () => get<ParticipantConfig>(getParticipantConfig, {}, headers()));
 
 	return {
 		async createSession() {
@@ -79,7 +83,7 @@ export const createApi = (serverUrl: string): Api => {
 		},
 
 		async getConfig() {
-			return get<ParticipantConfig>(getParticipantConfig, {}, headers());
+			return getConfigCached(undefined);
 		},
 
 		async postEvent(event: Event) {
