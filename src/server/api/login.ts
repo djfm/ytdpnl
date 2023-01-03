@@ -22,7 +22,8 @@ export class LoginResponse {
 	}
 }
 
-export const createLoginRoute: RouteCreator = ({log, dataSource, tokenTools}) => async (req, res) => {
+export const createLoginRoute: RouteCreator = ({createLogger, dataSource, tokenTools}) => async (req, res) => {
+	const log = createLogger(req.requestId);
 	log('Received login request:', req.body.email);
 
 	const {email, password} = req.body as {email: string; password: string};

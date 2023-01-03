@@ -2,7 +2,8 @@ import {type RouteCreator} from '../lib/routeContext';
 
 import ExperimentConfig from '../models/experimentConfig';
 
-export const createGetExperimentConfigHistoryRoute: RouteCreator = ({log, dataSource}) => async (_req, res) => {
+export const createGetExperimentConfigHistoryRoute: RouteCreator = ({createLogger, dataSource}) => async (req, res) => {
+	const log = createLogger(req.requestId);
 	log('Received experiment config history request');
 
 	const repo = dataSource.getRepository(ExperimentConfig);

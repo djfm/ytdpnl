@@ -1,8 +1,14 @@
-export type Logger = (message: string, ...args: any[]) => void;
+export type CreateLogger = (requestId: number) => (message: string, ...args: any[]) => void;
 
-export const createDefaultLogger = (): Logger =>
+export const createDefaultLogger = (): CreateLogger => (requestId: number) =>
 	(...args: any[]) => {
-		console.log(new Date(), ...args);
+		console.log(`[request #${requestId} at ${new Date().toISOString()}]`, ...args.map(arg => {
+			if (typeof arg === 'string') {
+				return arg.toLowerCase();
+			}
+
+			return arg as unknown;
+		}));
 	};
 
 export default createDefaultLogger;

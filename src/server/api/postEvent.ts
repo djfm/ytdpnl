@@ -6,7 +6,9 @@ import ExperimentConfig from '../models/experimentConfig';
 
 import {validateNew} from '../../util';
 
-export const createPostEventRoute: RouteCreator = ({log, dataSource}) => async (req, res) => {
+export const createPostEventRoute: RouteCreator = ({createLogger, dataSource}) => async (req, res) => {
+	const log = createLogger(req.requestId);
+
 	log('Received post event request');
 
 	const {sessionUuid, participantCode} = req;

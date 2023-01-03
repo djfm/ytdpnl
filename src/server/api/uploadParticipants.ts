@@ -22,7 +22,8 @@ const isParticipantRecord = (record: Record<string, string>): record is Particip
 	&& record.code.length > 0
 	&& (record.arm === 'control' || record.arm === 'treatment');
 
-export const createUploadParticipantsRoute: RouteCreator = ({log, dataSource}) => async (req, res) => {
+export const createUploadParticipantsRoute: RouteCreator = ({createLogger, dataSource}) => async (req, res) => {
+	const log = createLogger(req.requestId);
 	log('Received upload participants request');
 
 	const participants = req?.file?.buffer.toString('utf-8');

@@ -4,7 +4,8 @@ import type {Page} from '../lib/pagination';
 
 import Participant from '../models/participant';
 
-export const createGetParticipantsRoute: RouteCreator = ({log, dataSource}) => async (req, res) => {
+export const createGetParticipantsRoute: RouteCreator = ({createLogger, dataSource}) => async (req, res) => {
+	const log = createLogger(req.requestId);
 	log('Received participants request');
 
 	const {page} = req.params;

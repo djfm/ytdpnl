@@ -18,11 +18,11 @@ if (!has(`${env}-server-url`)(config)) {
 
 const serverUrl = config[`${env}-server-url`];
 
-export const createRegisterRoute: RouteCreator = ({dataSource, mailer, mailerFrom, log}) => async (req, res) => {
+export const createRegisterRoute: RouteCreator = ({dataSource, mailer, mailerFrom, createLogger}) => async (req, res) => {
+	const log = createLogger(req.requestId);
+
 	const admin = new Admin();
 	Object.assign(admin, req.body);
-	// TODO: extract this to a function
-	// that inflates received models in one call
 	admin.createdAt = new Date();
 	admin.updatedAt = new Date();
 	admin.password = await hashPassword(admin.password);

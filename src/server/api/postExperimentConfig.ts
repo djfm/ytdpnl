@@ -3,7 +3,8 @@ import {type RouteCreator} from '../lib/routeContext';
 import ExperimentConfig from '../models/experimentConfig';
 import {validateNew} from '../../util';
 
-export const createPostExperimentConfigRoute: RouteCreator = ({log, dataSource}) => async (req, res) => {
+export const createPostExperimentConfigRoute: RouteCreator = ({createLogger, dataSource}) => async (req, res) => {
+	const log = createLogger(req.requestId);
 	log('Received create experiment config request');
 
 	if (req.adminId === undefined) {

@@ -2,14 +2,14 @@ import {type DataSource} from 'typeorm';
 import {type Transporter} from 'nodemailer';
 import {type Request, type Response} from 'express';
 
-import {type Logger} from './logger';
+import {type CreateLogger} from './logger';
 import {type TokenTools} from './crypto';
 
 export type RouteContext = {
 	dataSource: DataSource;
 	mailer: Transporter;
 	mailerFrom: string;
-	log: Logger;
+	createLogger: CreateLogger;
 	tokenTools: TokenTools;
 };
 

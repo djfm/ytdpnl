@@ -2,7 +2,8 @@ import {type RouteCreator} from '../lib/routeContext';
 
 import Session from '../models/session';
 
-export const createCreateSessionRoute: RouteCreator = ({log, dataSource}) => async (req, res) => {
+export const createCreateSessionRoute: RouteCreator = ({createLogger, dataSource}) => async (req, res) => {
+	const log = createLogger(req.requestId);
 	const code = req.participantCode;
 
 	log('Received create session request for participant code:', code);

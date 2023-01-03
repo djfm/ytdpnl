@@ -3,16 +3,18 @@ import {type Repository} from 'typeorm';
 
 import {type TokenTools} from './crypto';
 import {type Token} from '../models/token';
-import {type Logger} from './logger';
+import {type CreateLogger} from './logger';
 
 export type AuthMiddlewareConfig = {
 	tokenTools: TokenTools;
 	tokenRepo: Repository<Token>;
-	log: Logger;
+	createLogger: CreateLogger;
 };
 
-export const createAuthMiddleWare = ({log, tokenTools, tokenRepo}: AuthMiddlewareConfig) =>
+export const createAuthMiddleWare = ({createLogger, tokenTools, tokenRepo}: AuthMiddlewareConfig) =>
 	(req: express.Request, res: express.Response, next: express.NextFunction) => {
+		const log = createLogger(req.requestId);
+
 		const token = req.headers.authorization!;
 		log('Checking token:', token);
 

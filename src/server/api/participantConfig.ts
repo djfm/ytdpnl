@@ -8,7 +8,9 @@ export type ParticipantConfig = IndividualConfig & {
 	experimentConfigId: number;
 };
 
-export const createGetParticipantConfigRoute: RouteCreator = ({log, dataSource}) => async (req, res) => {
+export const createGetParticipantConfigRoute: RouteCreator = ({createLogger, dataSource}) => async (req, res) => {
+	const log = createLogger(req.requestId);
+
 	log('Received get participant config request');
 
 	const participantRepo = dataSource.getRepository(Participant);

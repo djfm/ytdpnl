@@ -4,7 +4,8 @@ import {type RouteCreator} from '../lib/routeContext';
 
 import Admin from '../models/admin';
 
-export const createVerifyEmailRoute: RouteCreator = ({log, dataSource}) => async (req, res) => {
+export const createVerifyEmailRoute: RouteCreator = ({createLogger, dataSource}) => async (req, res) => {
+	const log = createLogger(req.requestId);
 	const {token} = req.query;
 
 	if (!token || typeof token !== 'string') {

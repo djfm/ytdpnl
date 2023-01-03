@@ -1,9 +1,10 @@
 import type express from 'express';
 
-import {type Logger} from './logger';
+import {type CreateLogger} from './logger';
 
-export const createParticipantMiddleWare = (log: Logger) =>
+export const createParticipantMiddleWare = (createLogger: CreateLogger) =>
 	(req: express.Request, res: express.Response, next: express.NextFunction) => {
+		const log = createLogger(req.requestId);
 		const participantCode = req.headers['x-participant-code'];
 
 		log('Checking participant code:', participantCode);

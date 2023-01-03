@@ -4,5 +4,6 @@ declare namespace Express {
 		adminId?: number;
 		participantCode?: string;
 		sessionUuid?: string;
+		requestId: number;
 	}
 }

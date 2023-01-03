@@ -188,7 +188,7 @@ const start = async () => {
 
 	console.log('Successfully initialized data source');
 
-	const log = createDefaultLogger();
+	const createLogger = createDefaultLogger();
 
 	const privateKey = await readFile(join(__dirname, '..', '..', 'private.key'), 'utf-8');
 	const tokenTools = createTokenTools(privateKey);
@@ -197,7 +197,7 @@ const start = async () => {
 		dataSource: ds,
 		mailer,
 		mailerFrom: smtpConfig.auth.user,
-		log,
+		createLogger,
 		tokenTools,
 	};
 
@@ -206,10 +206,10 @@ const start = async () => {
 	const authMiddleware = createAuthMiddleWare({
 		tokenRepo,
 		tokenTools,
-		log,
+		createLogger,
 	});
 
-	const participantMw = createParticipantMiddleware(log);
+	const participantMw = createParticipantMiddleware(createLogger);
 
 	const app = express();
 
@@ -233,8 +233,12 @@ const start = async () => {
 	app.use(bodyParser.json());
 	app.use(cors());
 
+	let requestId = 0;
+
 	app.use((req, _res, next) => {
-		log('Request:', req.method, req.url);
+		++requestId;
+		req.requestId = requestId;
+		createLogger(req.requestId)(req.method, req.url);
 		next();
 	});
 

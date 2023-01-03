@@ -2,7 +2,8 @@ import {type RouteCreator} from '../lib/routeContext';
 
 import Participant from '../models/participant';
 
-export const createPostCheckParticipantCodeRoute: RouteCreator = ({log, dataSource}) => async (req, res) => {
+export const createPostCheckParticipantCodeRoute: RouteCreator = ({createLogger, dataSource}) => async (req, res) => {
+	const log = createLogger(req.requestId);
 	log('Received check participant code request');
 
 	const {code} = req.body as Record<string, string>;
