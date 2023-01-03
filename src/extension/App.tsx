@@ -74,7 +74,7 @@ const App: React.FC = () => {
 				console.error('Could not get config:', c.message);
 			}
 		}).catch(console.error);
-	}, [currentUrl]);
+	}, [currentUrl, participantCode, participantCodeValid]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
