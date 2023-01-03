@@ -20,6 +20,8 @@ const EventC: React.FC<{event: Event}> = ({event}) => (
 				<dd><Typography>{new Date(event.createdAt).toISOString()}</Typography></dd>
 				<dt><Typography>Session</Typography></dt>
 				<dd><Typography>{event.sessionUuid}</Typography></dd>
+				<dt><Typography>URL</Typography></dt>
+				<dd><Typography>{event.url}</Typography></dd>
 			</dl>
 		</CardC>
 	</Grid>
