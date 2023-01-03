@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 
 import type {ParticipantConfig} from '../server/api/participantConfig';
+import Event from '../server/models/event';
 
 import MessageC from '../server-app/components/MessageC';
 
@@ -26,6 +27,17 @@ const App: React.FC = () => {
 	const [cfg, setCfg] = useState<ParticipantConfig | undefined>();
 
 	const api = useApi();
+
+	const postEvent = async (e: Event) => {
+		const enrichedEvent = new Event();
+		Object.assign(enrichedEvent, e);
+
+		if (cfg) {
+			enrichedEvent.experimentConfigId = cfg.experimentConfigId;
+		}
+
+		api.postEvent(enrichedEvent).catch(console.error);
+	};
 
 	useEffect(() => {
 		if (window.location.href !== currentUrl) {
@@ -121,7 +133,7 @@ const App: React.FC = () => {
 		);
 	}
 
-	return (<RecommendationsListC url={currentUrl} cfg={cfg} />);
+	return (<RecommendationsListC url={currentUrl} cfg={cfg} postEvent={postEvent}/>);
 };
 
 export default App;

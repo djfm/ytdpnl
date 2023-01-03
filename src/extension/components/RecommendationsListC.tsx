@@ -2,6 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {styled} from '@mui/material/styles';
 import crypto from 'crypto';
 
+import type Event from '../../server/models/event';
+import RecommendationsEvent from '../../server/models/recommendationsEvent';
+
 import type Recommendation from '../models/Recommendation';
 import type {ExperimentConfig} from '../createRecommendationsList';
 import createRecommendationsList from '../createRecommendationsList';
@@ -54,7 +57,11 @@ const debugWrapper = (r: Recommendation) => {
 	return Mixed;
 };
 
-export const RecommendationsListC: React.FC<{url: string; cfg: ExperimentConfig}> = ({url, cfg}) => {
+export const RecommendationsListC: React.FC<{
+	url: string;
+	cfg: ExperimentConfig;
+	postEvent: (e: Event) => Promise<void>;
+}> = ({url, cfg, postEvent}) => {
 	const [nonPersonalizedRecommendations, setNonPersonalizedRecommendations] = useState<Recommendation[]>([]);
 	const [defaultRecommendations, setDefaultRecommendations] = useState<Recommendation[]>([]);
 	const [nonPersonalizedLoading, setNonPersonalizedLoading] = useState<boolean>(true);
@@ -102,7 +109,18 @@ export const RecommendationsListC: React.FC<{url: string; cfg: ExperimentConfig}
 
 		const [np, p] = setPersonalizedFlags(nonPersonalizedRecommendations, defaultRecommendations);
 
-		setFinalRecommendations(createRecommendationsList(cfg)(np, p));
+		const finalRecommendations = createRecommendationsList(cfg)(np, p);
+		setFinalRecommendations(finalRecommendations);
+
+		const event = new RecommendationsEvent(
+			nonPersonalizedRecommendations,
+			defaultRecommendations,
+			finalRecommendations,
+		);
+
+		event.url = url;
+
+		postEvent(event).catch(console.error);
 
 		console.log('LOADED!', url);
 	}, [loaded, nonPersonalizedRecommendations, defaultRecommendations]);

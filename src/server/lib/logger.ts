@@ -1,4 +1,6 @@
-export type CreateLogger = (requestId: number) => (message: string, ...args: any[]) => void;
+export type LogFunction = (message: string, ...args: any[]) => void;
+
+export type CreateLogger = (requestId: number) => LogFunction;
 
 export const createDefaultLogger = (): CreateLogger => (requestId: number) =>
 	(...args: any[]) => {

@@ -1,4 +1,4 @@
-type Recommendation = {
+export type Recommendation = {
 	title: string;
 	url: string;
 	channelName: string;
