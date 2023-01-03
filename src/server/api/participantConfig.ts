@@ -1,9 +1,12 @@
 import {type RouteCreator} from '../lib/routeContext';
 
-import Participant, {ExperimentArm} from '../models/participant';
+import Participant from '../models/participant';
 import ExperimentConfig from '../models/experimentConfig';
+import {type ExperimentConfig as IndividualConfig} from '../../extension/createRecommendationsList';
 
-import type {ExperimentConfig as Config} from '../../extension/createRecommendationsList';
+export type ParticipantConfig = IndividualConfig & {
+	experimentConfigId: number;
+};
 
 export const createGetParticipantConfigRoute: RouteCreator = ({log, dataSource}) => async (req, res) => {
 	log('Received get participant config request');
@@ -31,12 +34,13 @@ export const createGetParticipantConfigRoute: RouteCreator = ({log, dataSource})
 		return;
 	}
 
-	const arm = participant.arm === ExperimentArm.CONTROL ? 'control' : 'treatment';
+	const {arm} = participant;
 	const {nonPersonalizedProbability} = config;
 
-	const result: Config = {
+	const result: ParticipantConfig = {
 		arm,
 		nonPersonalizedProbability,
+		experimentConfigId: config.id,
 	};
 
 	log('Sending participant config', result);
