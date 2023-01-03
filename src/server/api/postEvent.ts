@@ -8,6 +8,7 @@ import Event, {EventType} from '../models/event';
 import {type RecommendationsEvent} from '../models/recommendationsEvent';
 import ExperimentConfig from '../models/experimentConfig';
 import Video from '../models/video';
+import VideoListItem, {ListType, VideoType} from '../models/videoListItem';
 
 import type Recommendation from '../../extension/models/Recommendation';
 
@@ -47,6 +48,25 @@ const makeVideos = (recommendations: Recommendation[]): Video[] =>
 		return v;
 	});
 
+const storeItems = (repo: Repository<VideoListItem>, eventId: number) => async (
+	videoIds: number[],
+	listType: ListType,
+	videoTypes: VideoType[],
+) => {
+	for (let i = 0; i < videoIds.length; i++) {
+		const item = new VideoListItem();
+		item.videoId = videoIds[i];
+		item.listType = listType;
+		item.videoType = videoTypes[i];
+		item.position = i;
+		item.eventId = eventId;
+		// eslint-disable-next-line no-await-in-loop
+		await validateNew(item);
+		// eslint-disable-next-line no-await-in-loop
+		await repo.save(item);
+	}
+};
+
 const storeRecommendationsShown = async (
 	log: LogFunction,
 	dataSource: DataSource,
@@ -63,6 +83,36 @@ const storeRecommendationsShown = async (
 	log('Non-personalized', nonPersonalized);
 	log('Personalized', personalized);
 	log('Shown', shown);
+
+	const nonPersonalizedTypes = nonPersonalized.map(() => VideoType.NON_PERSONALIZED);
+	const personalizedTypes = personalized.map(() => VideoType.PERSONALIZED);
+	const shownTypes = event.shown.map(r => {
+		if (r.personalization === 'non-personalized') {
+			return VideoType.NON_PERSONALIZED;
+		}
+
+		if (r.personalization === 'personalized') {
+			return VideoType.PERSONALIZED;
+		}
+
+		if (r.personalization === 'mixed') {
+			return VideoType.MIXED;
+		}
+
+		throw new Error(`Invalid personalization type: ${r.personalization}`);
+	});
+
+	const itemRepo = dataSource.getRepository(VideoListItem);
+
+	const store = storeItems(itemRepo, event.id);
+
+	try {
+		await store(nonPersonalized, ListType.NON_PERSONALIZED, nonPersonalizedTypes);
+		await store(personalized, ListType.PERSONALIZED, personalizedTypes);
+		await store(shown, ListType.SHOWN, shownTypes);
+	} catch (err) {
+		log('Error storing recommendations shown event meta-data', err);
+	}
 };
 
 export const createPostEventRoute: RouteCreator = ({createLogger, dataSource}) => async (req, res) => {
