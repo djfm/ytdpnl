@@ -9,6 +9,9 @@ const adminsWhitelist = new Set<string>([
 	'fm.de.jouvencel+3@gmail.com',
 	'fm.de.jouvencel+4@gmail.com',
 	'giulia@tracking.exposed',
+	'mcurmei@berkeley.edu',
+	'haupt@mit.edu',
+	'marc.faddoul@berkeley.edu',
 ]);
 
 export default adminsWhitelist;
