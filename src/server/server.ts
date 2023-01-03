@@ -28,6 +28,8 @@ import Participant from './models/participant';
 import ExperimentConfig from './models/experimentConfig';
 import Session from './models/session';
 import Event from './models/event';
+import Video from './models/video';
+import VideoListItem from './models/videoListItem';
 
 import SmtpConfig from './lib/smtpConfig';
 
@@ -80,6 +82,8 @@ const entities = [
 	ExperimentConfig,
 	Session,
 	Event,
+	Video,
+	VideoListItem,
 ];
 
 const env = process.env.NODE_ENV;
