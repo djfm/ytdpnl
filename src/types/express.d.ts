@@ -3,5 +3,6 @@ declare namespace Express {
 	export interface Request {
 		adminId?: number;
 		participantCode?: string;
+		sessionUuid?: string;
 	}
 }

@@ -20,6 +20,13 @@ export const createParticipantMiddleWare = (log: Logger) =>
 
 		log('Participant code:', participantCode);
 
+		const sessionUuid = req.headers['x-session-uuid'];
+
+		if (sessionUuid && typeof sessionUuid === 'string') {
+			log('Session UUID:', sessionUuid);
+			req.sessionUuid = sessionUuid;
+		}
+
 		req.participantCode = participantCode;
 
 		next();

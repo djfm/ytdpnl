@@ -1,5 +1,6 @@
 import {type Maybe, makeApiVerbCreator} from '../util';
-import {type Session} from '../server/models/session';
+import type Session from '../server/models/session';
+import type Event from '../server/models/event';
 
 import {type ExperimentConfig} from './createRecommendationsList';
 
@@ -7,6 +8,7 @@ import {
 	postCreateSession,
 	postCheckParticipantCode,
 	getParticipantConfig,
+	postEvent,
 } from '../server/routes';
 
 export type Api = {
@@ -16,6 +18,7 @@ export type Api = {
 	newSession: () => Promise<boolean>;
 	getSession: () => Session | undefined;
 	getConfig: () => Promise<Maybe<ExperimentConfig>>;
+	postEvent: (event: Event) => Promise<boolean>;
 };
 
 export const createApi = (serverUrl: string): Api => {
@@ -25,6 +28,7 @@ export const createApi = (serverUrl: string): Api => {
 	const headers = () => ({
 		'Content-Type': 'application/json',
 		'X-Participant-Code': participantCode,
+		'X-Session-UUID': session?.uuid ?? '',
 	});
 
 	const verb = makeApiVerbCreator(serverUrl);
@@ -77,6 +81,25 @@ export const createApi = (serverUrl: string): Api => {
 
 		async getConfig() {
 			return get<ExperimentConfig>(getParticipantConfig, {}, headers());
+		},
+
+		async postEvent(event: Event) {
+			if (session === undefined) {
+				console.log('Creating session before posting event');
+				await this.newSession();
+			}
+
+			event.sessionUuid = session?.uuid ?? '';
+
+			const res = await post<boolean>(postEvent, event, headers());
+
+			if (res.kind === 'Success') {
+				return true;
+			}
+
+			console.error('Failed to post event:', res.message);
+
+			return false;
 		},
 	};
 };

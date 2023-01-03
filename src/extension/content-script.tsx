@@ -9,11 +9,25 @@ import theme from './theme';
 
 import {defaultApi as api, apiProvider as ApiProvider} from './apiProvider';
 
+import Event, {EventType} from '../server/models/event';
+
 let root: HTMLElement | undefined;
+let previousUrl: string | undefined;
 
 api.newSession().catch(console.error);
 
 const observer = new MutationObserver(() => {
+	if (window.location.href !== previousUrl) {
+		previousUrl = window.location.href;
+
+		const event = new Event();
+
+		event.type = EventType.PAGE_VIEW;
+		event.url = window.location.href;
+
+		api.postEvent(event).catch(console.error);
+	}
+
 	if (!isOnVideoPage()) {
 		return;
 	}
