@@ -1,8 +1,7 @@
 import {type Maybe, makeApiVerbCreator} from '../util';
 import type Session from '../server/models/session';
 import type Event from '../server/models/event';
-
-import {type ExperimentConfig} from './createRecommendationsList';
+import {type ParticipantConfig} from '../server/api/participantConfig';
 
 import {
 	postCreateSession,
@@ -17,7 +16,7 @@ export type Api = {
 	setAuth: (participantCode: string) => void;
 	newSession: () => Promise<boolean>;
 	getSession: () => Session | undefined;
-	getConfig: () => Promise<Maybe<ExperimentConfig>>;
+	getConfig: () => Promise<Maybe<ParticipantConfig>>;
 	postEvent: (event: Event) => Promise<boolean>;
 };
 
@@ -80,7 +79,7 @@ export const createApi = (serverUrl: string): Api => {
 		},
 
 		async getConfig() {
-			return get<ExperimentConfig>(getParticipantConfig, {}, headers());
+			return get<ParticipantConfig>(getParticipantConfig, {}, headers());
 		},
 
 		async postEvent(event: Event) {

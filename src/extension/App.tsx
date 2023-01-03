@@ -8,7 +8,7 @@ import {
 	FormHelperText,
 } from '@mui/material';
 
-import type {ExperimentConfig} from './createRecommendationsList';
+import type {ParticipantConfig} from '../server/api/participantConfig';
 
 import MessageC from '../server-app/components/MessageC';
 
@@ -23,7 +23,7 @@ const App: React.FC = () => {
 	const [participantCode, setParticipantCode] = useState<string>(localCode);
 	const [participantCodeValid, setParticipantCodeValid] = useState<boolean>(localCode !== '');
 	const [error, setError] = useState<string | undefined>();
-	const [cfg, setCfg] = useState<ExperimentConfig | undefined>();
+	const [cfg, setCfg] = useState<ParticipantConfig | undefined>();
 
 	const api = useApi();
 

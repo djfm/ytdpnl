@@ -17,6 +17,7 @@ module.exports = {
 		fallback: {
 			crypto: 'crypto-browserify',
 			stream: 'stream-browserify',
+			'react-native-sqlite-storage': false,
 		},
 	},
 	module: {
