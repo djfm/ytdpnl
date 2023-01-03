@@ -17,6 +17,9 @@ export const createGetParticipantsRoute: RouteCreator = ({createLogger, dataSour
 			.find({
 				skip: page * pageSize,
 				take: pageSize,
+				order: {
+					createdAt: 'DESC',
+				},
 			});
 
 		const count = await participantRepo.count();

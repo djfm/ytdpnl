@@ -18,6 +18,9 @@ export const createGetEventsRoute: RouteCreator = ({createLogger, dataSource}) =
 			.find({
 				skip: page * pageSize,
 				take: pageSize,
+				order: {
+					createdAt: 'DESC',
+				},
 			});
 
 		const count = await repo.count();
