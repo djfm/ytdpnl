@@ -5,6 +5,7 @@ import {type Token} from '../server/models/token';
 import {type Participant} from '../server/models/participant';
 import {type LoginResponse} from '../server/api/login';
 import {type ExperimentConfig} from '../server/models/experimentConfig';
+import {type Event} from '../server/models/event';
 
 import {
 	postRegister,
@@ -14,6 +15,7 @@ import {
 	getParticipants,
 	getExperimentConfig,
 	getExperimentConfigHistory,
+	getEvents,
 } from '../server/routes';
 
 import {
@@ -32,6 +34,7 @@ export type AdminApi = {
 	getAuthTest: () => Promise<Maybe<Admin>>;
 	uploadParticipants: (file: File) => Promise<Maybe<string>>;
 	getParticipants: (page: number, pageSize?: number) => Promise<Maybe<Page<Participant>>>;
+	getEvents: (page: number, pageSize?: number) => Promise<Maybe<Page<Event>>>;
 	getExperimentConfig: () => Promise<Maybe<ExperimentConfig>>;
 	postExperimentConfig: (config: ExperimentConfig) => Promise<Maybe<ExperimentConfig>>;
 	getExperimentConfigHistory: () => Promise<Maybe<ExperimentConfig[]>>;
@@ -147,6 +150,10 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 
 		async getParticipants(page = 0, pageSize = 15) {
 			return get<Page<Participant>>(`${getParticipants}/${page}?pageSize=${pageSize}`, {}, headers());
+		},
+
+		async getEvents(page = 0, pageSize = 15) {
+			return get<Page<Event>>(`${getEvents}/${page}?pageSize=${pageSize}`, {}, headers());
 		},
 
 		async getExperimentConfig() {

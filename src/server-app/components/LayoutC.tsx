@@ -27,6 +27,7 @@ import {
 import HomeC from './HomeC';
 import ParticipantsC from './ParticipantsC';
 import ExperimentConfigC from './ExperimentConfigC';
+import EventsC from './EventsC';
 import NotFoundC from './NotFoundC';
 import UserWidgetC from './UserWidgetC';
 
@@ -51,6 +52,11 @@ const navItems: NavItem[] = [
 		label: 'Experiment Config',
 		link: '/experiment-config',
 		component: ExperimentConfigC,
+	},
+	{
+		label: 'Events',
+		link: '/events',
+		component: EventsC,
 	},
 ];
 

@@ -254,7 +254,7 @@ const start = async () => {
 	app.get(getExperimentConfig, authMiddleware, createGetExperimentConfigRoute(routeContext));
 	app.post(postExperimentConfig, authMiddleware, createPostExperimentConfigRoute(routeContext));
 	app.get(getExperimentConfigHistory, authMiddleware, createGetExperimentConfigHistoryRoute(routeContext));
-	app.get(getEvents, authMiddleware, createGetEventsRoute(routeContext));
+	app.get(`${getEvents}/:page?`, authMiddleware, createGetEventsRoute(routeContext));
 
 	app.post(postCheckParticipantCode, createPostCheckParticipantCodeRoute(routeContext));
 	app.post(postCreateSession, participantMw, createCreateSessionRoute(routeContext));
