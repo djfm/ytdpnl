@@ -166,8 +166,6 @@ const App: React.FC = () => {
 		<Link onClick={handleLogout} sx={{
 			my: 2,
 			display: 'block',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			'&:hover': 'pointer',
 		}}>
 			log out of experiment
 		</Link>
