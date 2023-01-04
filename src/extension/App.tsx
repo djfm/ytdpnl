@@ -25,8 +25,25 @@ const App: React.FC = () => {
 	const [participantCodeValid, setParticipantCodeValid] = useState<boolean>(localCode !== '');
 	const [error, setError] = useState<string | undefined>();
 	const [cfg, setCfg] = useState<ParticipantConfig | undefined>();
+	const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
 	const api = useApi();
+
+	const updateUrl = () => {
+		if (window.location.href !== currentUrl) {
+			log('SETTING CURRENT URL', window.location.href);
+			setCurrentUrl(window.location.href);
+		}
+	};
+
+	const updateLoggedIn = () => {
+		const loggedInWidget = document.querySelector('#avatar-btn');
+		if (loggedInWidget) {
+			setLoggedIn(true);
+		} else {
+			setLoggedIn(false);
+		}
+	};
 
 	const postEvent = async (e: Event) => {
 		const enrichedEvent = new Event();
@@ -40,16 +57,12 @@ const App: React.FC = () => {
 	};
 
 	useEffect(() => {
-		if (window.location.href !== currentUrl) {
-			log('SETTING CURRENT URL', window.location.href);
-			setCurrentUrl(window.location.href);
-		}
+		updateUrl();
+		updateLoggedIn();
 
 		const observer = new MutationObserver(() => {
-			if (window.location.href !== currentUrl) {
-				log('SETTING CURRENT URL AGAIN', window.location.href);
-				setCurrentUrl(window.location.href);
-			}
+			updateUrl();
+			updateLoggedIn();
 		});
 
 		observer.observe(document.body, {
@@ -95,6 +108,14 @@ const App: React.FC = () => {
 		api.setAuth(participantCode);
 		api.newSession().catch(console.error);
 	};
+
+	if (!loggedIn) {
+		return (
+			<Typography>
+				You need to be logged in to YouTube to use this extension.
+			</Typography>
+		);
+	}
 
 	if (!participantCodeValid) {
 		return (
