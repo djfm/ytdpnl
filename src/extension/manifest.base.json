@@ -7,11 +7,5 @@
           "matches": ["https://*.youtube.com/*", "https://*.youtu.be/*"],
           "js": ["content-script.js"]
         }
-      ],
-    "permissions": [
-        "https://*.youtube.com/*",
-        "https://*.youtu.be/*",
-        "https://ytdpnl-dev.fmdj.fr/api/*",
-        "https://ytdnlp.fmdj.fr/api/*"
-    ]
+      ]
 }

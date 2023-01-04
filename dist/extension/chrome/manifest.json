@@ -13,7 +13,7 @@
 			]
 		}
 	],
-	"permissions": [
+	"host_permissions": [
 		"https://*.youtube.com/*",
 		"https://*.youtu.be/*",
 		"https://ytdpnl-dev.fmdj.fr/api/*",

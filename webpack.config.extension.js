@@ -5,6 +5,13 @@ const FileManagerPlugin = require('filemanager-webpack-plugin');
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
 
+const hostPermissions = [
+	'https://*.youtube.com/*',
+	'https://*.youtu.be/*',
+	'https://ytdpnl-dev.fmdj.fr/api/*',
+	'https://ytdnlp.fmdj.fr/api/*',
+];
+
 module.exports = {
 	mode,
 	entry: './src/extension/content-script.tsx',
@@ -35,6 +42,11 @@ module.exports = {
 				{
 					from: 'src/extension/manifest.base.json',
 					to: 'manifest.firefox.json',
+					transform(content) {
+						const manifest = JSON.parse(content);
+						manifest.permissions = hostPermissions;
+						return JSON.stringify(manifest, null, '\t');
+					},
 				},
 				{
 					from: 'src/extension/manifest.base.json',
@@ -43,6 +55,8 @@ module.exports = {
 						const manifest = JSON.parse(content);
 						// eslint-disable-next-line camelcase
 						manifest.manifest_version = 3;
+						// eslint-disable-next-line camelcase
+						manifest.host_permissions = hostPermissions;
 						return JSON.stringify(manifest, null, '\t');
 					},
 				},
