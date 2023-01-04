@@ -110,6 +110,24 @@ export const wait = async (ms: number): Promise<void> => new Promise(resolve => 
 	setTimeout(resolve, ms);
 });
 
+export const retryOnError = (maxAttempts: number, delayMs: number) => <T, U>(f: (x: T) => Promise<U>): ((x: T) => Promise<U>) => async (x: T): Promise<U> => {
+	for (let i = 0; i < maxAttempts; i++) {
+		try {
+			// eslint-disable-next-line no-await-in-loop
+			return await f(x);
+		} catch (error) {
+			if (i === maxAttempts - 1) {
+				throw error;
+			}
+
+			// eslint-disable-next-line no-await-in-loop
+			await wait(delayMs);
+		}
+	}
+
+	throw new Error('never happens');
+};
+
 export const get = (path: string[]) => (x: unknown): unknown => {
 	let out = x;
 

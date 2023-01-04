@@ -16,13 +16,14 @@ import {
 
 import RecommendationC from './RecommendationC';
 
-import {memoizeTemporarily, setPersonalizedFlags} from '../../util';
+import {memoizeTemporarily, setPersonalizedFlags, retryOnError} from '../../util';
 import {debug, log} from '../lib';
 
 const memo = memoizeTemporarily(10000);
+const retry = retryOnError(2, 1000);
 
-const fetchDefault = memo(fetchDefaultRecommendations);
-const fetchPersonalized = memo(fetchNonPersonalizedRecommendations);
+const fetchDefault = memo(retry(fetchDefaultRecommendations));
+const fetchPersonalized = memo(retry(fetchNonPersonalizedRecommendations));
 
 const hashRecommendationsList = (recommendations: Recommendation[]): string => {
 	const serialized = JSON.stringify(recommendations);
