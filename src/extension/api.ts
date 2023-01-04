@@ -19,6 +19,7 @@ export type Api = {
 	ensureSession: () => Promise<void>;
 	getConfig: () => Promise<Maybe<ParticipantConfig>>;
 	postEvent: (event: Event) => Promise<boolean>;
+	logout(): void;
 };
 
 const cache = memoizeTemporarily(1000);
@@ -126,6 +127,12 @@ export const createApi = (serverUrl: string): Api => {
 			console.error('Failed to post event:', res.message);
 
 			return false;
+		},
+
+		logout() {
+			localStorage.removeItem('participantCode');
+			participantCode = '';
+			session = undefined;
 		},
 	};
 };

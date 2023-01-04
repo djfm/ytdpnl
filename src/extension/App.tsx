@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {
 	Box,
 	Button,
+	Link,
 	TextField,
 	Typography,
 	FormHelperText,
@@ -28,6 +29,12 @@ const App: React.FC = () => {
 	const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
 	const api = useApi();
+
+	const handleLogout = () => {
+		api.logout();
+		setParticipantCode('');
+		setParticipantCodeValid(false);
+	};
 
 	const updateUrl = () => {
 		if (window.location.href !== currentUrl) {
@@ -154,7 +161,17 @@ const App: React.FC = () => {
 		);
 	}
 
-	return (<RecommendationsListC url={currentUrl} cfg={cfg} postEvent={postEvent}/>);
+	return (<>
+		<RecommendationsListC url={currentUrl} cfg={cfg} postEvent={postEvent}/>
+		<Link onClick={handleLogout} sx={{
+			my: 2,
+			display: 'block',
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			'&:hover': 'pointer',
+		}}>
+			log out of experiment
+		</Link>
+	</>);
 };
 
 export default App;
