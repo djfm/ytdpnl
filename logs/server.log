@@ -1,0 +1,31 @@
+[request #1 at 2023-01-07T11:04:28.127Z] get /favicon.ico
+[request #2 at 2023-01-07T11:05:16.471Z] post /api/login
+[request #2 at 2023-01-07T11:05:16.473Z] received login request: fm.de.jouvencel@gmail.com
+[request #3 at 2023-01-07T11:05:16.750Z] get /api/auth-test
+[request #3 at 2023-01-07T11:05:16.751Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #3 at 2023-01-07T11:05:16.751Z] verifying token
+[request #3 at 2023-01-07T11:05:16.753Z] checking token in the database
+[request #3 at 2023-01-07T11:05:16.755Z] token is valid
+[request #3 at 2023-01-07T11:05:16.756Z] received auth test request
+[request #3 at 2023-01-07T11:05:16.758Z] fetched admin: fm.de.jouvencel@gmail.com
+[request #4 at 2023-01-07T11:05:16.760Z] get /api/auth-test
+[request #4 at 2023-01-07T11:05:16.760Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #4 at 2023-01-07T11:05:16.760Z] verifying token
+[request #4 at 2023-01-07T11:05:16.761Z] checking token in the database
+[request #4 at 2023-01-07T11:05:16.765Z] token is valid
+[request #4 at 2023-01-07T11:05:16.766Z] received auth test request
+[request #4 at 2023-01-07T11:05:16.767Z] fetched admin: fm.de.jouvencel@gmail.com
+[request #5 at 2023-01-07T11:05:16.769Z] get /api/auth-test
+[request #5 at 2023-01-07T11:05:16.769Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #5 at 2023-01-07T11:05:16.770Z] verifying token
+[request #5 at 2023-01-07T11:05:16.770Z] checking token in the database
+[request #5 at 2023-01-07T11:05:16.777Z] token is valid
+[request #5 at 2023-01-07T11:05:16.778Z] received auth test request
+[request #5 at 2023-01-07T11:05:16.780Z] fetched admin: fm.de.jouvencel@gmail.com
+[request #6 at 2023-01-07T11:05:16.784Z] get /api/auth-test
+[request #6 at 2023-01-07T11:05:16.785Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #6 at 2023-01-07T11:05:16.785Z] verifying token
+[request #6 at 2023-01-07T11:05:16.786Z] checking token in the database
+[request #6 at 2023-01-07T11:05:16.789Z] token is valid
+[request #6 at 2023-01-07T11:05:16.790Z] received auth test request
+[request #6 at 2023-01-07T11:05:16.793Z] fetched admin: fm.de.jouvencel@gmail.com

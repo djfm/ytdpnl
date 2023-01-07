@@ -1,4 +1,5 @@
 import {readFile} from 'fs/promises';
+import {createWriteStream} from 'fs';
 import {join} from 'path';
 
 import express from 'express';
@@ -91,6 +92,9 @@ const env = process.env.NODE_ENV;
 if (env !== 'production' && env !== 'development') {
 	throw new Error('NODE_ENV must be set to "production" or "development"');
 }
+
+const logsPath = join(__dirname, '..', '..', 'logs', 'server.log');
+const logStream = createWriteStream(logsPath, {flags: 'a'});
 
 const upload = multer();
 
@@ -194,7 +198,7 @@ const start = async () => {
 
 	console.log('Successfully initialized data source');
 
-	const createLogger = createDefaultLogger();
+	const createLogger = createDefaultLogger(logStream);
 
 	const privateKey = await readFile(join(__dirname, '..', '..', 'private.key'), 'utf-8');
 	const tokenTools = createTokenTools(privateKey);
