@@ -10,6 +10,8 @@ const isDevelopment = mode === 'development';
 
 const entry = isDevelopment ? ['webpack-hot-middleware/client'] : [];
 
+console.log('Entry:', entry);
+
 const conf: webpack.Configuration = {
 	mode,
 	entry: [...entry, './src/server-app/index.tsx'],
@@ -43,6 +45,7 @@ const conf: webpack.Configuration = {
 	plugins: [
 		isDevelopment && new webpack.HotModuleReplacementPlugin(),
 		isDevelopment && new ReactRefreshWebpackPlugin(),
+		new webpack.EnvironmentPlugin(['NODE_ENV']),
 	].filter(Boolean) as webpack.WebpackPluginInstance[],
 };
 

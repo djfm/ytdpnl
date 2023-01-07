@@ -11,6 +11,8 @@ if (!has(`${env}-server-url`)(config)) {
 	throw new Error(`Missing ${env}-server-url in config.extension.ts`);
 }
 
+console.log('API URL:', config[`${env}-server-url`]);
+
 const serverUrl = config[`${env}-server-url`];
 
 export const defaultAdminApi = createAdminApi(serverUrl);
