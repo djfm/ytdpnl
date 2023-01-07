@@ -1,13 +1,20 @@
 version: "3.9"
 
 services:
+  app-server:
+    build: .
+    ports:
+      - "12857:12857"
+    depends_on:
+      - production-db
+    command: yarn serve
 
   production-db:
     image: postgres
     restart: always
     environment:
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: c'est le mot de pass de la base 2 données
+      POSTGRES_PASSWORD: a password for the database admin user
       POSTGRES_DB: ytdpnl
     ports:
       - 54321:5432
@@ -19,7 +26,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: c'est le mot de pass de la base 2 données pour le dev
+      POSTGRES_PASSWORD: another password for the development database admin user
       POSTGRES_DB: ytdpnl
     ports:
       - 54322:5432

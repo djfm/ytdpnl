@@ -20,6 +20,8 @@ const conf: webpack.Configuration = {
 		extensions: ['.ts', '.tsx', '.js'],
 		fallback: {
 			'react-native-sqlite-storage': false,
+			path: false,
+			fs: false,
 		},
 	},
 	module: {

@@ -25,6 +25,8 @@ module.exports = {
 			crypto: 'crypto-browserify',
 			stream: 'stream-browserify',
 			'react-native-sqlite-storage': false,
+			path: false,
+			fs: false,
 		},
 	},
 	module: {

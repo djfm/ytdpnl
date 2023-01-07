@@ -21,7 +21,7 @@ import {validate} from 'class-validator';
 
 import nodemailer from 'nodemailer';
 
-import {getInteger, getString, has} from '../util';
+import {getInteger, getString, has, findPackageJsonDir} from '../util';
 
 import Admin from './models/admin';
 import Token from './models/token';
@@ -93,16 +93,17 @@ if (env !== 'production' && env !== 'development') {
 	throw new Error('NODE_ENV must be set to "production" or "development"');
 }
 
-const logsPath = join(__dirname, '..', '..', 'logs', 'server.log');
-const logStream = createWriteStream(logsPath, {flags: 'a'});
-
 const upload = multer();
 
 const start = async () => {
-	const configJson = await readFile(join(__dirname, '..', '..', 'config.yaml'), 'utf-8');
+	const root = await findPackageJsonDir(__dirname);
+	const logsPath = join(root, 'logs', 'server.log');
+	const logStream = createWriteStream(logsPath, {flags: 'a'});
+	console.log('Package root is:', root);
+	const configJson = await readFile(join(root, 'config.yaml'), 'utf-8');
 	const config = parse(configJson) as unknown;
 
-	const dockerComposeJson = await readFile(join(__dirname, '..', '..', 'docker-compose.yaml'), 'utf-8');
+	const dockerComposeJson = await readFile(join(root, 'docker-compose.yaml'), 'utf-8');
 	const dockerComposeConfig = parse(dockerComposeJson) as unknown;
 
 	if (!config || typeof config !== 'object') {
@@ -135,9 +136,11 @@ const start = async () => {
 
 	const port = getInteger([portKey])(config);
 	const dbPortString = getString(['services', `${env}-db`, 'ports', '0'])(dockerComposeConfig);
-	const [dbPort] = dbPortString.split(':');
+	const [dbHostPort, dbDockerPort] = dbPortString.split(':');
 
-	if (!dbPort || !Number.isInteger(Number(dbPort))) {
+	const dbPort = env === 'development' ? Number(dbHostPort) : Number(dbDockerPort);
+
+	if (!dbPort || !Number.isInteger(dbPort)) {
 		throw new Error(`Invalid db port: ${dbPort}`);
 	}
 
@@ -149,7 +152,7 @@ const start = async () => {
 
 	const dbConfig = {
 		host: dbHost,
-		port: Number(dbPort),
+		port: dbPort,
 		user: dbUser,
 		password: dbPassword,
 		database: dbDatabase,
@@ -171,7 +174,7 @@ const start = async () => {
 	}
 
 	try {
-		const migrated = await migrate({client: pgClient}, join(__dirname, 'migrations'));
+		const migrated = await migrate({client: pgClient}, join(root, 'migrations'));
 		console.log('Successfully ran migrations:', migrated);
 	} catch (err) {
 		console.error('Error running migrations:', err);
@@ -200,7 +203,7 @@ const start = async () => {
 
 	const createLogger = createDefaultLogger(logStream);
 
-	const privateKey = await readFile(join(__dirname, '..', '..', 'private.key'), 'utf-8');
+	const privateKey = await readFile(join(root, 'private.key'), 'utf-8');
 	const tokenTools = createTokenTools(privateKey);
 
 	const routeContext: RouteContext = {
@@ -236,7 +239,7 @@ const start = async () => {
 		staticRouter.use(webpackHotMiddleware(compiler));
 	}
 
-	staticRouter.use(express.static(join(__dirname, '..', '..', 'public')));
+	staticRouter.use(express.static(join(root, 'public')));
 
 	app.use(staticRouter);
 
@@ -271,7 +274,7 @@ const start = async () => {
 
 	app.use((req, res, next) => {
 		if (req.method === 'GET' && req.headers.accept?.startsWith('text/html')) {
-			res.sendFile(join(__dirname, '..', '..', 'public', 'index.html'));
+			res.sendFile(join(root, 'public', 'index.html'));
 			return;
 		}
 

@@ -1,3 +1,6 @@
+import {join} from 'path';
+import {stat} from 'fs/promises';
+
 import {validate as validateInstance, type ValidationError} from 'class-validator';
 
 import type Recommendation from './extension/models/Recommendation';
@@ -279,3 +282,23 @@ export const makeApiVerbCreator = (serverUrl: string) =>
 
 		return res;
 	};
+
+export const findPackageJsonDir = async (dir: string): Promise<string> => {
+	const candidate = join(dir, 'package.json');
+
+	try {
+		const s = await stat(candidate);
+		if (s.isFile()) {
+			return dir;
+		}
+	} catch (e) {
+		const parent = join(dir, '..');
+		if (parent === dir) {
+			throw new Error(`Cannot find package.json in ${dir} nor any of its parents`);
+		}
+
+		return findPackageJsonDir(parent);
+	}
+
+	throw new Error('should never happen');
+};

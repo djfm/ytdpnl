@@ -29,3 +29,55 @@
 [request #6 at 2023-01-07T11:05:16.789Z] token is valid
 [request #6 at 2023-01-07T11:05:16.790Z] received auth test request
 [request #6 at 2023-01-07T11:05:16.793Z] fetched admin: fm.de.jouvencel@gmail.com
+[request #1 at 2023-01-07T11:29:33.433Z] get /api/auth-test
+[request #1 at 2023-01-07T11:29:33.434Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #1 at 2023-01-07T11:29:33.434Z] verifying token
+[request #1 at 2023-01-07T11:29:33.437Z] checking token in the database
+[request #1 at 2023-01-07T11:29:33.512Z] token is valid
+[request #1 at 2023-01-07T11:29:33.512Z] received auth test request
+[request #1 at 2023-01-07T11:29:33.515Z] fetched admin: fm.de.jouvencel@gmail.com
+[request #2 at 2023-01-07T11:29:33.519Z] get /api/auth-test
+[request #2 at 2023-01-07T11:29:33.520Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #2 at 2023-01-07T11:29:33.520Z] verifying token
+[request #2 at 2023-01-07T11:29:33.521Z] checking token in the database
+[request #2 at 2023-01-07T11:29:33.523Z] token is valid
+[request #2 at 2023-01-07T11:29:33.523Z] received auth test request
+[request #2 at 2023-01-07T11:29:33.526Z] fetched admin: fm.de.jouvencel@gmail.com
+[request #3 at 2023-01-07T11:29:33.529Z] get /api/auth-test
+[request #3 at 2023-01-07T11:29:33.529Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #3 at 2023-01-07T11:29:33.529Z] verifying token
+[request #3 at 2023-01-07T11:29:33.530Z] checking token in the database
+[request #3 at 2023-01-07T11:29:33.532Z] token is valid
+[request #3 at 2023-01-07T11:29:33.532Z] received auth test request
+[request #3 at 2023-01-07T11:29:33.535Z] fetched admin: fm.de.jouvencel@gmail.com
+[request #4 at 2023-01-07T11:29:33.538Z] get /api/auth-test
+[request #4 at 2023-01-07T11:29:33.538Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #4 at 2023-01-07T11:29:33.538Z] verifying token
+[request #4 at 2023-01-07T11:29:33.539Z] checking token in the database
+[request #4 at 2023-01-07T11:29:33.542Z] token is valid
+[request #4 at 2023-01-07T11:29:33.542Z] received auth test request
+[request #4 at 2023-01-07T11:29:33.545Z] fetched admin: fm.de.jouvencel@gmail.com
+[request #5 at 2023-01-07T11:29:37.256Z] get /api/participants/0?pagesize=15
+[request #5 at 2023-01-07T11:29:37.257Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #5 at 2023-01-07T11:29:37.257Z] verifying token
+[request #5 at 2023-01-07T11:29:37.258Z] checking token in the database
+[request #5 at 2023-01-07T11:29:37.260Z] token is valid
+[request #5 at 2023-01-07T11:29:37.261Z] received participants request
+[request #6 at 2023-01-07T11:29:37.279Z] get /api/participants/0?pagesize=15
+[request #6 at 2023-01-07T11:29:37.279Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #6 at 2023-01-07T11:29:37.279Z] verifying token
+[request #6 at 2023-01-07T11:29:37.280Z] checking token in the database
+[request #6 at 2023-01-07T11:29:37.282Z] token is valid
+[request #6 at 2023-01-07T11:29:37.282Z] received participants request
+[request #7 at 2023-01-07T11:29:39.038Z] get /api/participants/1?pagesize=15
+[request #7 at 2023-01-07T11:29:39.039Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #7 at 2023-01-07T11:29:39.039Z] verifying token
+[request #7 at 2023-01-07T11:29:39.041Z] checking token in the database
+[request #7 at 2023-01-07T11:29:39.044Z] token is valid
+[request #7 at 2023-01-07T11:29:39.044Z] received participants request
+[request #8 at 2023-01-07T11:29:39.244Z] get /api/participants/2?pagesize=15
+[request #8 at 2023-01-07T11:29:39.244Z] checking token: eyjhbgcioijsuzi1niisinr5cci6ikpxvcj9.eyjhzg1pbklkijoxlcjpyxqioje2nzmwodk1mtysimv4cci6mty3mza5mzexnn0.n2nzdm4c1rawkrd_bklrepntlnfj79dcpqntyzo6pvhljfnxncdosyg53x2iiamyxivmmuwtbzw5bwkov-4uwkkwqph97hfkfem1nef_zjpsa-xhrtm2b5a6rikyvd4onbem5msldedmn1cknt1qrblz2zwit-ks4twrp57lu9ln10lctsgzemz8ltgfl5dfcsfcj5b4apca3dkpkpmfettmqs-n6ml5mmhsjsxfp8rsjjijyrxejp7nsfypt42gvobz0kthcdoqss3w61bahpf0ecx0l34ei4shr821sihxp0ebadkwxtsvprnlcxtwox_wxdgtnxm0ysf33iccddbgqz6m4l4rulrddhpi7rqy3zymxcdzx1upauqompfk-t7t2zgvis6g0akmj4xz5ji1g57ltmlgpdkdd2emaosx2x6iwwn4iskwwobel03mripkgqzuq8au5y8sswa53jtlalxf0byskmy4a696pm3fviarpj3qbp-b5bmoteqkasfbep_gldics7zitb3onndaet8j18adxqbynonpt8m7ineagrqsqgadc7kojmzj57jlgvw0dyexkh4ptcirpsx3dfelbly721tdljvzahljppf8zjjalxg7ubb3-nszwwb1kxykqgxmcaez3e5pvtupvo56tguqrer5t6hswx0
+[request #8 at 2023-01-07T11:29:39.245Z] verifying token
+[request #8 at 2023-01-07T11:29:39.246Z] checking token in the database
+[request #8 at 2023-01-07T11:29:39.249Z] token is valid
+[request #8 at 2023-01-07T11:29:39.249Z] received participants request
