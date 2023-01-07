@@ -8,9 +8,11 @@ const mode = process.env.NODE_ENV === 'production' ? 'production' : 'development
 
 const isDevelopment = mode === 'development';
 
+const entry = isDevelopment ? ['webpack-hot-middleware/client'] : [];
+
 const conf: webpack.Configuration = {
 	mode,
-	entry: ['webpack-hot-middleware/client', './src/server-app/index.tsx'],
+	entry: [...entry, './src/server-app/index.tsx'],
 	output: {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'public'),
