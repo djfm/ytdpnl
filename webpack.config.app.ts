@@ -13,7 +13,7 @@ const conf: webpack.Configuration = {
 	entry: ['webpack-hot-middleware/client', './src/server-app/index.tsx'],
 	output: {
 		filename: 'bundle.js',
-		path: path.resolve(__dirname, 'src', 'server', 'public'),
+		path: path.resolve(__dirname, 'public'),
 		publicPath: '/',
 	},
 	resolve: {
