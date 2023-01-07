@@ -19,7 +19,8 @@
 		"outDir": "build",
 		"skipLibCheck": true
 	},
-	"include": ["src/**/*"],
+	"include": ["."],
+	"exclude": ["node_modules", "build", "dist"],
 	"ts-node": {
 		"files": true,
 	}
