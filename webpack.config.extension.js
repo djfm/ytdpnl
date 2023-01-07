@@ -1,6 +1,7 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
+const {EnvironmentPlugin} = require('webpack');
 
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
@@ -39,6 +40,7 @@ module.exports = {
 		],
 	},
 	plugins: [
+		new EnvironmentPlugin(['NODE_ENV']),
 		new CopyPlugin({
 			patterns: [
 				{
