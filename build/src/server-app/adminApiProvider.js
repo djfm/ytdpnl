@@ -12,6 +12,8 @@ var env = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 if (!(0, util_1.has)("".concat(env, "-server-url"))(config_extension_1["default"])) {
     throw new Error("Missing ".concat(env, "-server-url in config.extension.ts"));
 }
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('API URL:', config_extension_1["default"]["".concat(env, "-server-url")]);
 var serverUrl = config_extension_1["default"]["".concat(env, "-server-url")];
 exports.defaultAdminApi = (0, adminApi_1.createAdminApi)(serverUrl);
 exports.adminApiContext = react_1["default"].createContext(exports.defaultAdminApi);

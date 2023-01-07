@@ -50,6 +50,8 @@ var env = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 if (!(0, util_1.has)("".concat(env, "-server-url"))(config_extension_1["default"])) {
     throw new Error("Missing ".concat(env, "-server-url in config"));
 }
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('API URL:', config_extension_1["default"]["".concat(env, "-server-url")]);
 var serverUrl = config_extension_1["default"]["".concat(env, "-server-url")];
 var createRegisterRoute = function (_a) {
     var dataSource = _a.dataSource, mailer = _a.mailer, mailerFrom = _a.mailerFrom, createLogger = _a.createLogger;
