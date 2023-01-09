@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {styled} from '@mui/material/styles';
 import crypto from 'crypto';
 
-import type Event from '../../server/models/event';
+import Event, {EventType} from '../../server/models/event';
 import RecommendationsEvent from '../../server/models/recommendationsEvent';
 
 import type Recommendation from '../models/Recommendation';
@@ -126,6 +126,28 @@ export const RecommendationsListC: React.FC<{
 		console.log('LOADED!', url);
 	}, [loaded, nonPersonalizedRecommendations, defaultRecommendations]);
 
+	const createRecommendationClickHandler = (rec: Recommendation) => async () => {
+		const event = new Event();
+		event.url = rec.url;
+
+		if (rec.personalization === 'non-personalized') {
+			event.type = EventType.NON_PERSONALIZED_CLICKED;
+		} else if (rec.personalization === 'personalized') {
+			event.type = EventType.PERSONALIZED_CLICKED;
+		} else if (rec.personalization === 'mixed') {
+			event.type = EventType.MIXED_CLICKED;
+		} else {
+			console.error('Unknown personalization', rec.personalization);
+			return;
+		}
+
+		try {
+			await postEvent(event);
+		} catch (err) {
+			console.error('Error posting event', err);
+		}
+	};
+
 	const debugUi = (
 		<div>
 			<h1>Debug view</h1>
@@ -155,7 +177,11 @@ export const RecommendationsListC: React.FC<{
 
 	const loadedUi = (
 		<div>
-			{finalRecommendations.map(rec => <RecommendationC key={rec.videoId} {...rec} />)}
+			{finalRecommendations.map(rec => <RecommendationC
+				key={rec.videoId}
+				{...rec}
+				handleRecommendationClicked={createRecommendationClickHandler(rec)}
+			/>)}
 		</div>
 	);
 

@@ -7,8 +7,11 @@ import {
 
 import type Recommendation from '../models/Recommendation';
 
-export const RecommendationC: React.FC<Recommendation> = rec => (
-	<div>
+export const RecommendationC: React.FC<Recommendation & {handleRecommendationClicked: () => Promise<void>}> = ({
+	handleRecommendationClicked,
+	...rec
+}) => (
+	<div onClick={handleRecommendationClicked}>
 		<a href={rec.url}>
 			<Box sx={{
 				display: 'flex',
