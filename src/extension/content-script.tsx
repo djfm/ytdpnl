@@ -14,7 +14,9 @@ import Event, {EventType} from '../server/models/event';
 let root: HTMLElement | undefined;
 let previousUrl: string | undefined;
 
-api.newSession().catch(console.error);
+if (api.getSession() === undefined) {
+	api.newSession().catch(console.error);
+}
 
 const observer = new MutationObserver(() => {
 	if (window.location.href !== previousUrl) {

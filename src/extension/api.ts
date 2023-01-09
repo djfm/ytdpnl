@@ -15,7 +15,7 @@ export type Api = {
 	checkParticipantCode: (participantCode: string) => Promise<boolean>;
 	setAuth: (participantCode: string) => void;
 	newSession: () => Promise<boolean>;
-	getSession: () => Session | undefined;
+	getSession: () => string | undefined;
 	ensureSession: () => Promise<void>;
 	getConfig: () => Promise<Maybe<ParticipantConfig>>;
 	postEvent: (event: Event) => Promise<boolean>;
@@ -26,13 +26,13 @@ const cache = memoizeTemporarily(1000);
 
 export const createApi = (serverUrl: string): Api => {
 	let participantCode = localStorage.getItem('participantCode') ?? '';
-	let session: Session | undefined;
+	let sessionUuid = sessionStorage.getItem('sessionUuid') ?? '';
 	let sessionPromise: Promise<Maybe<Session>> | undefined;
 
 	const headers = () => ({
 		'Content-Type': 'application/json',
 		'X-Participant-Code': participantCode,
-		'X-Session-UUID': session?.uuid ?? '',
+		'X-Session-UUID': sessionUuid,
 	});
 
 	const verb = makeApiVerbCreator(serverUrl);
@@ -79,11 +79,14 @@ export const createApi = (serverUrl: string): Api => {
 				return false;
 			}
 
+			console.log('Creating new session');
+
 			const res = await this.createSession();
 
 			if (res.kind === 'Success') {
-				session = res.value;
-				console.log('New session', session.uuid);
+				sessionUuid = res.value.uuid;
+				sessionStorage.setItem('sessionUuid', sessionUuid);
+				console.log('New session', sessionUuid);
 				return true;
 			}
 
@@ -93,7 +96,7 @@ export const createApi = (serverUrl: string): Api => {
 		},
 
 		getSession() {
-			return session;
+			return sessionUuid === '' ? undefined : sessionUuid;
 		},
 
 		async getConfig() {
@@ -101,7 +104,7 @@ export const createApi = (serverUrl: string): Api => {
 		},
 
 		async ensureSession() {
-			if (session) {
+			if (sessionUuid !== '') {
 				return;
 			}
 
@@ -116,7 +119,7 @@ export const createApi = (serverUrl: string): Api => {
 		async postEvent(event: Event) {
 			await this.ensureSession();
 
-			event.sessionUuid = session?.uuid ?? '';
+			event.sessionUuid = sessionUuid;
 
 			const res = await post<boolean>(postEvent, event, headers());
 
@@ -131,8 +134,9 @@ export const createApi = (serverUrl: string): Api => {
 
 		logout() {
 			localStorage.removeItem('participantCode');
+			sessionStorage.removeItem('sessionUuid');
 			participantCode = '';
-			session = undefined;
+			sessionUuid = '';
 		},
 	};
 };
