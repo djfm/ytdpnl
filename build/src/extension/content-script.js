@@ -36,7 +36,9 @@ var apiProvider_1 = require("./apiProvider");
 var event_1 = __importStar(require("../server/models/event"));
 var root;
 var previousUrl;
-apiProvider_1.defaultApi.newSession()["catch"](console.error);
+if (apiProvider_1.defaultApi.getSession() === undefined) {
+    apiProvider_1.defaultApi.newSession()["catch"](console.error);
+}
 var observer = new MutationObserver(function () {
     if (window.location.href !== previousUrl) {
         previousUrl = window.location.href;

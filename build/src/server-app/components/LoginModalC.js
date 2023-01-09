@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -42,28 +53,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
+exports.LoginModalC = void 0;
 var react_1 = __importStar(require("react"));
-var client_1 = require("react-dom/client");
 var material_1 = require("@mui/material");
-var react_router_dom_1 = require("react-router-dom");
-var theme_1 = __importDefault(require("./theme"));
-var adminApiProvider_1 = __importStar(require("./adminApiProvider"));
-var adminApi_1 = require("./adminApi");
-var Server_1 = __importDefault(require("./Server"));
-var LoginModalC_1 = __importDefault(require("./components/LoginModalC"));
-var elt = document.getElementById('app');
-if (!elt) {
-    throw new Error('No element with id "app" found');
-}
-var App = function () {
-    var _a = __read((0, react_1.useState)(false), 2), loginModalOpen = _a[0], setLoginModalOpen = _a[1];
-    return (react_1["default"].createElement(react_1["default"].StrictMode, null,
-        react_1["default"].createElement(material_1.ThemeProvider, { theme: theme_1["default"] },
-            react_1["default"].createElement(react_router_dom_1.BrowserRouter, null,
-                react_1["default"].createElement(adminApiProvider_1["default"], { value: (0, adminApi_1.createAdminApi)(adminApiProvider_1.serverUrl, function () {
-                        setLoginModalOpen(true);
-                    }) },
-                    react_1["default"].createElement(LoginModalC_1["default"], { open: loginModalOpen, setOpen: setLoginModalOpen }),
-                    react_1["default"].createElement(Server_1["default"], null))))));
+var LoginC_1 = __importDefault(require("./LoginC"));
+var LoginModalC = function (_a) {
+    var open = _a.open, setOpen = _a.setOpen, onSuccess = _a.onSuccess;
+    var _b = __read((0, react_1.useState)(''), 2), email = _b[0], setEmail = _b[1];
+    var _c = __read((0, react_1.useState)(''), 2), password = _c[0], setPassword = _c[1];
+    return (react_1["default"].createElement(material_1.Modal, { open: open },
+        react_1["default"].createElement(material_1.Box, { sx: { bgcolor: 'background.paper', padding: 4 } },
+            react_1["default"].createElement(material_1.Typography, { sx: { textAlign: 'center' } }, "It seems your session has expired, please log back in."),
+            react_1["default"].createElement(LoginC_1["default"], __assign({}, { email: email, setEmail: setEmail, password: password, setPassword: setPassword }, { onSuccess: function () {
+                    setOpen(false);
+                    if (onSuccess) {
+                        onSuccess();
+                    }
+                }, isModal: true })))));
 };
-(0, client_1.createRoot)(elt).render(react_1["default"].createElement(App, null));
+exports.LoginModalC = LoginModalC;
+exports["default"] = exports.LoginModalC;

@@ -41,18 +41,15 @@ var util_1 = require("../util");
 var routes_1 = require("../server/routes");
 var cache = (0, util_1.memoizeTemporarily)(1000);
 var createApi = function (serverUrl) {
-    var _a;
+    var _a, _b;
     var participantCode = (_a = localStorage.getItem('participantCode')) !== null && _a !== void 0 ? _a : '';
-    var session;
+    var sessionUuid = (_b = sessionStorage.getItem('sessionUuid')) !== null && _b !== void 0 ? _b : '';
     var sessionPromise;
-    var headers = function () {
-        var _a;
-        return ({
-            'Content-Type': 'application/json',
-            'X-Participant-Code': participantCode,
-            'X-Session-UUID': (_a = session === null || session === void 0 ? void 0 : session.uuid) !== null && _a !== void 0 ? _a : ''
-        });
-    };
+    var headers = function () { return ({
+        'Content-Type': 'application/json',
+        'X-Participant-Code': participantCode,
+        'X-Session-UUID': sessionUuid
+    }); };
     var verb = (0, util_1.makeApiVerbCreator)(serverUrl);
     var post = verb('POST');
     var get = verb('GET');
@@ -106,12 +103,14 @@ var createApi = function (serverUrl) {
                                 console.error('Missing participant code');
                                 return [2 /*return*/, false];
                             }
+                            console.log('Creating new session');
                             return [4 /*yield*/, this.createSession()];
                         case 1:
                             res = _a.sent();
                             if (res.kind === 'Success') {
-                                session = res.value;
-                                console.log('New session', session.uuid);
+                                sessionUuid = res.value.uuid;
+                                sessionStorage.setItem('sessionUuid', sessionUuid);
+                                console.log('New session', sessionUuid);
                                 return [2 /*return*/, true];
                             }
                             console.error('Failed to create session:', res.message);
@@ -121,7 +120,7 @@ var createApi = function (serverUrl) {
             });
         },
         getSession: function () {
-            return session;
+            return sessionUuid === '' ? undefined : sessionUuid;
         },
         getConfig: function () {
             return __awaiter(this, void 0, void 0, function () {
@@ -135,7 +134,7 @@ var createApi = function (serverUrl) {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (session) {
+                            if (sessionUuid !== '') {
                                 return [2 /*return*/];
                             }
                             if (!sessionPromise) return [3 /*break*/, 2];
@@ -152,18 +151,17 @@ var createApi = function (serverUrl) {
             });
         },
         postEvent: function (event) {
-            var _a;
             return __awaiter(this, void 0, void 0, function () {
                 var res;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
                         case 0: return [4 /*yield*/, this.ensureSession()];
                         case 1:
-                            _b.sent();
-                            event.sessionUuid = (_a = session === null || session === void 0 ? void 0 : session.uuid) !== null && _a !== void 0 ? _a : '';
+                            _a.sent();
+                            event.sessionUuid = sessionUuid;
                             return [4 /*yield*/, post(routes_1.postEvent, event, headers())];
                         case 2:
-                            res = _b.sent();
+                            res = _a.sent();
                             if (res.kind === 'Success') {
                                 return [2 /*return*/, true];
                             }
@@ -175,8 +173,9 @@ var createApi = function (serverUrl) {
         },
         logout: function () {
             localStorage.removeItem('participantCode');
+            sessionStorage.removeItem('sessionUuid');
             participantCode = '';
-            session = undefined;
+            sessionUuid = '';
         }
     };
 };

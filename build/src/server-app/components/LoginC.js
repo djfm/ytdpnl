@@ -98,7 +98,7 @@ var RedirectMessageC_1 = __importDefault(require("./RedirectMessageC"));
 var MessageC_1 = __importDefault(require("./MessageC"));
 var helpers_1 = require("./helpers");
 var LoginC = function (_a) {
-    var email = _a.email, setEmail = _a.setEmail, password = _a.password, setPassword = _a.setPassword;
+    var email = _a.email, setEmail = _a.setEmail, password = _a.password, setPassword = _a.setPassword, onSuccess = _a.onSuccess, isModal = _a.isModal;
     var _b = __read((0, react_1.useState)(), 2), error = _b[0], setError = _b[1];
     var api = (0, adminApiProvider_1.useAdminApi)();
     var navigate = (0, react_router_dom_1.useNavigate)();
@@ -114,8 +114,13 @@ var LoginC = function (_a) {
                         if (response.kind === 'Success') {
                             api.setAuth(response.value.token, response.value.admin);
                             setError(undefined);
-                            console.log('navigating to /');
-                            navigate('/');
+                            if (!isModal) {
+                                console.log('navigating to /');
+                                navigate('/');
+                            }
+                            if (onSuccess) {
+                                onSuccess();
+                            }
                         }
                         else {
                             setError(response.message);
@@ -145,7 +150,7 @@ var LoginC = function (_a) {
                 react_1["default"].createElement(material_1.InputLabel, { htmlFor: 'password' }, "Password"),
                 react_1["default"].createElement(material_1.Input, __assign({ id: 'password', type: 'password' }, (0, helpers_1.bind)(password, setPassword)))),
             react_1["default"].createElement(material_1.Button, { type: 'submit', variant: 'contained', sx: { mt: 2 } }, "Login"),
-            react_1["default"].createElement(material_1.Box, { sx: { mt: 2 } },
+            (!isModal) && react_1["default"].createElement(material_1.Box, { sx: { mt: 2 } },
                 react_1["default"].createElement(react_router_dom_1.Link, { to: '/register' }, "Register instead")))));
     return ui;
 };

@@ -46,7 +46,7 @@ var loadItem = function (key) {
     }
     return JSON.parse(item);
 };
-var createAdminApi = function (serverUrl) {
+var createAdminApi = function (serverUrl, showLoginModal) {
     console.log('adminApi', serverUrl);
     var token = loadItem('token');
     var admin = loadItem('admin');
@@ -65,6 +65,9 @@ var createAdminApi = function (serverUrl) {
                                 admin = undefined;
                                 sessionStorage.removeItem('token');
                                 sessionStorage.removeItem('admin');
+                                if (showLoginModal) {
+                                    showLoginModal();
+                                }
                             }
                         }
                     }
@@ -89,11 +92,15 @@ var createAdminApi = function (serverUrl) {
         isLoggedIn: function () {
             return Boolean(token) && Boolean(admin);
         },
+        wasLoggedIn: function () {
+            return sessionStorage.getItem('wasLoggedIn') === 'true';
+        },
         setAuth: function (t, a) {
             token = t;
             admin = a;
             sessionStorage.setItem('token', JSON.stringify(t));
             sessionStorage.setItem('admin', JSON.stringify(a));
+            sessionStorage.setItem('wasLoggedIn', 'true');
         },
         login: function (email, password) {
             return __awaiter(this, void 0, void 0, function () {

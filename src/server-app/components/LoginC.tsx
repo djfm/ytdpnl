@@ -22,11 +22,15 @@ export const LoginC: React.FC<{
 	password: string;
 	setEmail: (email: string) => void;
 	setPassword: (password: string) => void;
+	onSuccess?: () => void;
+	isModal?: boolean;
 }> = ({
 	email,
 	setEmail,
 	password,
 	setPassword,
+	onSuccess,
+	isModal,
 }) => {
 	const [error, setError] = useState<string | undefined>();
 	const api = useAdminApi();
@@ -41,8 +45,14 @@ export const LoginC: React.FC<{
 			if (response.kind === 'Success') {
 				api.setAuth(response.value.token, response.value.admin);
 				setError(undefined);
-				console.log('navigating to /');
-				navigate('/');
+				if (!isModal) {
+					console.log('navigating to /');
+					navigate('/');
+				}
+
+				if (onSuccess) {
+					onSuccess();
+				}
 			} else {
 				setError(response.message);
 			}
@@ -79,9 +89,9 @@ export const LoginC: React.FC<{
 					Login
 				</Button>
 
-				<Box sx={{mt: 2}}>
+				{(!isModal) && <Box sx={{mt: 2}}>
 					<Link to='/register'>Register instead</Link>
-				</Box>
+				</Box>}
 			</form>
 		</Box>
 	);

@@ -14,7 +14,7 @@ if (!has(`${env}-server-url`)(config)) {
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('API URL:', config[`${env}-server-url`]);
 
-const serverUrl = config[`${env}-server-url`];
+export const serverUrl = config[`${env}-server-url`];
 
 export const defaultAdminApi = createAdminApi(serverUrl);
 

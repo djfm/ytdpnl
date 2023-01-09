@@ -27,6 +27,7 @@ import {
 
 export type AdminApi = {
 	isLoggedIn: () => boolean;
+	wasLoggedIn: () => boolean;
 	setAuth: (token: Token, admin: Admin) => void;
 	login: (username: string, password: string) => Promise<Maybe<LoginResponse>>;
 	register: (admin: Admin) => Promise<Maybe<string>>;
@@ -53,7 +54,7 @@ const loadItem = <T>(key: string): T | undefined => {
 type Verb = <T>(url: string, data: unknown, headers: Record<string, string>) => Promise<Maybe<T>>;
 type VerbDecorator = (verb: Verb) => Verb;
 
-export const createAdminApi = (serverUrl: string): AdminApi => {
+export const createAdminApi = (serverUrl: string, showLoginModal?: () => void): AdminApi => {
 	console.log('adminApi', serverUrl);
 
 	let token = loadItem<Token>('token');
@@ -71,6 +72,9 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 					admin = undefined;
 					sessionStorage.removeItem('token');
 					sessionStorage.removeItem('admin');
+					if (showLoginModal) {
+						showLoginModal();
+					}
 				}
 			}
 		}
@@ -96,11 +100,16 @@ export const createAdminApi = (serverUrl: string): AdminApi => {
 			return Boolean(token) && Boolean(admin);
 		},
 
+		wasLoggedIn() {
+			return sessionStorage.getItem('wasLoggedIn') === 'true';
+		},
+
 		setAuth(t: Token, a: Admin) {
 			token = t;
 			admin = a;
 			sessionStorage.setItem('token', JSON.stringify(t));
 			sessionStorage.setItem('admin', JSON.stringify(a));
+			sessionStorage.setItem('wasLoggedIn', 'true');
 		},
 
 		async login(email: string, password: string) {
