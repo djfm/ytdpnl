@@ -19,19 +19,29 @@ import {log} from './lib';
 
 import {useApi} from './apiProvider';
 
+const loadLocalConfig = (): ParticipantConfig | undefined => {
+	const item = sessionStorage.getItem('cfg');
+	if (item) {
+		return JSON.parse(item) as ParticipantConfig;
+	}
+
+	return undefined;
+};
+
 const App: React.FC = () => {
 	const localCode = localStorage.getItem('participantCode') ?? '';
 	const [currentUrl, setCurrentUrl] = useState<string>('');
 	const [participantCode, setParticipantCode] = useState<string>(localCode);
 	const [participantCodeValid, setParticipantCodeValid] = useState<boolean>(localCode !== '');
 	const [error, setError] = useState<string | undefined>();
-	const [cfg, setCfg] = useState<ParticipantConfig | undefined>();
+	const [cfg, setCfg] = useState(loadLocalConfig());
 	const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
 	const api = useApi();
 
 	const handleLogout = () => {
 		api.logout();
+		sessionStorage.removeItem('cfg');
 		setParticipantCode('');
 		setParticipantCodeValid(false);
 	};
@@ -87,13 +97,16 @@ const App: React.FC = () => {
 			return;
 		}
 
-		api.getConfig().then(c => {
-			if (c.kind === 'Success') {
-				setCfg(c.value);
-			} else {
-				console.error('Could not get config:', c.message);
-			}
-		}).catch(console.error);
+		if (!cfg) {
+			api.getConfig().then(c => {
+				if (c.kind === 'Success') {
+					setCfg(c.value);
+					sessionStorage.setItem('cfg', JSON.stringify(c.value));
+				} else {
+					console.error('Could not get config:', c.message);
+				}
+			}).catch(console.error);
+		}
 	}, [currentUrl, participantCode, participantCodeValid]);
 
 	const handleSubmit = async (e: React.FormEvent) => {

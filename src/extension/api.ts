@@ -135,6 +135,7 @@ export const createApi = (serverUrl: string): Api => {
 		logout() {
 			localStorage.removeItem('participantCode');
 			sessionStorage.removeItem('sessionUuid');
+			sessionStorage.removeItem('cfg');
 			participantCode = '';
 			sessionUuid = '';
 		},
