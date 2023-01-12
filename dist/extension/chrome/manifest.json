@@ -14,7 +14,6 @@
 		}
 	],
 	"host_permissions": [
-		"webRequest",
 		"*://*.youtube.com/*",
 		"*://*.youtu.be/*",
 		"*://ytdpnl-dev.fmdj.fr/*",

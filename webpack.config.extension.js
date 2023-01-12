@@ -60,7 +60,7 @@ module.exports = {
 						// eslint-disable-next-line camelcase
 						manifest.manifest_version = 3;
 						// eslint-disable-next-line camelcase
-						manifest.host_permissions = ['webRequest', ...hostPermissions];
+						manifest.host_permissions = [...hostPermissions];
 						return JSON.stringify(manifest, null, '\t');
 					},
 				},
