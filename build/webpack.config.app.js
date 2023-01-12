@@ -48,7 +48,9 @@ var conf = {
         fallback: {
             'react-native-sqlite-storage': false,
             path: false,
-            fs: false
+            fs: false,
+            assert: false,
+            process: false
         }
     },
     module: {

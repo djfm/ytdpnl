@@ -65,6 +65,7 @@
     "@types/react-router": "^5.1.19",
     "@types/react-router-dom": "^5.3.3",
     "@types/urlencode": "^1.1.2",
+    "@types/uuid": "^9.0.0",
     "@types/webpack-hot-middleware": "^2.25.6",
     "@types/yaml": "^1.9.7",
     "bcrypt": "^5.1.0",
@@ -88,6 +89,7 @@
     "typeorm": "^0.3.11",
     "typeorm-naming-strategies": "^4.1.0",
     "urlencode": "^1.1.0",
+    "uuid": "^9.0.0",
     "yaml": "^2.1.3"
   }
 }

@@ -1,5 +1,6 @@
 import {join} from 'path';
 import {stat} from 'fs/promises';
+export {v4 as uuidv4} from 'uuid';
 
 import {validate as validateInstance, type ValidationError} from 'class-validator';
 
@@ -253,13 +254,13 @@ export const makeApiVerbCreator = (serverUrl: string) =>
 	(method: 'GET' | 'POST') => async <T>(path: string, data: unknown, headers: Record<string, string>) => {
 		const body = method === 'POST' ? JSON.stringify(data) : undefined;
 
-		const result = await fetch(`${serverUrl}${path}`, {
-			method,
-			body,
-			headers,
-		});
-
 		try {
+			const result = await fetch(`${serverUrl}${path}`, {
+				method,
+				body,
+				headers,
+			});
+
 			const json = await result.json() as unknown;
 
 			if (isMaybe<T>(json)) {
@@ -269,7 +270,7 @@ export const makeApiVerbCreator = (serverUrl: string) =>
 			console.error(e);
 			const err: Maybe<T> = {
 				kind: 'Failure',
-				message: 'Invalid response from server',
+				message: 'Invalid or no response from server',
 			};
 
 			return err;

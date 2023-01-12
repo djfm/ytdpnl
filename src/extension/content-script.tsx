@@ -27,7 +27,7 @@ const observer = new MutationObserver(() => {
 		event.type = EventType.PAGE_VIEW;
 		event.url = window.location.href;
 
-		api.postEvent(event).catch(console.error);
+		api.postEvent(event, true).catch(console.error);
 	}
 
 	if (!isOnVideoPage()) {

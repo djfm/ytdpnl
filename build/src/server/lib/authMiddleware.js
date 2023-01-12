@@ -45,7 +45,7 @@ var createAuthMiddleWare = function (_a) {
         log('Checking token:', token);
         if (!token) {
             log('Missing authorization header');
-            res.status(401).json({ kind: 'Failure', message: 'Missing authorization header' });
+            res.status(401).json({ kind: 'Failure', message: 'Missing authorization header', code: 'NOT_AUTHENTICATED' });
             return;
         }
         log('Verifying token');

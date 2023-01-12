@@ -26,6 +26,8 @@ const conf: webpack.Configuration = {
 			'react-native-sqlite-storage': false,
 			path: false,
 			fs: false,
+			assert: false,
+			process: false,
 		},
 	},
 	module: {

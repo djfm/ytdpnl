@@ -32,6 +32,7 @@ exports.Event = exports.EventType = void 0;
 var typeorm_1 = require("typeorm");
 var class_validator_1 = require("class-validator");
 var model_1 = __importDefault(require("../lib/model"));
+var util_1 = require("../../util");
 var EventType;
 (function (EventType) {
     EventType["PAGE_VIEW"] = "PAGE_VIEW";
@@ -50,6 +51,7 @@ var Event = /** @class */ (function (_super) {
         _this.arm = participant_1.ExperimentArm.TREATMENT;
         _this.type = EventType.PAGE_VIEW;
         _this.url = '';
+        _this.localUuid = (0, util_1.uuidv4)();
         return _this;
     }
     __decorate([
@@ -78,6 +80,12 @@ var Event = /** @class */ (function (_super) {
         (0, class_validator_1.IsString)(),
         __metadata("design:type", String)
     ], Event.prototype, "url");
+    __decorate([
+        (0, typeorm_1.Column)(),
+        (0, class_validator_1.IsNotEmpty)(),
+        (0, class_validator_1.IsString)(),
+        __metadata("design:type", String)
+    ], Event.prototype, "localUuid");
     Event = __decorate([
         (0, typeorm_1.Entity)()
     ], Event);

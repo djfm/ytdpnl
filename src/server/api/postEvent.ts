@@ -12,7 +12,7 @@ import VideoListItem, {ListType, VideoType} from '../models/videoListItem';
 
 import type Recommendation from '../../extension/models/Recommendation';
 
-import {validateNew} from '../../util';
+import {validateNew, has} from '../../util';
 
 const storeVideos = async (repo: Repository<Video>, videos: Video[]): Promise<number[]> => {
 	const ids: number[] = [];
@@ -115,30 +115,34 @@ const storeRecommendationsShown = async (
 	}
 };
 
+const isLocalUuidAlreadyExistsError = (e: unknown): boolean =>
+	has('code')(e) && has('constraint')(e)
+	&& e.code === '23505'
+	&& e.constraint === 'event_local_uuid_idx';
+
 export const createPostEventRoute: RouteCreator = ({createLogger, dataSource}) => async (req, res) => {
 	const log = createLogger(req.requestId);
 
 	log('Received post event request');
 
-	const {sessionUuid, participantCode} = req;
+	const {participantCode} = req;
 
-	if (sessionUuid === undefined) {
+	if (req.body.sessionUuid === undefined) {
 		log('No session UUID found');
 		res.status(500).json({kind: 'Failure', message: 'No session UUID found'});
 		return;
 	}
 
-	if (participantCode === undefined) {
-		log('No participant code found');
+	if (typeof participantCode !== 'string' || !participantCode) {
+		log('Invalid participant code');
 		res.status(500).json({kind: 'Failure', message: 'No participant code found'});
 		return;
 	}
 
 	const event = new Event();
 	Object.assign(event, req.body);
-	event.sessionUuid = sessionUuid;
-	event.createdAt = new Date();
-	event.updatedAt = new Date();
+	event.createdAt = new Date(event.createdAt);
+	event.updatedAt = new Date(event.updatedAt);
 
 	const participantRepo = dataSource.getRepository(Participant);
 
@@ -190,6 +194,12 @@ export const createPostEventRoute: RouteCreator = ({createLogger, dataSource}) =
 		}
 	} catch (e) {
 		log('event save failed', e);
+
+		if (isLocalUuidAlreadyExistsError(e)) {
+			res.status(500).json({kind: 'Failure', message: 'Event already exists', code: 'EVENT_ALREADY_EXISTS_OK'});
+			return;
+		}
+
 		res.status(500).json({kind: 'Failure', message: 'Event save failed'});
 	}
 };

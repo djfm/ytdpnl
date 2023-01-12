@@ -1,4 +1,4 @@
-import {type Maybe, makeApiVerbCreator, memoizeTemporarily, wait} from '../util';
+import {type Maybe, makeApiVerbCreator, memoizeTemporarily} from '../util';
 import type Session from '../server/models/session';
 import type Event from '../server/models/event';
 import {type ParticipantConfig} from '../server/api/participantConfig';
@@ -18,31 +18,116 @@ export type Api = {
 	getSession: () => string | undefined;
 	ensureSession: () => Promise<void>;
 	getConfig: () => Promise<Maybe<ParticipantConfig>>;
-	postEvent: (event: Event) => Promise<boolean>;
+	postEvent: (event: Event, storeForRetry: boolean) => Promise<boolean>;
 	logout(): void;
 };
 
 const cache = memoizeTemporarily(1000);
 
-export const createApi = (serverUrl: string): Api => {
-	let participantCode = localStorage.getItem('participantCode') ?? '';
+type StoredEvent = {
+	apiUrl: string;
+	event: Event;
+	lastAttempt: Date;
+	persisted: boolean;
+	attempts: number;
+	participantCode: string;
+	tryImmediately: boolean;
+};
+
+const retryDelay = 60000;
+const maxAttempts = 10;
+
+const loadStoredEvents = () => (JSON.parse(localStorage.getItem('events') ?? '[]') as StoredEvent[]).map(e => ({
+	...e,
+	// Need to restore the Date which will not be properly deserialized
+	lastAttempt: new Date(e.lastAttempt),
+}));
+
+const saveStoredEvents = (events: StoredEvent[]) => {
+	localStorage.setItem('events', JSON.stringify(events));
+};
+
+const retryToPostStoredEvents = async () => {
+	const storedEvents = loadStoredEvents();
+
+	const promises = storedEvents.map(async storedEvent => {
+		const lastAttempt = Number(new Date(storedEvent.lastAttempt));
+		const remaining = lastAttempt + retryDelay - Date.now();
+		if (remaining > 0 && !storedEvent.tryImmediately) {
+			console.log('Do not retrying to post event', storedEvent.event.localUuid, 'until', remaining, 'ms have passed');
+			return storedEvent;
+		}
+
+		storedEvent.attempts += 1;
+		storedEvent.tryImmediately = false;
+
+		const api = createApi(storedEvent.apiUrl, storedEvent.participantCode);
+
+		const result = await api.postEvent(storedEvent.event, false);
+		if (result) {
+			storedEvent.persisted = true;
+		} else {
+			storedEvent.lastAttempt = new Date();
+		}
+
+		return storedEvent;
+	});
+
+	const updated = await Promise.all(promises);
+
+	const remainingEvents = updated.filter(e => !e.persisted && e.attempts < maxAttempts);
+	console.log(`Stored ${
+		storedEvents.length - remainingEvents.length
+	} events cached previously, ${remainingEvents.length} remain...`);
+
+	saveStoredEvents(remainingEvents);
+};
+
+const clearStoredEvent = (event: Event) => {
+	const events = loadStoredEvents();
+
+	const newEvents = events.filter(e => e.event.localUuid !== event.localUuid);
+	saveStoredEvents(newEvents);
+};
+
+setInterval(retryToPostStoredEvents, retryDelay);
+
+export const createApi = (apiUrl: string, overrideParticipantCode?: string): Api => {
+	let participantCode = localStorage.getItem('participantCode') ?? overrideParticipantCode ?? '';
 	let sessionUuid = sessionStorage.getItem('sessionUuid') ?? '';
 	let sessionPromise: Promise<Maybe<Session>> | undefined;
+
+	const storeEvent = (event: Event) => {
+		const storedEvents = loadStoredEvents();
+
+		const toStore = {
+			event,
+			apiUrl,
+			lastAttempt: new Date(),
+			persisted: false,
+			attempts: 1,
+			participantCode,
+			tryImmediately: true,
+		};
+
+		storedEvents.push(toStore);
+
+		localStorage.setItem('events', JSON.stringify(storedEvents));
+	};
 
 	const headers = () => ({
 		'Content-Type': 'application/json',
 		'X-Participant-Code': participantCode,
-		'X-Session-UUID': sessionUuid,
 	});
 
-	const verb = makeApiVerbCreator(serverUrl);
+	const verb = makeApiVerbCreator(apiUrl);
 
 	const post = verb('POST');
 	const get = verb('GET');
 
 	const getConfigCached = cache(async () => get<ParticipantConfig>(getParticipantConfig, {}, headers()));
 
-	return {
+	const api: Api = {
 		async createSession() {
 			if (sessionPromise) {
 				return sessionPromise;
@@ -116,42 +201,42 @@ export const createApi = (serverUrl: string): Api => {
 			await this.newSession();
 		},
 
-		async postEvent(event: Event) {
-			const retryDelays = [1000, 2000, 5000, 10000, 30000];
+		async postEvent(inputEvent: Event, storeForRetry: boolean) {
+			const event = {...inputEvent};
 
-			for (const [i, delay] of Object.entries(retryDelays)) {
-				// eslint-disable-next-line no-await-in-loop
+			if (event.sessionUuid === '') {
 				await this.ensureSession();
-
 				event.sessionUuid = sessionUuid;
-
-				// eslint-disable-next-line no-await-in-loop
-				const res = await post<boolean>(postEvent, event, headers());
-
-				if (res.kind === 'Success') {
-					return true;
-				}
-
-				if (Number(i) === retryDelays.length - 1) {
-					console.error('Failed to post event:', res.message);
-				} else {
-					console.warn('Failed to post event:', res.message, 'retrying in', delay, 'ms');
-					// eslint-disable-next-line no-await-in-loop
-					await wait(delay);
-				}
 			}
 
-			console.error('Failed to post event even after', retryDelays.length, 'attempts');
+			if (storeForRetry) {
+				storeEvent(event);
+			}
+
+			const res = await post<boolean>(postEvent, event, headers());
+
+			if (res.kind === 'Success') {
+				clearStoredEvent(event);
+				return true;
+			}
+
+			if (res.kind === 'Failure' && res.code === 'EVENT_ALREADY_EXISTS_OK') {
+				clearStoredEvent(event);
+				return true;
+			}
 
 			return false;
 		},
 
 		logout() {
 			localStorage.removeItem('participantCode');
+			localStorage.removeItem('eventsToSend');
 			sessionStorage.removeItem('sessionUuid');
 			sessionStorage.removeItem('cfg');
 			participantCode = '';
 			sessionUuid = '';
 		},
 	};
+
+	return api;
 };

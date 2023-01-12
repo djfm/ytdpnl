@@ -85,6 +85,13 @@ var MessageC_1 = __importDefault(require("../server-app/components/MessageC"));
 var RecommendationsListC_1 = __importDefault(require("./components/RecommendationsListC"));
 var lib_1 = require("./lib");
 var apiProvider_1 = require("./apiProvider");
+var loadLocalConfig = function () {
+    var item = sessionStorage.getItem('cfg');
+    if (item) {
+        return JSON.parse(item);
+    }
+    return undefined;
+};
 var App = function () {
     var _a;
     var localCode = (_a = localStorage.getItem('participantCode')) !== null && _a !== void 0 ? _a : '';
@@ -92,11 +99,12 @@ var App = function () {
     var _c = __read((0, react_1.useState)(localCode), 2), participantCode = _c[0], setParticipantCode = _c[1];
     var _d = __read((0, react_1.useState)(localCode !== ''), 2), participantCodeValid = _d[0], setParticipantCodeValid = _d[1];
     var _e = __read((0, react_1.useState)(), 2), error = _e[0], setError = _e[1];
-    var _f = __read((0, react_1.useState)(), 2), cfg = _f[0], setCfg = _f[1];
+    var _f = __read((0, react_1.useState)(loadLocalConfig()), 2), cfg = _f[0], setCfg = _f[1];
     var _g = __read((0, react_1.useState)(false), 2), loggedIn = _g[0], setLoggedIn = _g[1];
     var api = (0, apiProvider_1.useApi)();
     var handleLogout = function () {
         api.logout();
+        sessionStorage.removeItem('cfg');
         setParticipantCode('');
         setParticipantCodeValid(false);
     };
@@ -123,7 +131,7 @@ var App = function () {
             if (cfg) {
                 enrichedEvent.experimentConfigId = cfg.experimentConfigId;
             }
-            api.postEvent(enrichedEvent)["catch"](console.error);
+            api.postEvent(enrichedEvent, true)["catch"](console.error);
             return [2 /*return*/];
         });
     }); };
@@ -146,14 +154,17 @@ var App = function () {
         if (participantCode === '') {
             return;
         }
-        api.getConfig().then(function (c) {
-            if (c.kind === 'Success') {
-                setCfg(c.value);
-            }
-            else {
-                console.error('Could not get config:', c.message);
-            }
-        })["catch"](console.error);
+        if (!cfg) {
+            api.getConfig().then(function (c) {
+                if (c.kind === 'Success') {
+                    setCfg(c.value);
+                    sessionStorage.setItem('cfg', JSON.stringify(c.value));
+                }
+                else {
+                    console.error('Could not get config:', c.message);
+                }
+            })["catch"](console.error);
+        }
     }, [currentUrl, participantCode, participantCodeValid]);
     var handleSubmit = function (e) { return __awaiter(void 0, void 0, void 0, function () {
         var valid;

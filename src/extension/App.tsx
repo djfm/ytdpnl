@@ -70,7 +70,7 @@ const App: React.FC = () => {
 			enrichedEvent.experimentConfigId = cfg.experimentConfigId;
 		}
 
-		api.postEvent(enrichedEvent).catch(console.error);
+		api.postEvent(enrichedEvent, true).catch(console.error);
 	};
 
 	useEffect(() => {

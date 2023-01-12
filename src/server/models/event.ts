@@ -4,6 +4,7 @@ import {Entity, Column} from 'typeorm';
 import {IsInt, IsNotEmpty, IsString, IsPositive} from 'class-validator';
 
 import Model from '../lib/model';
+import {uuidv4} from '../../util';
 
 export enum EventType {
 	PAGE_VIEW = 'PAGE_VIEW',
@@ -37,6 +38,11 @@ export class Event extends Model {
 	@IsNotEmpty()
 	@IsString()
 		url: string = '';
+
+	@Column()
+	@IsNotEmpty()
+	@IsString()
+		localUuid: string = uuidv4();
 }
 
 export default Event;

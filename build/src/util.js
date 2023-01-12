@@ -10,6 +10,17 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -83,9 +94,11 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 exports.__esModule = true;
-exports.findPackageJsonDir = exports.makeApiVerbCreator = exports.restoreInnerInstance = exports.isMaybe = exports.validateExisting = exports.validateNew = exports.validateExcept = exports.getInteger = exports.getMessage = exports.getNumber = exports.getString = exports.get = exports.retryOnError = exports.wait = exports.memoizeTemporarily = exports.has = exports.removeDuplicates = exports.shuffleArray = exports.setPersonalizedFlags = void 0;
+exports.findPackageJsonDir = exports.makeApiVerbCreator = exports.restoreInnerInstance = exports.isMaybe = exports.validateExisting = exports.validateNew = exports.validateExcept = exports.getInteger = exports.getMessage = exports.getNumber = exports.getString = exports.get = exports.retryOnError = exports.wait = exports.memoizeTemporarily = exports.has = exports.removeDuplicates = exports.shuffleArray = exports.setPersonalizedFlags = exports.uuidv4 = void 0;
 var path_1 = require("path");
 var promises_1 = require("fs/promises");
+var uuid_1 = require("uuid");
+__createBinding(exports, uuid_1, "v4", "uuidv4");
 var class_validator_1 = require("class-validator");
 var setPersonalizedFlags = function (nonPersonalized, personalized) {
     var e_1, _a, e_2, _b, e_3, _c, e_4, _d;
@@ -393,16 +406,16 @@ var makeApiVerbCreator = function (serverUrl) {
             switch (_a.label) {
                 case 0:
                     body = method === 'POST' ? JSON.stringify(data) : undefined;
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 5]);
                     return [4 /*yield*/, fetch("".concat(serverUrl).concat(path), {
                             method: method,
                             body: body,
                             headers: headers
                         })];
-                case 1:
-                    result = _a.sent();
-                    _a.label = 2;
                 case 2:
-                    _a.trys.push([2, 4, , 5]);
+                    result = _a.sent();
                     return [4 /*yield*/, result.json()];
                 case 3:
                     json = _a.sent();
@@ -415,7 +428,7 @@ var makeApiVerbCreator = function (serverUrl) {
                     console.error(e_8);
                     err = {
                         kind: 'Failure',
-                        message: 'Invalid response from server'
+                        message: 'Invalid or no response from server'
                     };
                     return [2 /*return*/, err];
                 case 5:

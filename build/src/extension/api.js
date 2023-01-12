@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40,23 +51,96 @@ exports.createApi = void 0;
 var util_1 = require("../util");
 var routes_1 = require("../server/routes");
 var cache = (0, util_1.memoizeTemporarily)(1000);
-var createApi = function (serverUrl) {
-    var _a, _b;
-    var participantCode = (_a = localStorage.getItem('participantCode')) !== null && _a !== void 0 ? _a : '';
-    var sessionUuid = (_b = sessionStorage.getItem('sessionUuid')) !== null && _b !== void 0 ? _b : '';
+var retryDelay = 60000;
+var maxAttempts = 10;
+var loadStoredEvents = function () {
+    var _a;
+    return JSON.parse((_a = localStorage.getItem('events')) !== null && _a !== void 0 ? _a : '[]').map(function (e) { return (__assign(__assign({}, e), { 
+        // Need to restore the Date which will not be properly deserialized
+        lastAttempt: new Date(e.lastAttempt) })); });
+};
+var saveStoredEvents = function (events) {
+    localStorage.setItem('events', JSON.stringify(events));
+};
+var retryToPostStoredEvents = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var storedEvents, promises, updated, remainingEvents;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                storedEvents = loadStoredEvents();
+                promises = storedEvents.map(function (storedEvent) { return __awaiter(void 0, void 0, void 0, function () {
+                    var lastAttempt, remaining, api, result;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                lastAttempt = Number(new Date(storedEvent.lastAttempt));
+                                remaining = lastAttempt + retryDelay - Date.now();
+                                if (remaining > 0 && !storedEvent.tryImmediately) {
+                                    console.log('Do not retrying to post event', storedEvent.event.localUuid, 'until', remaining, 'ms have passed');
+                                    return [2 /*return*/, storedEvent];
+                                }
+                                storedEvent.attempts += 1;
+                                storedEvent.tryImmediately = false;
+                                api = (0, exports.createApi)(storedEvent.apiUrl, storedEvent.participantCode);
+                                return [4 /*yield*/, api.postEvent(storedEvent.event, false)];
+                            case 1:
+                                result = _a.sent();
+                                if (result) {
+                                    storedEvent.persisted = true;
+                                }
+                                else {
+                                    storedEvent.lastAttempt = new Date();
+                                }
+                                return [2 /*return*/, storedEvent];
+                        }
+                    });
+                }); });
+                return [4 /*yield*/, Promise.all(promises)];
+            case 1:
+                updated = _a.sent();
+                remainingEvents = updated.filter(function (e) { return !e.persisted && e.attempts < maxAttempts; });
+                console.log("Stored ".concat(storedEvents.length - remainingEvents.length, " events cached previously, ").concat(remainingEvents.length, " remain..."));
+                saveStoredEvents(remainingEvents);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var clearStoredEvent = function (event) {
+    var events = loadStoredEvents();
+    var newEvents = events.filter(function (e) { return e.event.localUuid !== event.localUuid; });
+    saveStoredEvents(newEvents);
+};
+setInterval(retryToPostStoredEvents, retryDelay);
+var createApi = function (apiUrl, overrideParticipantCode) {
+    var _a, _b, _c;
+    var participantCode = (_b = (_a = localStorage.getItem('participantCode')) !== null && _a !== void 0 ? _a : overrideParticipantCode) !== null && _b !== void 0 ? _b : '';
+    var sessionUuid = (_c = sessionStorage.getItem('sessionUuid')) !== null && _c !== void 0 ? _c : '';
     var sessionPromise;
+    var storeEvent = function (event) {
+        var storedEvents = loadStoredEvents();
+        var toStore = {
+            event: event,
+            apiUrl: apiUrl,
+            lastAttempt: new Date(),
+            persisted: false,
+            attempts: 1,
+            participantCode: participantCode,
+            tryImmediately: true
+        };
+        storedEvents.push(toStore);
+        localStorage.setItem('events', JSON.stringify(storedEvents));
+    };
     var headers = function () { return ({
         'Content-Type': 'application/json',
-        'X-Participant-Code': participantCode,
-        'X-Session-UUID': sessionUuid
+        'X-Participant-Code': participantCode
     }); };
-    var verb = (0, util_1.makeApiVerbCreator)(serverUrl);
+    var verb = (0, util_1.makeApiVerbCreator)(apiUrl);
     var post = verb('POST');
     var get = verb('GET');
     var getConfigCached = cache(function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
         return [2 /*return*/, get(routes_1.getParticipantConfig, {}, headers())];
     }); }); });
-    return {
+    var api = {
         createSession: function () {
             return __awaiter(this, void 0, void 0, function () {
                 var p;
@@ -150,22 +234,34 @@ var createApi = function (serverUrl) {
                 });
             });
         },
-        postEvent: function (event) {
+        postEvent: function (inputEvent, storeForRetry) {
             return __awaiter(this, void 0, void 0, function () {
-                var res;
+                var event, res;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.ensureSession()];
+                        case 0:
+                            event = __assign({}, inputEvent);
+                            if (!(event.sessionUuid === '')) return [3 /*break*/, 2];
+                            return [4 /*yield*/, this.ensureSession()];
                         case 1:
                             _a.sent();
                             event.sessionUuid = sessionUuid;
-                            return [4 /*yield*/, post(routes_1.postEvent, event, headers())];
+                            _a.label = 2;
                         case 2:
+                            if (storeForRetry) {
+                                storeEvent(event);
+                            }
+                            return [4 /*yield*/, post(routes_1.postEvent, event, headers())];
+                        case 3:
                             res = _a.sent();
                             if (res.kind === 'Success') {
+                                clearStoredEvent(event);
                                 return [2 /*return*/, true];
                             }
-                            console.error('Failed to post event:', res.message);
+                            if (res.kind === 'Failure' && res.code === 'EVENT_ALREADY_EXISTS_OK') {
+                                clearStoredEvent(event);
+                                return [2 /*return*/, true];
+                            }
                             return [2 /*return*/, false];
                     }
                 });
@@ -173,10 +269,13 @@ var createApi = function (serverUrl) {
         },
         logout: function () {
             localStorage.removeItem('participantCode');
+            localStorage.removeItem('eventsToSend');
             sessionStorage.removeItem('sessionUuid');
+            sessionStorage.removeItem('cfg');
             participantCode = '';
             sessionUuid = '';
         }
     };
+    return api;
 };
 exports.createApi = createApi;

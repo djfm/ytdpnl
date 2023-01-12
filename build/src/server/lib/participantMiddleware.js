@@ -5,22 +5,19 @@ var createParticipantMiddleWare = function (createLogger) {
     return function (req, res, next) {
         var log = createLogger(req.requestId);
         var participantCode = req.headers['x-participant-code'];
-        log('Checking participant code:', participantCode);
+        log('checking participant code:', participantCode);
         if (typeof participantCode !== 'string') {
+            log('Participant code is not a string');
             res.status(401).json({ kind: 'Failure', message: 'Invalid participant code header', code: 'NOT_AUTHENTICATED' });
             return;
         }
         if (!participantCode) {
+            log('participant code is empty');
             res.status(401).json({ kind: 'Failure', message: 'Missing participant code header', code: 'NOT_AUTHENTICATED' });
             return;
         }
-        log('Participant code:', participantCode);
-        var sessionUuid = req.headers['x-session-uuid'];
-        if (sessionUuid && typeof sessionUuid === 'string') {
-            log('Session UUID:', sessionUuid);
-            req.sessionUuid = sessionUuid;
-        }
         req.participantCode = participantCode;
+        log('participant code is valid:', participantCode);
         next();
     };
 };

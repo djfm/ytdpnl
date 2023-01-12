@@ -232,31 +232,35 @@ var storeRecommendationsShown = function (log, dataSource, event) { return __awa
         }
     });
 }); };
+var isLocalUuidAlreadyExistsError = function (e) {
+    return (0, util_1.has)('code')(e) && (0, util_1.has)('constraint')(e)
+        && e.code === '23505'
+        && e.constraint === 'event_local_uuid_idx';
+};
 var createPostEventRoute = function (_a) {
     var createLogger = _a.createLogger, dataSource = _a.dataSource;
     return function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-        var log, sessionUuid, participantCode, event, participantRepo, participant, configRepo, config, errors, eventRepo, e, e_2;
+        var log, participantCode, event, participantRepo, participant, configRepo, config, errors, eventRepo, e, e_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     log = createLogger(req.requestId);
                     log('Received post event request');
-                    sessionUuid = req.sessionUuid, participantCode = req.participantCode;
-                    if (sessionUuid === undefined) {
+                    participantCode = req.participantCode;
+                    if (req.body.sessionUuid === undefined) {
                         log('No session UUID found');
                         res.status(500).json({ kind: 'Failure', message: 'No session UUID found' });
                         return [2 /*return*/];
                     }
-                    if (participantCode === undefined) {
-                        log('No participant code found');
+                    if (typeof participantCode !== 'string' || !participantCode) {
+                        log('Invalid participant code');
                         res.status(500).json({ kind: 'Failure', message: 'No participant code found' });
                         return [2 /*return*/];
                     }
                     event = new event_1["default"]();
                     Object.assign(event, req.body);
-                    event.sessionUuid = sessionUuid;
-                    event.createdAt = new Date();
-                    event.updatedAt = new Date();
+                    event.createdAt = new Date(event.createdAt);
+                    event.updatedAt = new Date(event.updatedAt);
                     participantRepo = dataSource.getRepository(participant_1["default"]);
                     if (!!event.arm) return [3 /*break*/, 2];
                     return [4 /*yield*/, participantRepo.findOneBy({
@@ -312,6 +316,10 @@ var createPostEventRoute = function (_a) {
                 case 10:
                     e_2 = _a.sent();
                     log('event save failed', e_2);
+                    if (isLocalUuidAlreadyExistsError(e_2)) {
+                        res.status(500).json({ kind: 'Failure', message: 'Event already exists', code: 'EVENT_ALREADY_EXISTS_OK' });
+                        return [2 /*return*/];
+                    }
                     res.status(500).json({ kind: 'Failure', message: 'Event save failed' });
                     return [3 /*break*/, 11];
                 case 11: return [2 /*return*/];

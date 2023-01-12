@@ -1840,6 +1840,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/uuid@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@types/uuid@npm:9.0.0"
+  checksum: 59ae56d9547c8758588659da2a2b4c97cce79c2aae1798c892bb29452ef08e87859dea2ec3a66bfa88d0d2153147520be2b1893be920f9f0bc9c53a3207ea6aa
+  languageName: node
+  linkType: hard
+
 "@types/validator@npm:^13.7.10":
   version: 13.7.10
   resolution: "@types/validator@npm:13.7.10"
@@ -9353,6 +9360,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uuid@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "uuid@npm:9.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 8dd2c83c43ddc7e1c71e36b60aea40030a6505139af6bee0f382ebcd1a56f6cd3028f7f06ffb07f8cf6ced320b76aea275284b224b002b289f89fe89c389b028
+  languageName: node
+  linkType: hard
+
 "v8-compile-cache-lib@npm:^3.0.1":
   version: 3.0.1
   resolution: "v8-compile-cache-lib@npm:3.0.1"
@@ -9823,6 +9839,7 @@ __metadata:
     "@types/react-router": ^5.1.19
     "@types/react-router-dom": ^5.3.3
     "@types/urlencode": ^1.1.2
+    "@types/uuid": ^9.0.0
     "@types/webpack": ^5.28.0
     "@types/webpack-dev-middleware": ^5.3.0
     "@types/webpack-hot-middleware": ^2.25.6
@@ -9864,6 +9881,7 @@ __metadata:
     typeorm-naming-strategies: ^4.1.0
     typescript: ^4.9.3
     urlencode: ^1.1.0
+    uuid: ^9.0.0
     webpack: ^5.75.0
     webpack-cli: ^5.0.1
     webpack-dev-middleware: ^6.0.1
