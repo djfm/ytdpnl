@@ -1,4 +1,4 @@
-import {type Maybe, makeApiVerbCreator, memoizeTemporarily} from '../util';
+import {type Maybe, makeApiVerbCreator, memoizeTemporarily, wait} from '../util';
 import type Session from '../server/models/session';
 import type Event from '../server/models/event';
 import {type ParticipantConfig} from '../server/api/participantConfig';
@@ -117,17 +117,31 @@ export const createApi = (serverUrl: string): Api => {
 		},
 
 		async postEvent(event: Event) {
-			await this.ensureSession();
+			const retryDelays = [1000, 2000, 5000, 10000, 30000];
 
-			event.sessionUuid = sessionUuid;
+			for (const [i, delay] of Object.entries(retryDelays)) {
+				// eslint-disable-next-line no-await-in-loop
+				await this.ensureSession();
 
-			const res = await post<boolean>(postEvent, event, headers());
+				event.sessionUuid = sessionUuid;
 
-			if (res.kind === 'Success') {
-				return true;
+				// eslint-disable-next-line no-await-in-loop
+				const res = await post<boolean>(postEvent, event, headers());
+
+				if (res.kind === 'Success') {
+					return true;
+				}
+
+				if (Number(i) === retryDelays.length - 1) {
+					console.error('Failed to post event:', res.message);
+				} else {
+					console.warn('Failed to post event:', res.message, 'retrying in', delay, 'ms');
+					// eslint-disable-next-line no-await-in-loop
+					await wait(delay);
+				}
 			}
 
-			console.error('Failed to post event:', res.message);
+			console.error('Failed to post event even after', retryDelays.length, 'attempts');
 
 			return false;
 		},

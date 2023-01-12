@@ -20,7 +20,7 @@ export const createAuthMiddleWare = ({createLogger, tokenTools, tokenRepo}: Auth
 
 		if (!token) {
 			log('Missing authorization header');
-			res.status(401).json({kind: 'Failure', message: 'Missing authorization header'});
+			res.status(401).json({kind: 'Failure', message: 'Missing authorization header', code: 'NOT_AUTHENTICATED'});
 			return;
 		}
 
