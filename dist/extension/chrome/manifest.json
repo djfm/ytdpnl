@@ -14,9 +14,10 @@
 		}
 	],
 	"host_permissions": [
-		"https://*.youtube.com/*",
-		"https://*.youtu.be/*",
-		"https://ytdpnl-dev.fmdj.fr/api/*",
-		"https://ytdnlp.fmdj.fr/api/*"
+		"webRequest",
+		"*://*.youtube.com/*",
+		"*://*.youtu.be/*",
+		"*://ytdpnl-dev.fmdj.fr/*",
+		"*://ytdpnl.fmdj.fr/*"
 	]
 }

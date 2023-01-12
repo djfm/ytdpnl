@@ -7,10 +7,10 @@ const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
 
 const hostPermissions = [
-	'https://*.youtube.com/*',
-	'https://*.youtu.be/*',
-	'https://ytdpnl-dev.fmdj.fr/api/*',
-	'https://ytdnlp.fmdj.fr/api/*',
+	'*://*.youtube.com/*',
+	'*://*.youtu.be/*',
+	'*://ytdpnl-dev.fmdj.fr/*',
+	'*://ytdpnl.fmdj.fr/*',
 ];
 
 module.exports = {
@@ -60,7 +60,7 @@ module.exports = {
 						// eslint-disable-next-line camelcase
 						manifest.manifest_version = 3;
 						// eslint-disable-next-line camelcase
-						manifest.host_permissions = hostPermissions;
+						manifest.host_permissions = ['webRequest', ...hostPermissions];
 						return JSON.stringify(manifest, null, '\t');
 					},
 				},
