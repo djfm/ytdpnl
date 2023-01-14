@@ -97,16 +97,14 @@ const App: React.FC = () => {
 			return;
 		}
 
-		if (!cfg) {
-			api.getConfig().then(c => {
-				if (c.kind === 'Success') {
-					setCfg(c.value);
-					sessionStorage.setItem('cfg', JSON.stringify(c.value));
-				} else {
-					console.error('Could not get config:', c.message);
-				}
-			}).catch(console.error);
-		}
+		api.getConfig().then(c => {
+			if (c.kind === 'Success') {
+				setCfg(c.value);
+				sessionStorage.setItem('cfg', JSON.stringify(c.value));
+			} else {
+				console.error('Could not get config:', c.message);
+			}
+		}).catch(console.error);
 	}, [currentUrl, participantCode, participantCodeValid]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
